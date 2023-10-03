@@ -111,7 +111,7 @@ class ObjectFollower(traitlets.HasTraits):
 
         self.closest_object = closest_detection
 
-    def start_run(self):
+    def start_run(self, change):
         self.capturer.unobserve_all()
         print("start running")
         self.capturer.observe(self.execute, names='value')
@@ -173,7 +173,7 @@ class ObjectFollower(traitlets.HasTraits):
         # print("ok!")
         # return self.cap_image
 
-    def stop_run(self):
+    def stop_run(self, change):
         # with out:
         print("start stopping!")
         self.capturer.unobserve_all()
