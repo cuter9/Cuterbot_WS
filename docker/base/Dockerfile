@@ -11,7 +11,8 @@ RUN apt-get install software-properties-common wget
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 
-RUN apt-get update && apt-get install -y net-tools nano cmake
+RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
+
 
 
 # ==================
@@ -37,6 +38,8 @@ RUN apt-get update && \
 RUN python3 -m pip install pip -U   # upgrade pip for following installation of protobuf
 RUN pip3 install setuptools 'Cython==0.29.35' wheel
 RUN pip3 install 'numpy<1.19.0'
+RUN pip3 install matplotlib
+
 RUN pip3 install h5py==2.10.0
 # RUN pip3 install future==0.17.1 mock==3.0.5 keras_preprocessing==1.0.5 keras_applications==1.0.8 gast==0.3.3 futures protobuf pybind11
 RUN pip3 install future==0.17.1 mock==3.0.5 keras_preprocessing==1.0.5 keras_applications==1.0.8 gast==0.3.3 futures==2.2.0 protobuf pybind11
@@ -97,8 +100,6 @@ RUN pip3 install jupyter jupyterlab jupyter_packaging
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 RUN pip3 install ipywidgets -U      # update the latest ipython widgets
 
-
-
 # Install jupyter_clickable_image_widget
 RUN echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
 RUN cd && \
@@ -131,7 +132,6 @@ RUN cd ${TORCH2TRT_REPO_DIR} && \
 # INSTALL JETBOT
 # ==============
 RUN python3 -m pip install pyserial
-RUN python3 -m pip install matplotlib
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
 RUN cd ${JETBOT_REPO_DIR} && python3 setup.py install

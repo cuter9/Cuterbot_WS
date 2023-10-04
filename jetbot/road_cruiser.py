@@ -118,7 +118,7 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.observe(self.execute, names='value')
 
     def stop_cruising(self, b):
-        os.environ['DISPLAY'] = ':10.0'
+        # os.environ['DISPLAY'] = ':10.0'
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
         time.sleep(1.0)
