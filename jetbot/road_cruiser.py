@@ -133,5 +133,12 @@ class RoadCruiser(traitlets.HasTraits):
         print(
             "Mean execution time of model : %f \nMax execution time of model : %f \nMin execution time of model : %f " \
             % (mean_execute_time, max_execute_time, min_execute_time))
-        plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+
+        fig, ax = plt.subplots()
+        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+        ax.set_xlabel('processing time, sec.')
+        ax.set_ylabel('No. of detection processes')
+        ax.set_title('Histogram of detection processing time: ')
+        plt.show()
+        #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
         plt.show()
