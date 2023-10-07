@@ -32,9 +32,11 @@ sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
 echo -e "\e[104m Install pip and some python dependencies \e[0m"
 sudo apt update
 # sudo apt install -y python3-pip python3-pil
+sudo apt install -y python3-pip
+sudo -H python3 -m pip install pip -U
 sudo -H python3 -m pip install pillow
-sudo -H python3 -m pip install Cython
-sudo -H python3 -m pip install --upgrade numpy
+sudo -H python3 -m pip install "Cython<3"
+sudo -H python3 -m pip install --upgrade "numpy<1.19.0"
 
 # Install jtop
 echo -e "\e[100m Install jtop \e[0m"
@@ -137,13 +139,13 @@ echo -e "\e[42m Install jetbot python module \e[0m"
 cd
 sudo apt install -y python3-smbus
 sudo -H python3 -m pip install pyserial
-cd ~/Cuterbot
+cd ~/Cuterbot_Demo
 sudo apt install -y cmake
 sudo python3 setup.py install
 
 # Install jetbot services
 echo -e "\e[42m Install jetbot services \e[0m"
-cd ~/Cuterbot/jetbot/utils
+cd ~/Cuterbot_Demo/jetbot/utils
 python3 create_stats_service.py
 sudo mv jetbot_stats.service /etc/systemd/system/jetbot_stats.service
 sudo systemctl enable jetbot_stats
@@ -174,7 +176,7 @@ sudo systemctl disable nvzramconfig.service
 
 # Copy JetBot notebooks to home directory
 sudo rm -rf ~/Notebooks
-cp -r ~/Cuterbot/notebooks ~/Notebooks
+cp -r ~/Cuterbot_Demo/notebooks ~/Notebooks
 
 echo -e "\e[42m All done! \e[0m"
 
