@@ -8,7 +8,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # INSTALL COMMON TOOLS
 # ====================
 RUN apt-get install software-properties-common wget
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+# RUN apt-get upgrade
+# RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 
 RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
@@ -59,7 +61,7 @@ RUN python3 -m pip install --pre --extra-index-url https://developer.download.nv
 # INSTALL OPENCV
 # ==============
 COPY jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
-RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.4 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
+RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
             libopencv-python \
