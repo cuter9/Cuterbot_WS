@@ -29,6 +29,7 @@ class RoadCruiser(traitlets.HasTraits):
 
     def __init__(self, cruiser_model='resnet18', type_cruiser_model='resnet'):
         super().__init__()
+        self.cruiser_model_str = cruiser_model
         self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
         self.type_cruiser_model = type_cruiser_model
         if type_cruiser_model == "mobilenet":
@@ -138,7 +139,7 @@ class RoadCruiser(traitlets.HasTraits):
         ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
         ax.set_xlabel('processing time, sec.')
         ax.set_ylabel('No. of detection processes')
-        ax.set_title('Histogram of detection processing time: ')
+        ax.set_title('Histogram of detection processing time of road cruiser model : ' + self.cruiser_model_str)
         plt.show()
         #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
         plt.show()
