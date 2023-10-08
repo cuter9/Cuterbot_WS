@@ -8,9 +8,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # INSTALL COMMON TOOLS
 # ====================
 RUN apt-get install software-properties-common wget
-# RUN apt-get upgrade
-# RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
-RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+# RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 
 RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
@@ -137,7 +136,5 @@ RUN python3 -m pip install pyserial
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
 RUN cd ${JETBOT_REPO_DIR} && python3 setup.py install
-
-# COPY ../notebooks Notebooks/
 
 
