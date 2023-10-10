@@ -36,8 +36,9 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # RUN pip3 install setuptools Cython wheel
-RUN python3 -m pip install pip -U   # upgrade pip for following installation of protobuf
-RUN pip3 install setuptools 'Cython==0.29.35' wheel
+RUN apt-get install -y python3-pip
+RUN pip3 install pip -U   # upgrade pip for following installation of protobuf
+RUN pip3 install setuptools 'Cython<3.0' wheel
 RUN pip3 install 'numpy<1.19.0'
 RUN pip3 install matplotlib
 
