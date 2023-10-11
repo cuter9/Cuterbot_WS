@@ -21,13 +21,14 @@
 # In[ ]:
 
 from queue import Empty
-import torch
-import torchvision
+# import torch
+# import torchvision
 import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
 import os
+import time
 
 # from jetbot import ObjectDetector
 # from jetbot.object_detection_yolo import ObjectDetector_YOLO
@@ -38,7 +39,11 @@ from jetbot import ObjectDetector
 from jetbot import RoadCruiser
 
 import time
-import threading
+import matplotlib
+
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+# import threading
     # 
     # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
     # model = ObjectDetector_YOLO('yolov4-288.engine')
@@ -95,7 +100,9 @@ class Fleeter(traitlets.HasTraits):
         self.mean_view_prev = 0
         self.e_view = 0
         self.e_view_prev = 0
-        
+
+        self.execution_time = []
+
     def run_follower_detection(self):
         # self.image = self.capturer.value
         # print(self.image[1][1], np.shape(self.image))
@@ -129,7 +136,11 @@ class Fleeter(traitlets.HasTraits):
         self.closest_object =  closest_detection
         
     def execute_fleeting(self, change):
+        start_time = time.process_time()
         self.execute(change)
+        end_time = time.process_time()
+        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
+
         if not self.is_dectected:           # if closest object is not detected, do road cruising
             self.road_cruiser.execute(change)
 
@@ -158,7 +169,6 @@ class Fleeter(traitlets.HasTraits):
                           (int(width * bbox[2]), int(height * bbox[3])), (255, 0, 0), 2)
             
         # select detections that match selected class label
-
         # get detection closest to center of field of view and draw it
         cls_obj = self.closest_object
         if cls_obj is not None:
@@ -209,6 +219,25 @@ class Fleeter(traitlets.HasTraits):
         # with out:
         print("start stopping!")
         self.road_cruiser.stop_cruising(change)
+
+        execute_time = np.array(self.execution_time[1:])
+        mean_execute_time = np.mean(execute_time)
+        max_execute_time = np.amax(execute_time)
+        min_execute_time = np.amin(execute_time)
+
+        os.environ['DISPLAY'] = ':10.0'
+        print(
+            "Mean execution time of fleeter model : %f \nMax execution time of fleeter model : %f \nMin execution time of fleeter model : %f " \
+            % (mean_execute_time, max_execute_time, min_execute_time))
+
+        fig, ax = plt.subplots()
+        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+        ax.set_xlabel('processing time, sec.')
+        ax.set_ylabel('No. of processes')
+        ax.set_title('Histogram of processing time of fleeter model : ' + self.type_follower_model)
+        plt.show()
+        # plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+        # plt.show()
         # self.capturer.unobserve_all()
         # self.robot.stop()
         # self.capturer.stop()

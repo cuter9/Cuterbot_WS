@@ -110,6 +110,7 @@ class RoadCruiser(traitlets.HasTraits):
 
         self.robot.left_motor.value = max(min(self.speed_gain + self.steering, 1.0), 0.0)
         self.robot.right_motor.value = max(min(self.speed_gain - self.steering, 1.0), 0.0)
+
         end_time = time.process_time()
         self.execution_time.append(end_time - start_time + self.camera.cap_time)
 
@@ -119,7 +120,7 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.observe(self.execute, names='value')
 
     def stop_cruising(self, b):
-        # os.environ['DISPLAY'] = ':10.0'
+        os.environ['DISPLAY'] = ':10.0'
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
         time.sleep(1.0)
@@ -132,7 +133,7 @@ class RoadCruiser(traitlets.HasTraits):
         min_execute_time = np.amin(execute_time)
 
         print(
-            "Mean execution time of model : %f \nMax execution time of model : %f \nMin execution time of model : %f " \
+            "Mean execution time of road cruiser model : %f \nMax execution time of road cruiser model : %f \nMin execution time of road cruiser model : %f " \
             % (mean_execute_time, max_execute_time, min_execute_time))
 
         fig, ax = plt.subplots()

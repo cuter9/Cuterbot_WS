@@ -28,6 +28,12 @@ import cv2
 import numpy as np
 import traitlets
 import os
+import time
+
+import matplotlib
+
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
 
 # from jetbot import ObjectDetector
 # from jetbot.object_detection_yolo import ObjectDetector_YOLO
@@ -56,7 +62,7 @@ class ObjectFollower(traitlets.HasTraits):
                  avoider_model='../collision_avoidance/best_model.pth', type_follower_model="SSD"):
         self.follower_model = follower_model
         self.avoider_model = avoider_model
-
+        self.follower_model_str = type_follower_model
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if type_follower_model == "SSD" or type_follower_model == "YOLO":
             from jetbot import ObjectDetector
@@ -77,6 +83,9 @@ class ObjectFollower(traitlets.HasTraits):
         self.img_width = self.capturer.width
         self.img_height = self.capturer.height
         self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
+
+        self.execution_time = []
+
 
     def run_follower_detection(self):
         # self.image = self.capturer.value
@@ -118,6 +127,8 @@ class ObjectFollower(traitlets.HasTraits):
 
     def execute(self, change):
         # print("start excution !")
+        start_time = time.process_time()
+
         self.current_image = change['new']
         width = self.img_width
         height = self.img_height
@@ -166,6 +177,9 @@ class ObjectFollower(traitlets.HasTraits):
                 float(self.speed + self.turn_gain * center[0] + self.steering_bias),
                 float(self.speed - self.turn_gain * center[0] + self.steering_bias)
             )
+        
+        end_time = time.process_time()
+        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
 
         # update image widget
         # image_widget.value = bgr8_to_jpeg(image)
@@ -179,6 +193,25 @@ class ObjectFollower(traitlets.HasTraits):
         self.capturer.unobserve_all()
         self.robot.stop()
         self.capturer.stop()
+
+        execute_time = np.array(self.execution_time[1:])
+        mean_execute_time = np.mean(execute_time)
+        max_execute_time = np.amax(execute_time)
+        min_execute_time = np.amin(execute_time)
+
+        os.environ['DISPLAY'] = ':10.0'
+        print(
+            "Mean execution time of object follower model : %f \nMax execution time of object follower model : %f \nMin execution time of object follower model : %f " \
+            % (mean_execute_time, max_execute_time, min_execute_time))
+
+        fig, ax = plt.subplots()
+        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+        ax.set_xlabel('processing time, sec.')
+        ax.set_ylabel('No. of processes')
+        ax.set_title('Histogram of processing time of object follower model : ' + self.follower_model_str)
+        plt.show()
+        #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
+        plt.show()
 
 
 class Avoider(object):
