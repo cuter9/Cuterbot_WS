@@ -216,29 +216,13 @@ class Fleeter(traitlets.HasTraits):
         
 
     def stop_run(self, change):
+        from jetbot.utils import plot_exec_time
         # with out:
         print("start stopping!")
         self.road_cruiser.stop_cruising(change)
 
-        execute_time = np.array(self.execution_time[1:])
-        mean_execute_time = np.mean(execute_time)
-        max_execute_time = np.amax(execute_time)
-        min_execute_time = np.amin(execute_time)
-
-        os.environ['DISPLAY'] = ':10.0'
-        print(
-            "Mean execution time of fleeter model : %f \nMax execution time of fleeter model : %f \nMin execution time of fleeter model : %f " \
-            % (mean_execute_time, max_execute_time, min_execute_time))
-
-        fig, ax = plt.subplots()
-        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        ax.set_xlabel('processing time, sec.')
-        ax.set_ylabel('No. of processes')
-        ax.set_title('Histogram of processing time of fleeter model : ' + self.type_follower_model)
-        plt.show()
-        # plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        # plt.show()
-        # self.capturer.unobserve_all()
-        # self.robot.stop()
-        # self.capturer.stop()
+        # plot exection time of fleet controller model processing
+        model_name = "fleet controller model"
+        model_str =  self.type_follower_model
+        plot_exec_time(self.execution_time[1:], model_name, model_str)
 

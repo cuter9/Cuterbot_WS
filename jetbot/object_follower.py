@@ -189,30 +189,16 @@ class ObjectFollower(traitlets.HasTraits):
 
     def stop_run(self, change):
         # with out:
+        from jetbot.utils import plot_exec_time
         print("start stopping!")
         self.capturer.unobserve_all()
         self.robot.stop()
         self.capturer.stop()
 
-        execute_time = np.array(self.execution_time[1:])
-        mean_execute_time = np.mean(execute_time)
-        max_execute_time = np.amax(execute_time)
-        min_execute_time = np.amin(execute_time)
-
-        os.environ['DISPLAY'] = ':10.0'
-        print(
-            "Mean execution time of object follower model : %f \nMax execution time of object follower model : %f \nMin execution time of object follower model : %f " \
-            % (mean_execute_time, max_execute_time, min_execute_time))
-
-        fig, ax = plt.subplots()
-        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        ax.set_xlabel('processing time, sec.')
-        ax.set_ylabel('No. of processes')
-        ax.set_title('Histogram of processing time of object follower model : ' + self.follower_model_str)
-        plt.show()
-        #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        plt.show()
-
+        # plot exection time of object follower model processing
+        model_name = "object follower model"
+        model_str =  self.follower_model_str
+        plot_exec_time(self.execution_time[1:], model_name, model_str)
 
 class Avoider(object):
 

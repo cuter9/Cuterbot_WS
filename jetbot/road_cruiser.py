@@ -120,27 +120,15 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.observe(self.execute, names='value')
 
     def stop_cruising(self, b):
-        os.environ['DISPLAY'] = ':10.0'
+        from jetbot.utils import plot_exec_time
+        # os.environ['DISPLAY'] = ':10.0'
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
         time.sleep(1.0)
         self.robot.stop()
         self.camera.stop()
 
-        execute_time = np.array(self.execution_time[1:])
-        mean_execute_time = np.mean(execute_time)
-        max_execute_time = np.amax(execute_time)
-        min_execute_time = np.amin(execute_time)
-
-        print(
-            "Mean execution time of road cruiser model : %f \nMax execution time of road cruiser model : %f \nMin execution time of road cruiser model : %f " \
-            % (mean_execute_time, max_execute_time, min_execute_time))
-
-        fig, ax = plt.subplots()
-        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        ax.set_xlabel('processing time, sec.')
-        ax.set_ylabel('No. of detection processes')
-        ax.set_title('Histogram of detection processing time of road cruiser model : ' + self.cruiser_model_str)
-        plt.show()
-        #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        plt.show()
+        # plot exection time of road cruiser model processing
+        model_name = "road cruiser model"
+        model_str = self.cruiser_model_str
+        plot_exec_time(self.execution_time[1:], model_name, model_str)
