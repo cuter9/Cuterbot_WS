@@ -1,11 +1,7 @@
-import os
 import time
 
 import PIL.Image
-import matplotlib
 
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchvision
@@ -121,7 +117,6 @@ class RoadCruiser(traitlets.HasTraits):
 
     def stop_cruising(self, b):
         from jetbot.utils import plot_exec_time
-        # os.environ['DISPLAY'] = ':10.0'
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
         time.sleep(1.0)
@@ -130,5 +125,4 @@ class RoadCruiser(traitlets.HasTraits):
 
         # plot exection time of road cruiser model processing
         model_name = "road cruiser model"
-        model_str = self.cruiser_model_str
-        plot_exec_time(self.execution_time[1:], model_name, model_str)
+        plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)

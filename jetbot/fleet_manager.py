@@ -21,8 +21,6 @@
 # In[ ]:
 
 from queue import Empty
-# import torch
-# import torchvision
 import torch.nn.functional as F
 import cv2
 import numpy as np
@@ -39,15 +37,6 @@ from jetbot import ObjectDetector
 from jetbot import RoadCruiser
 
 import time
-import matplotlib
-
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-# import threading
-    # 
-    # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
-    # model = ObjectDetector_YOLO('yolov4-288.engine')
-
 
 class Fleeter(traitlets.HasTraits):
     
@@ -65,6 +54,7 @@ class Fleeter(traitlets.HasTraits):
 
         self.follower_model = follower_model
         self.type_follower_model = type_follower_model
+
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if self.type_follower_model == "SSD" or self.type_follower_model == "YOLO":
             # from jetbot import ObjectDetector
@@ -209,7 +199,6 @@ class Fleeter(traitlets.HasTraits):
             )
 
         # update image widget
-        # image_widget.value = bgr8_to_jpeg(image)
         self.cap_image = bgr8_to_jpeg(self.current_image)
         # print("ok!")
         # return self.cap_image
@@ -217,12 +206,10 @@ class Fleeter(traitlets.HasTraits):
 
     def stop_run(self, change):
         from jetbot.utils import plot_exec_time
-        # with out:
         print("start stopping!")
         self.road_cruiser.stop_cruising(change)
 
         # plot exection time of fleet controller model processing
         model_name = "fleet controller model"
-        model_str =  self.type_follower_model
-        plot_exec_time(self.execution_time[1:], model_name, model_str)
+        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split(".")[0])
 

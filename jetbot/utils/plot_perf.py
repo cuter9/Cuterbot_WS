@@ -17,9 +17,12 @@ def plot_exec_time(execution_time, model_name, model_str):
         "The execution time statistics of %s  ----- \n     Mean execution time of : %.4f sec.\n     Max execution time : %.4f sec.\n     Min execution time of : %.4f sec. " \
         % (model_name, mean_execute_time, max_execute_time, min_execute_time))
 
-    fig, ax = plt.subplots()
+    fig = plt.figure()
+    # fig, ax = plt.subplots()
+    ax = fig.add_subplot()
     ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
     ax.set_xlabel('processing time, sec.')
     ax.set_ylabel('No. of processes')
-    ax.set_title('Histogram of processing time of  ' + model_name  + " : "+ model_str)
-    plt.show()
+    ax.set_title('Histogram of processing time of  ' + model_name  + "\n"+ model_str)
+    plt.show(block=False)
+    

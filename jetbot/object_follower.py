@@ -27,13 +27,7 @@ import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
-import os
 import time
-
-import matplotlib
-
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
 
 # from jetbot import ObjectDetector
 # from jetbot.object_detection_yolo import ObjectDetector_YOLO
@@ -41,10 +35,7 @@ from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg
 import time
-import threading
 
-
-#
 # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
 # model = ObjectDetector_YOLO('yolov4-288.engine')
 
@@ -62,7 +53,7 @@ class ObjectFollower(traitlets.HasTraits):
                  avoider_model='../collision_avoidance/best_model.pth', type_follower_model="SSD"):
         self.follower_model = follower_model
         self.avoider_model = avoider_model
-        self.follower_model_str = type_follower_model
+
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if type_follower_model == "SSD" or type_follower_model == "YOLO":
             from jetbot import ObjectDetector
@@ -188,7 +179,6 @@ class ObjectFollower(traitlets.HasTraits):
         # return self.cap_image
 
     def stop_run(self, change):
-        # with out:
         from jetbot.utils import plot_exec_time
         print("start stopping!")
         self.capturer.unobserve_all()
@@ -197,8 +187,7 @@ class ObjectFollower(traitlets.HasTraits):
 
         # plot exection time of object follower model processing
         model_name = "object follower model"
-        model_str =  self.follower_model_str
-        plot_exec_time(self.execution_time[1:], model_name, model_str)
+        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split('.')[0])
 
 class Avoider(object):
 
