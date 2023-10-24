@@ -43,6 +43,7 @@ class Fleeter(traitlets.HasTraits):
     
     cap_image = traitlets.Any()
     label = traitlets.Integer(default_value=1).tag(config=True)
+    label_text = traitlets.Unicode(default_value='').tag(config=True)
     speed = traitlets.Float(default_value=0.15).tag(config=True)
     turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
