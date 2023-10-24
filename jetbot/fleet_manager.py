@@ -21,13 +21,12 @@
 # In[ ]:
 
 from queue import Empty
-import torch
-import torchvision
 import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
 import os
+import time
 
 # from jetbot import ObjectDetector
 # from jetbot.object_detection_yolo import ObjectDetector_YOLO
@@ -36,13 +35,9 @@ from jetbot import Robot
 from jetbot import bgr8_to_jpeg
 from jetbot import ObjectDetector
 from jetbot import RoadCruiser
+from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
 
 import time
-import threading
-    # 
-    # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
-    # model = ObjectDetector_YOLO('yolov4-288.engine')
-
 
 class Fleeter(traitlets.HasTraits):
     
@@ -53,6 +48,8 @@ class Fleeter(traitlets.HasTraits):
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
     blocked = traitlets.Float(default_value=0).tag(config=True)
     target_view= traitlets.Float(default_value=0.6).tag(config=True)
+    mean_view = traitlets.Float(default_value=0).tag(config=True)
+    e_view = traitlets.Float(default_value=0).tag(config=True)
     is_dectecting = traitlets.Bool(default_value=True).tag(config=True)
     is_dectected = traitlets.Bool(default_value=False).tag(config=True)
     
@@ -60,6 +57,7 @@ class Fleeter(traitlets.HasTraits):
 
         self.follower_model = follower_model
         self.type_follower_model = type_follower_model
+
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if self.type_follower_model == "SSD" or self.type_follower_model == "YOLO":
             # from jetbot import ObjectDetector
@@ -95,12 +93,19 @@ class Fleeter(traitlets.HasTraits):
         self.mean_view_prev = 0
         self.e_view = 0
         self.e_view_prev = 0
-        
+
+        self.execution_time = []
+
     def run_follower_detection(self):
         # self.image = self.capturer.value
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
         self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
+        
+        if self.type_follower_model == "SSD":
+            self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
+        elif self.type_follower_model == "YOLO":
+            self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
         # print(int(self.label), "\n", self.matching_detections)
         
     def object_center_detection(self, det):
@@ -129,8 +134,15 @@ class Fleeter(traitlets.HasTraits):
         self.closest_object =  closest_detection
         
     def execute_fleeting(self, change):
+        
+        # do object following
+        start_time = time.process_time()
         self.execute(change)
-        if not self.is_dectected:           # if closest object is not detected, do road cruising
+        end_time = time.process_time()
+        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
+        
+        # if closest object is not detected and followed, do road cruising
+        if not self.is_dectected:           
             self.road_cruiser.execute(change)
 
     def start_run(self, change):
@@ -158,7 +170,6 @@ class Fleeter(traitlets.HasTraits):
                           (int(width * bbox[2]), int(height * bbox[3])), (255, 0, 0), 2)
             
         # select detections that match selected class label
-
         # get detection closest to center of field of view and draw it
         cls_obj = self.closest_object
         if cls_obj is not None:
@@ -199,17 +210,17 @@ class Fleeter(traitlets.HasTraits):
             )
 
         # update image widget
-        # image_widget.value = bgr8_to_jpeg(image)
         self.cap_image = bgr8_to_jpeg(self.current_image)
         # print("ok!")
         # return self.cap_image
         
 
     def stop_run(self, change):
-        # with out:
+        from jetbot.utils import plot_exec_time
         print("start stopping!")
         self.road_cruiser.stop_cruising(change)
-        # self.capturer.unobserve_all()
-        # self.robot.stop()
-        # self.capturer.stop()
+
+        # plot exection time of fleet controller model processing
+        model_name = "fleet controller model"
+        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split(".")[0])
 

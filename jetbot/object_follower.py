@@ -27,18 +27,16 @@ import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
-import os
+import time
 
 # from jetbot import ObjectDetector
 # from jetbot.object_detection_yolo import ObjectDetector_YOLO
 from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg
+from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
 import time
-import threading
 
-
-#
 # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
 # model = ObjectDetector_YOLO('yolov4-288.engine')
 
@@ -46,6 +44,7 @@ import threading
 class ObjectFollower(traitlets.HasTraits):
     cap_image = traitlets.Any()
     label = traitlets.Integer(default_value=1).tag(config=True)
+    label_text = traitlets.Unicode(default_value='').tag(config=True)
     speed = traitlets.Float(default_value=0.15).tag(config=True)
     turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
@@ -56,7 +55,7 @@ class ObjectFollower(traitlets.HasTraits):
                  avoider_model='../collision_avoidance/best_model.pth', type_follower_model="SSD"):
         self.follower_model = follower_model
         self.avoider_model = avoider_model
-
+        self.type_follower_model = type_follower_model
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if type_follower_model == "SSD" or type_follower_model == "YOLO":
             from jetbot import ObjectDetector
@@ -78,11 +77,18 @@ class ObjectFollower(traitlets.HasTraits):
         self.img_height = self.capturer.height
         self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
 
+        self.execution_time = []
+
+
     def run_follower_detection(self):
         # self.image = self.capturer.value
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
         self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
+        if self.type_follower_model == "SSD":
+            self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
+        elif self.type_follower_model == "YOLO":
+            self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
         # print(int(self.label), "\n", self.matching_detections)
 
     def object_center_detection(self, det):
@@ -118,6 +124,8 @@ class ObjectFollower(traitlets.HasTraits):
 
     def execute(self, change):
         # print("start excution !")
+        start_time = time.process_time()
+
         self.current_image = change['new']
         width = self.img_width
         height = self.img_height
@@ -166,6 +174,9 @@ class ObjectFollower(traitlets.HasTraits):
                 float(self.speed + self.turn_gain * center[0] + self.steering_bias),
                 float(self.speed - self.turn_gain * center[0] + self.steering_bias)
             )
+        
+        end_time = time.process_time()
+        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
 
         # update image widget
         # image_widget.value = bgr8_to_jpeg(image)
@@ -174,12 +185,15 @@ class ObjectFollower(traitlets.HasTraits):
         # return self.cap_image
 
     def stop_run(self, change):
-        # with out:
+        from jetbot.utils import plot_exec_time
         print("start stopping!")
         self.capturer.unobserve_all()
         self.robot.stop()
         self.capturer.stop()
 
+        # plot exection time of object follower model processing
+        model_name = "object follower model"
+        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split('.')[0])
 
 class Avoider(object):
 
