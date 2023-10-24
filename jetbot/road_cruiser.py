@@ -1,11 +1,7 @@
-import os
 import time
 
 import PIL.Image
-import matplotlib
 
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchvision
@@ -29,6 +25,7 @@ class RoadCruiser(traitlets.HasTraits):
 
     def __init__(self, cruiser_model='resnet18', type_cruiser_model='resnet'):
         super().__init__()
+        self.cruiser_model_str = cruiser_model
         self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
         self.type_cruiser_model = type_cruiser_model
         if type_cruiser_model == "mobilenet":
@@ -109,6 +106,7 @@ class RoadCruiser(traitlets.HasTraits):
 
         self.robot.left_motor.value = max(min(self.speed_gain + self.steering, 1.0), 0.0)
         self.robot.right_motor.value = max(min(self.speed_gain - self.steering, 1.0), 0.0)
+
         end_time = time.process_time()
         self.execution_time.append(end_time - start_time + self.camera.cap_time)
 
@@ -118,27 +116,13 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.observe(self.execute, names='value')
 
     def stop_cruising(self, b):
-        # os.environ['DISPLAY'] = ':10.0'
+        from jetbot.utils import plot_exec_time
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
         time.sleep(1.0)
         self.robot.stop()
         self.camera.stop()
 
-        execute_time = np.array(self.execution_time[1:])
-        mean_execute_time = np.mean(execute_time)
-        max_execute_time = np.amax(execute_time)
-        min_execute_time = np.amin(execute_time)
-
-        print(
-            "Mean execution time of model : %f \nMax execution time of model : %f \nMin execution time of model : %f " \
-            % (mean_execute_time, max_execute_time, min_execute_time))
-
-        fig, ax = plt.subplots()
-        ax.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        ax.set_xlabel('processing time, sec.')
-        ax.set_ylabel('No. of detection processes')
-        ax.set_title('Histogram of detection processing time: ')
-        plt.show()
-        #plt.hist(execute_time, bins=(0.005 * np.array(list(range(101)))).tolist())
-        plt.show()
+        # plot exection time of road cruiser model processing
+        model_name = "road cruiser model"
+        plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)

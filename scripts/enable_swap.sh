@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SWAPDIRECTORY="/"
-SWAPSIZE=4
+SWAPSIZE=8
 NAME_SWAP="swfile"
 SWAPLOCATION="$SWAPDIRECTORY/$NAME_SWAP"
 
@@ -23,7 +23,7 @@ remove_swap(){
 	sudo rm ${SWAPFILE}
 }
 
-if [ $CURRENT_SWAP_SIZE -gt 4000 ]; then
+if [ $CURRENT_SWAP_SIZE -gt 8000 ]; then
 	echo "### You have enough swap memory space."
 elif [ $CURRENT_SWAP_SIZE -gt 0 ]; then
 	echo "### You have swap memory space, but not big enough."

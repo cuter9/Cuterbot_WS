@@ -9,6 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # ====================
 RUN apt-get install software-properties-common wget
 RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+# RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 
 RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
@@ -35,8 +36,9 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # RUN pip3 install setuptools Cython wheel
-RUN python3 -m pip install pip -U   # upgrade pip for following installation of protobuf
-RUN pip3 install setuptools 'Cython==0.29.35' wheel
+RUN apt-get install -y python3-pip
+RUN pip3 install pip -U   # upgrade pip for following installation of protobuf
+RUN pip3 install setuptools 'Cython<3.0' wheel
 RUN pip3 install 'numpy<1.19.0'
 RUN pip3 install matplotlib
 
@@ -59,7 +61,7 @@ RUN python3 -m pip install --pre --extra-index-url https://developer.download.nv
 # INSTALL OPENCV
 # ==============
 COPY jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
-RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.4 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
+RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
             libopencv-python \
@@ -135,7 +137,5 @@ RUN python3 -m pip install pyserial
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
 RUN cd ${JETBOT_REPO_DIR} && python3 setup.py install
-
-# COPY ../notebooks Notebooks/
 
 

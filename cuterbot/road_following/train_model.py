@@ -285,10 +285,10 @@ print(
 fig_2, axh = plt.subplots(1, 2, figsize=(10, 4))
 fig_2.suptitle("Training Time Statistics")
 axh[0].set_ylabel('no. of epoch')
-axh[0].set_xlabel('time of a epoch training, sec.')
+axh[0].set_xlabel('time of training in an epoch , sec.')
 axh[0].hist(learning_time_epoch)
 axh[1].set_ylabel('no. of sample')
-axh[1].set_xlabel('time for a sample training, sec.')
+axh[1].set_xlabel('time for training a sample , sec.')
 axh[1].hist(learning_time_sample, bins=(0.01 * np.array(list(range(101)))).tolist())
 training_time_file = os.path.join(DIR_DATA_REPO_THIS, "Training_time_Model_{:s}_Training_Method_{:s})".
                                   format(TRAIN_MODEL, TRAIN_MATHOD))
