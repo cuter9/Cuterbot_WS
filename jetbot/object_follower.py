@@ -34,6 +34,7 @@ import time
 from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg
+from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
 import time
 
 # model = ObjectDetector('ssd_mobilenet_v2_coco_onnx.engine')
@@ -43,6 +44,7 @@ import time
 class ObjectFollower(traitlets.HasTraits):
     cap_image = traitlets.Any()
     label = traitlets.Integer(default_value=1).tag(config=True)
+    label_text = traitlets.Unicode(default_value='').tag(config=True)
     speed = traitlets.Float(default_value=0.15).tag(config=True)
     turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
@@ -53,7 +55,7 @@ class ObjectFollower(traitlets.HasTraits):
                  avoider_model='../collision_avoidance/best_model.pth', type_follower_model="SSD"):
         self.follower_model = follower_model
         self.avoider_model = avoider_model
-
+        self.type_follower_model = type_follower_model
         # self.obstacle_detector = Avoider(model_params=self.avoider_model)
         if type_follower_model == "SSD" or type_follower_model == "YOLO":
             from jetbot import ObjectDetector
@@ -83,6 +85,10 @@ class ObjectFollower(traitlets.HasTraits):
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
         self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
+        if self.type_follower_model == "SSD":
+            self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
+        elif self.type_follower_model == "YOLO":
+            self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
         # print(int(self.label), "\n", self.matching_detections)
 
     def object_center_detection(self, det):

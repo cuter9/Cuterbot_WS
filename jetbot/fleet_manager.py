@@ -35,6 +35,7 @@ from jetbot import Robot
 from jetbot import bgr8_to_jpeg
 from jetbot import ObjectDetector
 from jetbot import RoadCruiser
+from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
 
 import time
 
@@ -42,11 +43,14 @@ class Fleeter(traitlets.HasTraits):
     
     cap_image = traitlets.Any()
     label = traitlets.Integer(default_value=1).tag(config=True)
+    label_text = traitlets.Unicode(default_value='').tag(config=True)
     speed = traitlets.Float(default_value=0.15).tag(config=True)
     turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
     blocked = traitlets.Float(default_value=0).tag(config=True)
     target_view= traitlets.Float(default_value=0.6).tag(config=True)
+    mean_view = traitlets.Float(default_value=0).tag(config=True)
+    e_view = traitlets.Float(default_value=0).tag(config=True)
     is_dectecting = traitlets.Bool(default_value=True).tag(config=True)
     is_dectected = traitlets.Bool(default_value=False).tag(config=True)
     
@@ -98,6 +102,11 @@ class Fleeter(traitlets.HasTraits):
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
         self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
+        
+        if self.type_follower_model == "SSD":
+            self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
+        elif self.type_follower_model == "YOLO":
+            self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
         # print(int(self.label), "\n", self.matching_detections)
         
     def object_center_detection(self, det):
@@ -126,12 +135,15 @@ class Fleeter(traitlets.HasTraits):
         self.closest_object =  closest_detection
         
     def execute_fleeting(self, change):
+        
+        # do object following
         start_time = time.process_time()
         self.execute(change)
         end_time = time.process_time()
         self.execution_time.append(end_time - start_time + self.capturer.cap_time)
-
-        if not self.is_dectected:           # if closest object is not detected, do road cruising
+        
+        # if closest object is not detected and followed, do road cruising
+        if not self.is_dectected:           
             self.road_cruiser.execute(change)
 
     def start_run(self, change):
