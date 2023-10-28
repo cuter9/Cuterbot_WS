@@ -10,3 +10,6 @@ fi
 
 ./display/enable.sh
 ./jupyter/enable.sh $JUPYTER_WORKSPACE $JETBOT_CAMERA
+
+sudo service nvargus-daemon restart
+sudo service docker restart
