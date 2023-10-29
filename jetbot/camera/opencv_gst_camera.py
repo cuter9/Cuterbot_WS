@@ -46,17 +46,18 @@ class OpenCvGstCamera(CameraBase):
     # config
     # width = traitlets.Integer(default_value=224).tag(config=True)
     # height = traitlets.Integer(default_value=224).tag(config=True)
-    width = traitlets.Integer(default_value=300).tag(config=True)
-    height = traitlets.Integer(default_value=300).tag(config=True)
+    width = traitlets.Integer(default_value=512).tag(config=True)
+    height = traitlets.Integer(default_value=512).tag(config=True)
     fps = traitlets.Integer(default_value=30).tag(config=True)
-    # capture_width = traitlets.Integer(default_value=816).tag(config=True)
-    # capture_height = traitlets.Integer(default_value=616).tag(config=True)
-    capture_width = traitlets.Integer(default_value=1920).tag(config=True)
-    capture_height = traitlets.Integer(default_value=1080).tag(config=True)
+    capture_width = traitlets.Integer(default_value=816).tag(config=True)
+    capture_height = traitlets.Integer(default_value=616).tag(config=True)
+    # capture_width = traitlets.Integer(default_value=1920).tag(config=True)
+    # capture_height = traitlets.Integer(default_value=1080).tag(config=True)
     cap_time = traitlets.Float(default_value=0).tag(config=True)
 
     def __init__(self, *args, **kwargs):
-        self.value = np.empty((self.height, self.width, 3), dtype=np.uint8)
+        # self.value = np.empty((self.height, self.width, 3), dtype=np.uint8)
+        self.value = np.empty((self.capture_height, self.capture_width, 3), dtype=np.uint8)
         self.stop_thread = threading.Event()
         self.cap_time = 0
         super().__init__(self, *args, **kwargs)
