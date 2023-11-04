@@ -78,11 +78,13 @@ class ObjectFollower(traitlets.HasTraits):
         self.img_width = self.capturer.width
         self.img_height = self.capturer.height
         self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
+        self.current_image = np.empty((self.img_height, self.img_width, 3))
 
         self.execution_time = []
+        self.fps = []
 
 
-    def run_follower_detection(self):
+    def run_objects_detection(self):
         # self.image = self.capturer.value
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
@@ -144,7 +146,7 @@ class ObjectFollower(traitlets.HasTraits):
             return
 
         # compute all detected objects
-        self.run_follower_detection()
+        self.run_objects_detection()
         self.closest_object_detection()
         # detections = self.object_detector(image)
         # print(self.detections)
@@ -178,7 +180,9 @@ class ObjectFollower(traitlets.HasTraits):
             )
         
         end_time = time.process_time()
-        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
+        # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
+        self.execution_time.append(end_time - start_time)
+        self.fps.append(1/(end_time - start_time))
 
         # update image widget
         # image_widget.value = bgr8_to_jpeg(image)
@@ -188,14 +192,15 @@ class ObjectFollower(traitlets.HasTraits):
 
     def stop_run(self, change):
         from jetbot.utils import plot_exec_time
-        print("start stopping!")
+        print("stopping running!")
         self.capturer.unobserve_all()
+        time.sleep(1.0)
         self.robot.stop()
         self.capturer.stop()
 
         # plot exection time of object follower model processing
         model_name = "object follower model"
-        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split('.')[0])
+        plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split('.')[0])
 
 class Avoider(object):
 
