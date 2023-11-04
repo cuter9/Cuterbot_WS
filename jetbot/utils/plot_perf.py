@@ -24,5 +24,8 @@ def plot_exec_time(execution_time, model_name, model_str):
     ax.set_xlabel('processing time, sec.')
     ax.set_ylabel('No. of processes')
     ax.set_title('Histogram of processing time of  ' + model_name  + "\n"+ model_str)
+    props = dict(boxstyle='round', facecolor='wheat')
+    text_str = " mean execution time : %.4f sec. \n max execution time : %.4f sec. \n min execution time : %.4f sec. " % (mean_execute_time, max_execute_time, min_execute_time)
+    ax.text(0.5, 0.85, text_str, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
     plt.show(block=False)
     

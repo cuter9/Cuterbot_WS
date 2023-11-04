@@ -73,6 +73,8 @@ class ObjectFollower(traitlets.HasTraits):
 
         # Camera instance would be better to put after all models instantiation
         self.capturer = Camera()
+        # self.img_width = self.capturer.capture_width
+        # self.img_height = self.capturer.capture_height
         self.img_width = self.capturer.width
         self.img_height = self.capturer.height
         self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
@@ -127,8 +129,8 @@ class ObjectFollower(traitlets.HasTraits):
         start_time = time.process_time()
 
         self.current_image = change['new']
-        width = self.img_width
-        height = self.img_height
+        # width = self.img_width
+        # height = self.img_height
 
         # print(image)
         # ** execute collision model to determine if blocked
@@ -150,8 +152,8 @@ class ObjectFollower(traitlets.HasTraits):
         # draw all detections on image
         for det in self.detections[0]:
             bbox = det['bbox']
-            cv2.rectangle(self.current_image, (int(width * bbox[0]), int(height * bbox[1])),
-                          (int(width * bbox[2]), int(height * bbox[3])), (255, 0, 0), 2)
+            cv2.rectangle(self.current_image, (int(self.img_width * bbox[0]), int(self.img_height * bbox[1])),
+                          (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (255, 0, 0), 2)
 
         # select detections that match selected class label
 
@@ -159,8 +161,8 @@ class ObjectFollower(traitlets.HasTraits):
         cls_obj = self.closest_object
         if cls_obj is not None:
             bbox = cls_obj['bbox']
-            cv2.rectangle(self.current_image, (int(width * bbox[0]), int(height * bbox[1])),
-                          (int(width * bbox[2]), int(height * bbox[3])), (0, 255, 0), 5)
+            cv2.rectangle(self.current_image, (int(self.img_width * bbox[0]), int(self.img_height * bbox[1])),
+                          (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (0, 255, 0), 5)
 
         # otherwise go forward if no target detected
         if cls_obj is None:

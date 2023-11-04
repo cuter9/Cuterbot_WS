@@ -10,6 +10,7 @@ import os
 mean = 255.0 * np.array([0.5, 0.5, 0.5])
 stdev = 255.0 * np.array([0.5, 0.5, 0.5])
 
+
 def bgr8_to_ssd_input(camera_value, input_shape):
     """Preprocess an image size to meet the size of model input before TRT SSD inferencing.
     """
@@ -21,6 +22,7 @@ def bgr8_to_ssd_input(camera_value, input_shape):
     x -= mean[:, None, None]
     x /= stdev[:, None, None]
     return x[None, ...]
+
 
 def preprocess_yolo(img, input_shape, letter_box=False):
     """Preprocess an image size to meet the size of model input before TRT YOLO inferencing.
@@ -55,12 +57,14 @@ def preprocess_yolo(img, input_shape, letter_box=False):
     img /= 255.0
     return img
 
+
 def load_plugins():
-    library_path = os.path.join(os.path.dirname(__file__),'yolo_tensorrt/libyolo_layer.so')
+    library_path = os.path.join(os.path.dirname(__file__), 'yolo_tensorrt/libyolo_layer.so')
     ctypes.CDLL(library_path)
 
+
 class ObjectDetector(object):
-    
+
     def __init__(self, engine_path, type_model, preprocess_fn=bgr8_to_ssd_input):
         logger = trt.Logger()
         trt.init_libnvinfer_plugins(logger, '')
@@ -74,9 +78,8 @@ class ObjectDetector(object):
         self.preprocess_fn_yolo = preprocess_yolo
         self.input_shape = self.trt_model.input_shape
 
-        
     def execute(self, *inputs):
-        
+
         # trt_outputs = self.trt_model(inputs)
         # trt_outputs = self.trt_model(self.preprocess_fn(*inputs))
         # print("model input shape", self.input_shape)
@@ -84,12 +87,13 @@ class ObjectDetector(object):
 
         if self.type_model == 'SSD':
             trt_outputs = self.trt_model(self.preprocess_fn(*inputs, self.input_shape))
-            detections =  parse_boxes(trt_outputs)
+            detections = parse_boxes(trt_outputs)
         elif self.type_model == 'YOLO':
             trt_outputs = self.trt_model(self.preprocess_fn_yolo(*inputs, self.input_shape))
             detections = parse_boxes_yolo(trt_outputs)
         # return trt_outputs
         # print(detections)
-        return  detections
+        return detections
+
     def __call__(self, *inputs):
         return self.execute(*inputs)
