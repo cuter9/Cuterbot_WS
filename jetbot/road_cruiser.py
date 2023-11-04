@@ -43,6 +43,7 @@ class RoadCruiser(traitlets.HasTraits):
         self.angle = 0.0
         self.angle_last = 0.0
         self.execution_time = []
+        self.fps = []
         self.x_slider = 0
         self.y_slider = 0
 
@@ -112,6 +113,7 @@ class RoadCruiser(traitlets.HasTraits):
         end_time = time.process_time()
         # self.execution_time.append(end_time - start_time + self.camera.cap_time)
         self.execution_time.append(end_time - start_time)
+        self.fps.append(1/(end_time - start_time))
 
     # We accomplish that with the observe function.
     def start_cruising(self):
@@ -128,4 +130,4 @@ class RoadCruiser(traitlets.HasTraits):
 
         # plot exection time of road cruiser model processing
         model_name = "road cruiser model"
-        plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)
+        plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
