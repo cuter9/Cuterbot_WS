@@ -85,6 +85,7 @@ class Fleeter(traitlets.HasTraits):
         self.img_width = self.capturer.width
         self.img_height = self.capturer.height
         self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
+        self.current_image = np.empty((self.img_height, self.img_width, 3))
         
         self.default_speed = self.speed
         self.detect_duration_max = 10
@@ -96,8 +97,9 @@ class Fleeter(traitlets.HasTraits):
         self.e_view_prev = 0
 
         self.execution_time = []
+        self.fps = []
 
-    def run_follower_detection(self):
+    def run_objects_detection(self):
         # self.image = self.capturer.value
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
@@ -140,10 +142,12 @@ class Fleeter(traitlets.HasTraits):
         start_time = time.process_time()
         self.execute(change)
         end_time = time.process_time()
-        self.execution_time.append(end_time - start_time + self.capturer.cap_time)
-        
+        # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
+        self.execution_time.append(end_time - start_time)
+        self.fps.append(1/(end_time - start_time))
+
         # if closest object is not detected and followed, do road cruising
-        if not self.is_dectected:           
+        if not self.is_dectected:
             self.road_cruiser.execute(change)
 
     def start_run(self, change):
@@ -158,7 +162,7 @@ class Fleeter(traitlets.HasTraits):
         height = self.img_height
 
         # compute all detected objects
-        self.run_follower_detection()
+        self.run_objects_detection()
         self.closest_object_detection()
         # detections = self.object_detector(image)
         # print(self.detections)
@@ -190,7 +194,7 @@ class Fleeter(traitlets.HasTraits):
             
         # otherwise go forward if no target detected
         if cls_obj is None:
-            if self.no_detect <= 0:         # if objet is not detected for a duration, road cruising
+            if self.no_detect <= 0:         # if object is not detected for a duration, road cruising
                 self.mean_view = 0.0
                 self.mean_view_prev = 0.0
                 self.is_dectected = False
@@ -223,5 +227,5 @@ class Fleeter(traitlets.HasTraits):
 
         # plot exection time of fleet controller model processing
         model_name = "fleet controller model"
-        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split(".")[0])
+        plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
 

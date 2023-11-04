@@ -59,11 +59,11 @@ class RoadCruiser(traitlets.HasTraits):
         # model.load_state_dict(torch.load('best_steering_model_xy_resnet50.pth'))
 
         self.device = torch.device('cuda')
-        # model = model.to(device)
-        # model = model.eval().half()
-        self.cruiser_model = self.cruiser_model.float()
-        self.cruiser_model = self.cruiser_model.to(self.device, dtype=torch.float)
-        self.cruiser_model = self.cruiser_model.eval()
+        self.cruiser_model = self.cruiser_model.to(self.device)
+        self.cruiser_model = self.cruiser_model.eval().half()
+        # self.cruiser_model = self.cruiser_model.float()
+        # self.cruiser_model = self.cruiser_model.to(self.device, dtype=torch.float)
+        # self.cruiser_model = self.cruiser_model.eval()
 
     # ---- Creating the Pre-Processing Function
     # 1. Convert from HWC layout to CHW layout
@@ -72,13 +72,15 @@ class RoadCruiser(traitlets.HasTraits):
     # 4. Add a batch dimension
 
     def preprocess(self, image):
-        # mean = torch.Tensor([0.485, 0.456, 0.406]).cuda().half()
-        # std = torch.Tensor([0.229, 0.224, 0.225]).cuda().half()
-        mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
-        std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
+        mean = torch.Tensor([0.485, 0.456, 0.406]).cuda().half()
+        std = torch.Tensor([0.229, 0.224, 0.225]).cuda().half()
+        # mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
+        # std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
         image = PIL.Image.fromarray(image)
-        # image = transforms.functional.to_tensor(image).to(device).half()
-        image = transforms.functional.to_tensor(image).to(self.device)
+        # resize the cam captured image to (224, 224) for optimal resnet model inference
+        image = image.resize((224, 224))
+        image = transforms.functional.to_tensor(image).to(self.device).half()
+        # image = transforms.functional.to_tensor(image).to(self.device)
         image.sub_(mean[:, None, None]).div_(std[:, None, None])
         return image[None, ...]
 
@@ -108,7 +110,8 @@ class RoadCruiser(traitlets.HasTraits):
         self.robot.right_motor.value = max(min(self.speed_gain - self.steering, 1.0), 0.0)
 
         end_time = time.process_time()
-        self.execution_time.append(end_time - start_time + self.camera.cap_time)
+        # self.execution_time.append(end_time - start_time + self.camera.cap_time)
+        self.execution_time.append(end_time - start_time)
 
     # We accomplish that with the observe function.
     def start_cruising(self):
