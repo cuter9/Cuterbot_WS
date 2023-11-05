@@ -64,7 +64,7 @@ class ObjectFollower(traitlets.HasTraits):
         #    from jetbot.object_detection_yolo import ObjectDetector_YOLO
         #    self.object_detector = ObjectDetector_YOLO(self.follower_model)
 
-        self.robot = Robot()
+        self.robot = Robot.instance()
         self.detections = None
         self.matching_detections = None
         self.object_center = None
@@ -81,7 +81,7 @@ class ObjectFollower(traitlets.HasTraits):
         self.current_image = np.empty((self.img_height, self.img_width, 3))
 
         self.execution_time = []
-        self.fps = []
+        # self.fps = []
 
 
     def run_objects_detection(self):
@@ -182,7 +182,7 @@ class ObjectFollower(traitlets.HasTraits):
         end_time = time.process_time()
         # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
         self.execution_time.append(end_time - start_time)
-        self.fps.append(1/(end_time - start_time))
+        # self.fps.append(1/(end_time - start_time))
 
         # update image widget
         # image_widget.value = bgr8_to_jpeg(image)
@@ -192,7 +192,7 @@ class ObjectFollower(traitlets.HasTraits):
 
     def stop_run(self, change):
         from jetbot.utils import plot_exec_time
-        print("stopping running!")
+        print("stop running!")
         self.capturer.unobserve_all()
         time.sleep(1.0)
         self.robot.stop()
@@ -200,7 +200,8 @@ class ObjectFollower(traitlets.HasTraits):
 
         # plot exection time of object follower model processing
         model_name = "object follower model"
-        plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split('.')[0])
+        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split('.')[0])
+        # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split('.')[0])
 
 class Avoider(object):
 
