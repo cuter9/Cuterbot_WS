@@ -191,6 +191,7 @@ class ObjectFollower(traitlets.HasTraits):
         # return self.cap_image
 
     def stop_run(self, change):
+        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         print("stop running!")
         self.capturer.unobserve_all()
@@ -202,6 +203,7 @@ class ObjectFollower(traitlets.HasTraits):
         model_name = "object follower model"
         plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split('.')[0])
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split('.')[0])
+        plt.show()
 
 class Avoider(object):
 

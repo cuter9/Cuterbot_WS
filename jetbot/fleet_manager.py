@@ -45,6 +45,8 @@ class Fleeter(traitlets.HasTraits):
     label = traitlets.Integer(default_value=1).tag(config=True)
     label_text = traitlets.Unicode(default_value='').tag(config=True)
     speed = traitlets.Float(default_value=0.15).tag(config=True)
+    speed_gain = traitlets.Float(default_value=0.01).tag(config=True)
+    speed_dev = traitlets.Float(default_value=0.5).tag(config=True)
     turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
     steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
     blocked = traitlets.Float(default_value=0).tag(config=True)
@@ -105,11 +107,14 @@ class Fleeter(traitlets.HasTraits):
         # print(self.image[1][1], np.shape(self.image))
         self.detections = self.object_detector(self.current_image)
         self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
-        
-        if self.type_follower_model == "SSD":
-            self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
-        elif self.type_follower_model == "YOLO":
-            self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
+
+        if int(self.label) >= 0 :
+            if self.type_follower_model == "SSD" :
+                self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
+            elif self.type_follower_model == "YOLO":
+                self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
+        else:
+             self.label_text = " Not defined !"
         # print(int(self.label), "\n", self.matching_detections)
         
     def object_center_detection(self, det):
@@ -187,8 +192,8 @@ class Fleeter(traitlets.HasTraits):
             
             self.mean_view = 0.8 * (bbox[2] - bbox[0]) + 0.2 * self.mean_view_prev
             self.e_view = self.target_view - self.mean_view
-            
-            self.speed = self.speed +  0.01 * self.e_view + 0.5 * (self.e_view - self.e_view_prev)
+
+            self.speed = self.speed +  self.speed_gain * self.e_view + self.speed_dev * (self.e_view - self.e_view_prev)
             
             self.mean_view_prev =  self.mean_view
             self.e_view_prev = self.e_view
@@ -222,12 +227,23 @@ class Fleeter(traitlets.HasTraits):
         
 
     def stop_run(self, change):
+        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         print("start stopping!")
-        self.road_cruiser.stop_cruising(change)
+
+        self.capturer.unobserve_all()
+        time.sleep(1.0)
+        self.robot.stop()
+        self.capturer.stop()
+
+        # self.road_cruiser.stop_cruising(change)
+        # plot exection time of road cruiser model processing
+        cruiser_model_name = "road cruiser model"
+        plot_exec_time(self.road_cruiser.execution_time[1:], cruiser_model_name, self.road_cruiser.cruiser_model_str)
 
         # plot exection time of fleet controller model processing
-        model_name = "fleet controller model"
-        plot_exec_time(self.execution_time[1:], model_name, self.follower_model.split(".")[0])
+        follower_model_name = "fleet controller model"
+        plot_exec_time(self.execution_time[1:], follower_model_name, self.follower_model.split(".")[0])
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
+        plt.show()
 

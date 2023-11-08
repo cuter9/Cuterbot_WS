@@ -121,6 +121,7 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.observe(self.execute, names='value')
 
     def stop_cruising(self, b):
+        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         # self.camera.unobserve(self.execute, names='value')
         self.camera.unobserve_all()
@@ -132,3 +133,4 @@ class RoadCruiser(traitlets.HasTraits):
         model_name = "road cruiser model"
         plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
+        plt.show()
