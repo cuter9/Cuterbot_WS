@@ -159,6 +159,7 @@ class Fleeter(traitlets.HasTraits):
     def start_run(self, change):
         self.capturer.unobserve_all()
         print("start running")
+        self.road_cruiser.execute({'new': self.capturer.value})
         self.capturer.observe(self.execute_fleeting, names='value')
  
     def execute(self, change):
@@ -204,9 +205,10 @@ class Fleeter(traitlets.HasTraits):
                 self.mean_view = 0.0
                 self.mean_view_prev = 0.0
                 self.is_dectected = False
-                self.cap_image = bgr8_to_jpeg(self.current_image)
                 # self.speed = self.default_speed
+                self.cap_image = bgr8_to_jpeg(self.current_image)
                 return
+
             else:
                 self.no_detect -= 1         # observe for a duration for the miss of object detection
             # self.robot.forward(float(self.speed))
