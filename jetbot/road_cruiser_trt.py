@@ -123,7 +123,7 @@ class RoadCruiserTRT(traitlets.HasTraits):
         self.camera.stop()
 
         # plot exection time of road cruiser model processing
-        model_name = "road cruiser model"
+        model_name = 'road cruiser model'
         plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
         plt.show()
