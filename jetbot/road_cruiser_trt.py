@@ -28,18 +28,9 @@ class RoadCruiserTRT(traitlets.HasTraits):
         super().__init__()
         self.cruiser_model_str = cruiser_model
         # self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
-        self.cruiser_model = TRTModule()
         self.type_cruiser_model = type_cruiser_model
-        if type_cruiser_model == "mobilenet":
-            # self.cruiser_model.classifier[3] = torch.nn.Linear(self.cruiser_model.classifier[3].in_features, 2)
-            self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_trt_' + cruiser_model + '.pth'))
-
-        elif type_cruiser_model == "resnet":
-            # self.cruiser_model.fc = torch.nn.Linear(self.cruiser_model.fc.in_features, 2)
-            self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_trt_' + cruiser_model + '.pth'))
-            # self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_resnet34.pth'))
-            # model.load_state_dict(torch.load('best_steering_model_xy_resnet50.pth'))
-
+        self.cruiser_model = TRTModule()
+        self.cruiser_model.load_state_dict(torch.load(''.join(['best_steering_model_xy_trt_', cruiser_model, '.pth'])))
         self.camera = Camera()
         self.robot = Robot.instance()
         self.angle = 0.0
