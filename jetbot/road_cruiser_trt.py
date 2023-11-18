@@ -8,12 +8,13 @@ import torchvision
 import torchvision.transforms as transforms
 import traitlets
 # import torchvision.models as models
+from torch2trt import TRTModule
 
 from jetbot import Camera
 from jetbot import Robot
 
 
-class RoadCruiser(traitlets.HasTraits):
+class RoadCruiserTRT(traitlets.HasTraits):
     speed_gain = traitlets.Float(default_value=0.15).tag(config=True)
     steering_gain = traitlets.Float(default_value=0.08).tag(config=True)
     steering_dgain = traitlets.Float(default_value=1.5).tag(config=True)
@@ -26,18 +27,11 @@ class RoadCruiser(traitlets.HasTraits):
     def __init__(self, cruiser_model='resnet18', type_cruiser_model='resnet'):
         super().__init__()
         self.cruiser_model_str = cruiser_model
-        self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
+        # self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
         self.type_cruiser_model = type_cruiser_model
-        if type_cruiser_model == "mobilenet":
-            self.cruiser_model.classifier[3] = torch.nn.Linear(self.cruiser_model.classifier[3].in_features, 2)
-            self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_' + cruiser_model + '.pth'))
-
-        elif type_cruiser_model == "resnet":
-            self.cruiser_model.fc = torch.nn.Linear(self.cruiser_model.fc.in_features, 2)
-            self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_' + cruiser_model + '.pth'))
-            # self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_resnet34.pth'))
-            # model.load_state_dict(torch.load('best_steering_model_xy_resnet50.pth'))
-
+        self.cruiser_model = TRTModule()
+        # self.cruiser_model.load_state_dict(torch.load(''.join(['best_steering_model_xy_trt_', cruiser_model, '.pth'])))
+        self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_trt_' +  cruiser_model + '.pth'))
         self.camera = Camera()
         self.robot = Robot.instance()
         self.angle = 0.0
@@ -60,8 +54,8 @@ class RoadCruiser(traitlets.HasTraits):
         # model.load_state_dict(torch.load('best_steering_model_xy_resnet50.pth'))
 
         self.device = torch.device('cuda')
-        self.cruiser_model = self.cruiser_model.to(self.device)
-        self.cruiser_model = self.cruiser_model.eval().half()
+        # self.cruiser_model = self.cruiser_model.to(self.device)
+        # self.cruiser_model = self.cruiser_model.eval().half()
         # self.cruiser_model = self.cruiser_model.float()
         # self.cruiser_model = self.cruiser_model.to(self.device, dtype=torch.float)
         # self.cruiser_model = self.cruiser_model.eval()
@@ -130,7 +124,7 @@ class RoadCruiser(traitlets.HasTraits):
         self.camera.stop()
 
         # plot exection time of road cruiser model processing
-        model_name = "road cruiser model"
+        model_name = 'road cruiser model'
         plot_exec_time(self.execution_time[1:], model_name, self.cruiser_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
         plt.show()
