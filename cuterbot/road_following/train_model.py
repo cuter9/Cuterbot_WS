@@ -33,7 +33,7 @@ os.makedirs(DIR_DATA_REPO_PROJECT, exist_ok=True)
 DIR_DATA_REPO_THIS = os.path.join(DIR_DATA_REPO_PROJECT, "road_following")
 os.makedirs(DIR_DATA_REPO_THIS, exist_ok=True)
 
-TRAIN_MODEL = "resnet50"  # resnet18, resnet34, resnet50, resnet101, mobilenet_v2, vgg11, mobilenet_v3_large
+TRAIN_MODEL = "resnet18"  # resnet18, resnet34, resnet50, resnet101, mobilenet_v2, vgg11, mobilenet_v3_large, inception_v3
 # *** refererence : https://pytorch.org/docs/stable/optim.html#algorithms
 # use the following learning algorithms for evaluation
 TRAIN_MATHOD = "Adam"  # "Adam", "SGD", "ASGD", "Adadelta", "RAdam"; the parameters lr=0.01, momentum=0.92  may be needed
@@ -257,7 +257,7 @@ for epoch in range(NUM_EPOCHS):
 
     loss_data.append([train_loss, test_loss])
     plot_loss(loss_data, best_loss)
-    print('Training performance at %ith epoch --- training lose: %f, test loss: %f'
+    print('Training performance at %ith epoch --- training lose: %.4E, test loss: %.4E'
           % (epoch + 1, train_loss, test_loss))
 
 profile_plot = os.path.join(DIR_DATA_REPO_THIS, "Training_convergence_plot_Model_{:s}_Training_Method_{:s})".
