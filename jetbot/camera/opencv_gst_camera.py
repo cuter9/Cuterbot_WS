@@ -50,7 +50,7 @@ class OpenCvGstCamera(CameraBase):
                 break
                 
     def _gst_str(self):
-        return 'nvarguscamerasrc sensor-mode=3 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (self.width, self.height)
+        return 'nvarguscamerasrc sensor-mode=3 ! video/x-raw(memory:NVMM), framerate=(fraction)%d/1 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (self.fps, self.width, self.height)
    
     def start(self):
         if not self.cap.isOpened():
