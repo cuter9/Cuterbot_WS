@@ -228,6 +228,8 @@ class TRTModel(object):
                     shape = (batch_size, ) + tuple(self.engine.get_binding_shape(idx))
                 else:
                     shape = tuple(self.engine.get_binding_shape(idx))
+            
+            # print("output shape : " , shape)
             device = torch_device_from_trt(self.engine.get_location(idx))
             output = torch.empty(size=shape, dtype=dtype, device=device)
             outputs[i] = output
@@ -257,17 +259,18 @@ class TRTModel(object):
             idx = self.engine.get_binding_index(name)
             bindings[idx] = int(output_buffers[i].data_ptr())
         
-        # self.context.execute(batch_size, bindings)
         # self.context.execute_async(batch_size, bindings, stream_handle = self.stream.cuda_stream)
-        self.context.execute_v2(bindings)
+        # self.context.execute_v2(batch_size, bindings)
+        # self.context.execute_v2(bindings)
         # self.stream.synchronize()
 
-        # if self.engine.has_implicit_batch_dimension:
-        outputs = [buffer.cpu().numpy() for buffer in output_buffers]
-        # else:
-        #    outputs = [np.squeeze(buffer.cpu().numpy(), axis=0) for buffer in output_buffers]
-        # outputs = [buffer.cpu().numpy() for buffer in output_buffers]
+        if self.engine.has_implicit_batch_dimension:
+            self.context.execute(batch_size, bindings)
+        else:
+            self.context.execute_v2(bindings)
         
+        outputs = [buffer.cpu().numpy() for buffer in output_buffers]
+   
         # self.stream.synchronize()
         
         return outputs
