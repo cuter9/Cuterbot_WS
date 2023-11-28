@@ -195,7 +195,7 @@ class Fleeter(traitlets.HasTraits):
             self.mean_view = 0.8 * (bbox[2] - bbox[0]) + 0.2 * self.mean_view_prev
             self.e_view = self.target_view - self.mean_view
             
-            if np.abs(self.e_view/self.target_view) <= 0.1:
+            if np.abs(self.e_view/self.target_view) > 0.1:
                 self.speed = self.speed +  self.speed_gain * self.e_view + self.speed_dev * (self.e_view - self.e_view_prev)
             self.road_cruiser.speed = self.speed
 

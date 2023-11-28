@@ -175,8 +175,7 @@ class FleeterTRT(traitlets.HasTraits):
         # print(self.detections)
         
         # draw all detections on image
-        for det in self.detections[0]:
-            
+        for det in self.detections[0]:           
             bbox = det['bbox']
             cv2.rectangle(self.current_image, (int(width * bbox[0]), int(height * bbox[1])),
                           (int(width * bbox[2]), int(height * bbox[3])), (255, 0, 0), 2)
@@ -193,8 +192,8 @@ class FleeterTRT(traitlets.HasTraits):
             
             self.mean_view = 0.8 * (bbox[2] - bbox[0]) + 0.2 * self.mean_view_prev
             self.e_view = self.target_view - self.mean_view
-            if np.abs(self.e_view/self.target_view) <= 0.1:
-                self.speed = self.speed +  self.speed_gain * self.e_view + self.speed_dev * (self.e_view - self.e_view_prev)
+            if np.abs(self.e_view/self.target_view) > 0.1:
+                self.speed = self.speed + self.speed_gain * self.e_view + self.speed_dev * (self.e_view - self.e_view_prev)
             self.road_cruiser.speed = self.speed
 
             self.mean_view_prev =  self.mean_view
