@@ -73,7 +73,10 @@ class RoadCruiserTRT(traitlets.HasTraits):
         # std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
         image = PIL.Image.fromarray(image)
         # resize the cam captured image to (224, 224) for optimal resnet model inference
-        image = image.resize((224, 224))
+        if self.type_cruiser_model == 'inception':
+            image = image.resize((299, 299))
+        else:
+            image = image.resize((224, 224))
         image = transforms.functional.to_tensor(image).to(self.device).half()
         # image = transforms.functional.to_tensor(image).to(self.device)
         image.sub_(mean[:, None, None]).div_(std[:, None, None])
