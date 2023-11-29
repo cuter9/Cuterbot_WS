@@ -27,7 +27,7 @@ class RoadCruiser(traitlets.HasTraits):
         super().__init__()
         self.cruiser_model_str = cruiser_model
         self.cruiser_model = getattr(torchvision.models, cruiser_model)(pretrained=False)
-        self.type_cruiser_model = type_cruiser_model[0]
+        self.type_cruiser_model = type_cruiser_model
         if self.type_cruiser_model == 'mobilenet':
             self.cruiser_model.classifier[3] = torch.nn.Linear(self.cruiser_model.classifier[3].in_features, 2)
             # self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_' + cruiser_model + '.pth'))
