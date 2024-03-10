@@ -21,7 +21,7 @@ sudo usermod -aG i2c $USER
 # Make swapfile
 cd
 sudo swapoff -a
-sudo fallocate -l 10G /var/swapfile
+sudo fallocate -l 4G /var/swapfile
 sudo chmod 600 /var/swapfile
 sudo mkswap /var/swapfile
 sudo swapon /var/swapfile
@@ -46,7 +46,7 @@ sudo -H python3 -m pip install pillow
 
 # Install jtop
 echo -e "\e[100m Install jtop \e[0m"
-sudo -H python3 -m pip install jetson-stats 
+sudo -H python3 -m pip install jetson-stats
 
 cd $HOME
 # Install the pre-built TensorFlow pip wheel
@@ -54,6 +54,8 @@ echo -e "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
 sudo pip3 install tensorflow-2.6.5-cp38-cp38-linux_aarch64.whl
 
 # Install the pre-built PyTorch pip wheel 
+# download pytorch and torchvision from https://github.com/Qengineering/PyTorch-Jetson-Nano?tab=readme-ov-file
+# and guide from https://qengineering.eu/install-pytorch-on-jetson-nano.html
 echo -e "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
 sudo pip3 install torch-1.13.0a0+git7c98e70-cp38-cp38-linux_aarch64.whl
 
