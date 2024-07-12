@@ -129,6 +129,17 @@ RUN cd ${TORCH2TRT_REPO_DIR} && \
     cd torch2trt && \
     python3 setup.py install
 
+# ==================================
+# INSTALL JETBOT DEPENDENCIES QWIIC
+# ==================================
+ENV QWIIC_DIR=/opt/Qwiic_Py
+ENV QWIIC_I2C_DIR=/opt/Qwiic_Py/qwiic_i2c
+RUN cd /opt && git clone --recurse-submodules https://github.com/sparkfun/Qwiic_Py.git 
+RUN cd ${QWIIC_DIR}/qwiic/drivers && rm -rf qwiic_as6212 qwiic_kx13x && \
+    cd ${QWIIC_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl && \
+    cd ${QWIIC_I2C_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl && \
+    cd /opt && rm -rf Qwiic_Py
+
 
 # ==============
 # INSTALL JETBOT
