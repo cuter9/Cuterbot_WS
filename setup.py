@@ -6,10 +6,9 @@ from setuptools import setup, find_packages, Extension
 def build_libs():
     subprocess.call(['cmake', '.'])
     subprocess.call(['make'])
-    
+
 
 build_libs()
-
 
 setup(
     name='jetbot',
