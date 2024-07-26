@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="cuterbot@192.168.1.108" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" serverName="cuterbot@192.168.1.111:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="cuterbot@192.168.1.108">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/cuterbot/Cuterbot_Demo" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="cuterbot@192.168.1.111:22 password">
         <serverdata>
           <mappings>
             <mapping deploy="/home/cuterbot/Cuterbot_Demo" local="$PROJECT_DIR$" web="/" />
