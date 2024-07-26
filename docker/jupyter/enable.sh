@@ -19,15 +19,15 @@ then
 	    --volume /dev/bus/usb:/dev/bus/usb \
 	    --volume /tmp/argus_socket:/tmp/argus_socket \
 	    -p 8888:8888 \
-	    -v $WORKSPACE:/workspace \
+	    -v "$WORKSPACE":/workspace \
       -v /tmp/.X11-unix:/tmp/.X11-unix \
-      -v $HOME/.Xauthority:/root/.Xauthority \
+      -v "$HOME"/.Xauthority:/root/.Xauthority \
 	    --workdir /workspace \
 	    --name=jetbot_jupyter \
-	    --memory-swap=$JETBOT_JUPYTER_MEMORY_SWAP \
-	    --env JETBOT_DEFAULT_CAMERA=$JETBOT_CAMERA \
-      --env DISPLAY=$DISPLAY \
-	    $JETBOT_DOCKER_REMOTE/jetbot:jupyter-$JETBOT_VERSION-$L4T_VERSION
+	    --memory-swap="$JETBOT_JUPYTER_MEMORY_SWAP" \
+	    --env JETBOT_DEFAULT_CAMERA="$JETBOT_CAMERA" \
+      --env DISPLAY="$DISPLAY" \
+	    "$JETBOT_DOCKER_REMOTE"/jetbot:jupyter-"$JETBOT_VERSION"-"$L4T_VERSION"
 
 else
 
@@ -40,15 +40,15 @@ else
 	    --volume /dev/bus/usb:/dev/bus/usb \
 	    --volume /tmp/argus_socket:/tmp/argus_socket \
 	    -p 8888:8888 \
-	    -v $WORKSPACE:/workspace \
+	    -v "$WORKSPACE":/workspace \
       -v /tmp/.X11-unix:/tmp/.X11-unix \
-      -v $HOME/.Xauthority:/root/.Xauthority \
+      -v "$HOME"/.Xauthority:/root/.Xauthority \
 	    --workdir /workspace \
 	    --name=jetbot_jupyter \
-	    --memory=$JETBOT_JUPYTER_MEMORY \
-	    --memory-swap=$JETBOT_JUPYTER_MEMORY_SWAP \
-	    --env JETBOT_DEFAULT_CAMERA=$JETBOT_CAMERA \
-      --env DISPLAY=$DISPLAY \
-	    $JETBOT_DOCKER_REMOTE/jetbot:jupyter-$JETBOT_VERSION-$L4T_VERSION
+	    --memory="$JETBOT_JUPYTER_MEMORY" \
+	    --memory-swap="$JETBOT_JUPYTER_MEMORY_SWAP" \
+	    --env JETBOT_DEFAULT_CAMERA="$JETBOT_CAMERA" \
+      --env DISPLAY="$DISPLAY" \
+	    "$JETBOT_DOCKER_REMOTE"/jetbot:jupyter-"$JETBOT_VERSION"-$L4T_VERSION
 
 fi

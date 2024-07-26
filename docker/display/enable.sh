@@ -4,8 +4,8 @@ sudo docker run -it -d \
     --network host \
     --privileged \
     --name=jetbot_display \
-    --env DISPLAY=$DISPLAY \
+    --env DISPLAY="$DISPLAY" \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v $HOME/.Xauthority:/root/.Xauthority \
+    -v "$HOME"/.Xauthority:/root/.Xauthority \
     -v /run/jtop.sock:/run/jtop.sock \
-    $JETBOT_DOCKER_REMOTE/jetbot:display-$JETBOT_VERSION-$L4T_VERSION
+    "$JETBOT_DOCKER_REMOTE"/jetbot:display-"$JETBOT_VERSION"-"$L4T_VERSION"
