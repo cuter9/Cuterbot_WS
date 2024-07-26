@@ -123,6 +123,7 @@ RUN apt install -y python3-smbus && pip3 install pyzmq
 # =================
 # INSTALL TORCH2TRT
 # =================
+
 ENV TORCH2TRT_REPO_DIR=/opt/
 RUN cd ${TORCH2TRT_REPO_DIR} && \
     git clone https://github.com/NVIDIA-AI-IOT/torch2trt && \
@@ -144,7 +145,7 @@ RUN cd ${QWIIC_DIR}/qwiic/drivers && rm -rf qwiic_as6212 qwiic_kx13x && \
 # ==============
 # INSTALL JETBOT
 # ==============
-RUN python3 -m pip install pyserial
+RUN python3 -m pip install pyserial pandas jetson-stats
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
 RUN cd ${JETBOT_REPO_DIR} && python3 setup.py install
