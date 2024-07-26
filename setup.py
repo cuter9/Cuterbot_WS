@@ -20,6 +20,6 @@ setup(
         'Adafruit_MotorHat',
         'Adafruit-SSD1306',
     ],
-    package_data={'jetbot': ['ssd_tensorrt/*.so', 'yolo_tensorrt/*.so']},
+    package_data={'jetbot_v1': ['ssd_tensorrt/*.so', 'yolo_tensorrt/*.so']},
 )
 #        'sparkfun-qwiic'
