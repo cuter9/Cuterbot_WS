@@ -25,8 +25,9 @@ from jtop import jtop
 BOARD = 1
 GPU = 2
 CPU = 3
-I2C_BUS = 6     # jetbot i2c bus no and address of ina3221
+I2C_BUS = 6  # jetbot i2c bus no and address of ina3221
 I2C_ADDRESS = 0x40
+
 
 class nano_states:
     def __init__(self):
@@ -39,32 +40,33 @@ class nano_states:
             pwr_sensor = self.jetson.power
             # bus_voltage = self.pwr_sensor['tot']['volt']/1000
             # shunt_voltage = self.pwr_sensor['tot']['curr']/1000
-            in_current = pwr_sensor['tot']['curr']/1000
-            in_voltage = pwr_sensor['tot']['volt']/1000
-            in_power = pwr_sensor['tot']['power']/1000
+            in_current = pwr_sensor['tot']['curr'] / 1000
+            in_voltage = pwr_sensor['tot']['volt'] / 1000
+            in_power = pwr_sensor['tot']['power'] / 1000
             return {"in_volt": in_voltage,
                     "in_current": in_current,
                     "in_pwr": in_power}
 
+
 class jetbot_states:
     def __init__(self):
-        self.pwr_sensor = INA3221(twi=I2C_BUS, force=True, addr=I2C_ADDRESS)    # force : force to read ic2 data
+        self.pwr_sensor = INA3221(twi=I2C_BUS, force=True, addr=I2C_ADDRESS)  # force : force to read ic2 data
 
     @property
     def pwr_states(self, channel=BOARD):
-
-        bus_voltage = self.pwr_sensor.getBusVoltage_V(channel)          # in V
-        shunt_voltage = self.pwr_sensor.getShuntVoltage_mV(channel)     # in mV
+        bus_voltage = self.pwr_sensor.getBusVoltage_V(channel)  # in V
+        shunt_voltage = self.pwr_sensor.getShuntVoltage_mV(channel)  # in mV
         # minus is to get the "sense" right.   - means the battery is charging, + that it is discharging
-        in_current = self.pwr_sensor.getCurrent_mA(channel)     # in mA
+        in_current = self.pwr_sensor.getCurrent_mA(channel)  # in mA
 
-        in_voltage = bus_voltage + (shunt_voltage / 1000)       # in Volt
-        in_power = in_current * in_voltage / 1000               # in Watt
+        in_voltage = bus_voltage + (shunt_voltage / 1000)  # in Volt
+        in_power = in_current * in_voltage / 1000  # in Watt
         return {"in_volt": in_voltage,
                 "in_current": in_current,
                 "shunt_volt": shunt_voltage,
                 "bus_volt": bus_voltage,
                 "in_pwr": in_power}
+
 
 '''
 if __name__ == '__main__':
@@ -95,4 +97,3 @@ if __name__ == '__main__':
     print("Current:  %3.2f mA" % pwr_state["in_current"])
     print()
 '''
-    

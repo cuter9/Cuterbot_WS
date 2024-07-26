@@ -51,7 +51,7 @@ if 60 in addresses:
     disp1 = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1,
                                             gpio=1)  # setting gpio to 1 is hack to avoid platform detection
     try:
-        # Initiallize Display
+        # Initialize Display
         disp1.begin()
 
         # Clear display.
@@ -91,7 +91,7 @@ if 60 in addresses:
 elif 61 in addresses:
     disp2 = qwiic.QwiicMicroOled()
     try:
-        # Initiallize Display
+        # Initialize Display
         disp2.begin()
 
         # Display Flame (set to buffer in begin function)
@@ -121,7 +121,7 @@ while True:
     # Checks for Ethernet Connection
     try:
         eth = get_ip_address('eth0')
-        if eth != None:
+        if eth is not None:
             a = a + 1
     except Exception as e:
         print(e)
@@ -129,7 +129,7 @@ while True:
     # Checks for WiFi Connection on wlan0
     try:
         wlan0 = get_ip_address('wlan0')
-        if wlan0 != None:
+        if wlan0 is not None:
             a = a + 2
     except Exception as e:
         print(e)
@@ -137,7 +137,7 @@ while True:
     # Checks for WiFi Connection on wlan1
     try:
         wlan1 = get_ip_address('wlan1')
-        if wlan1 != None:
+        if wlan1 is not None:
             a = a + 4
     except Exception as e:
         print(e)
