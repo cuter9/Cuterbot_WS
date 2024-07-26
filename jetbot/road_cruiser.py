@@ -191,4 +191,4 @@ class RoadCruiser(HasTraits):
         cruiser_model_str = self.cruiser_model.split("/")[-1].split('.')[0]
         plot_exec_time(self.execution_time_rc[1:], model_name, cruiser_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
-        plt.show()
+        # plt.show()

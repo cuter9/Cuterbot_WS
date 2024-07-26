@@ -254,4 +254,4 @@ class Fleeter(traitlets.HasTraits):
         follower_model_name = "fleet controller model"
         plot_exec_time(self.execution_time[1:], follower_model_name, self.follower_model.split(".")[0])
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
-        plt.show()
+        # plt.show()

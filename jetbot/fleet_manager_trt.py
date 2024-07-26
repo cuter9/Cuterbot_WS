@@ -223,4 +223,4 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
         follower_model_str = self.follower_model.split(".")[0]
         plot_exec_time(self.execution_time_fm[1:], follower_model_name, follower_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
-        plt.show()
+        # plt.show()

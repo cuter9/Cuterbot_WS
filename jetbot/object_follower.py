@@ -222,7 +222,7 @@ class ObjectFollower(ObjectDetector):
         model_name_str = self.follower_model.split('/')[-1].split('.')[0]
         plot_exec_time(self.execution_time_of[1:], model_name, model_name_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split('.')[0])
-        plt.show()
+        # plt.show()
 
 
 class Avoider(object):
