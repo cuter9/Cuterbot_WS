@@ -10,13 +10,13 @@ import time
 
 SudoPass = 'cuterbot'
 
+
 def capture_frames(cam):
-        
     while True:
-            
+
         if cam.stop_thread.is_set():
             break
-            
+
         # start = time.process_time()            
         nc = 0
         re, image = cam.cap.read()
@@ -35,14 +35,12 @@ def capture_frames(cam):
             else:
                 print("No frame was captureed for a while, check the cam capture function works normally , \
                         and the cam capture trhread will be terminated!")
-                break            
-
+                break
 
 
 class OpenCvGstCamera(CameraBase):
-    
     value = traitlets.Any()
-    
+
     # config
     # width = traitlets.Integer(default_value=224).tag(config=True)
     # height = traitlets.Integer(default_value=224).tag(config=True)
@@ -51,6 +49,7 @@ class OpenCvGstCamera(CameraBase):
     fps = traitlets.Integer(default_value=30).tag(config=True)
     capture_width = traitlets.Integer(default_value=816).tag(config=True)
     capture_height = traitlets.Integer(default_value=616).tag(config=True)
+
     # capture_width = traitlets.Integer(default_value=1920).tag(config=True)
     # capture_height = traitlets.Integer(default_value=1080).tag(config=True)
     # cap_time = traitlets.Float(default_value=0).tag(config=True)
@@ -80,12 +79,12 @@ class OpenCvGstCamera(CameraBase):
         atexit.register(self.stop)
 
     def _capture_frames(self):
-        
+
         while True:
-            
+
             if self.stop_thread.is_set():
                 break
-            
+
             # start = time.process_time()            
             nc = 0
             re, image = self.cap.read()
@@ -104,12 +103,13 @@ class OpenCvGstCamera(CameraBase):
                 else:
                     print("No frame was captureed for a while, check the cam capture function works normally , \
                           and the cam capture trhread will be terminated!")
-                    break            
-                
+                    break
+
     def _gst_str(self):
         # return 'nvarguscamerasrc sensor-mode=3 ! video/x-raw(memory:NVMM), width=%d, height=%d, format=(string)NV12, framerate=(fraction)%d/1 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % \
         #   (self.capture_width, self.capture_height, self.fps, self.width, self.height)
-        return 'nvarguscamerasrc sensor-mode=3 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (self.width, self.height)
+        return 'nvarguscamerasrc sensor-mode=3 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (
+        self.width, self.height)
 
     def start(self):
         if not self.cap.isOpened():
@@ -124,24 +124,23 @@ class OpenCvGstCamera(CameraBase):
         if hasattr(self, 'thread'):
             self.stop_thread.set()
             self.thread.join()
-            print("Capture thread is stopped") 
-      
+            print("Capture thread is stopped")
+
         if hasattr(self, 'cap'):
             self.cap.release()
             print("Camera operation is released ! ")
- #           os.popen("sudo -S %s"%('service nvargus-daemon restart'), 'w').write(SudoPass)
- #           print("service nvargus-daemon is restarted ! ")  
 
-        
-        # if hasattr(self, 'thread'):
-        #   self.thread.join(timeout=2.0)
-        #    print("Capture thread is stopped") 
+    #           os.popen("sudo -S %s"%('service nvargus-daemon restart'), 'w').write(SudoPass)
+    #           print("service nvargus-daemon is restarted ! ")
 
-            
+    # if hasattr(self, 'thread'):
+    #   self.thread.join(timeout=2.0)
+    #    print("Capture thread is stopped")
+
     def restart(self):
         self.stop()
         self.start()
-        
+
     @staticmethod
     def instance(*args, **kwargs):
         return OpenCvGstCamera(*args, **kwargs)
