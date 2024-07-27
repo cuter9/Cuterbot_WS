@@ -180,15 +180,15 @@ while True:
             # IP address
             if a == 1:
                 draw.text((x, top), "eth0: " + str(eth), font=font, fill=255)
-                draw.text((x, top + 8), "Vin: %.2f V" % IN_VOLT + "  Pin: %.2f W" % IN_PWR, font=font, fill=255)
+                draw.text((x, top + 8), "Vin: %.2f V" % IN_VOLT + " Pin:%.2f W" % IN_PWR, font=font, fill=255)
             elif a == 2:
-                draw.text((x, top), "Vin: %.2f V" % IN_VOLT + "  Pin: %.2f W" % IN_PWR, font=font, fill=255)
+                draw.text((x, top), "Vin: %.2f V" % IN_VOLT + " Pin: %.2f W" % IN_PWR, font=font, fill=255)
                 draw.text((x, top + 8), "wlan0: " + str(wlan0), font=font, fill=255)
             elif a == 3:
                 draw.text((x, top), "eth0: " + str(eth), font=font, fill=255)
                 draw.text((x, top + 8), "wlan0: " + str(wlan0), font=font, fill=255)
             elif a == 4:
-                draw.text((x, top), "Vin: %.2f V" % IN_VOLT + "  Pin: %.2f W" % IN_PWR, font=font, fill=255)
+                draw.text((x, top), "Vin: %.2f V" % IN_VOLT + " Pin: %.2f W" % IN_PWR, font=font, fill=255)
                 draw.text((x, top + 8), "wlan1: " + str(wlan1), font=font, fill=255)
             elif a == 5:
                 draw.text((x, top), "eth0: " + str(eth), font=font, fill=255)
