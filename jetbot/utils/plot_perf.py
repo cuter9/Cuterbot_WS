@@ -5,7 +5,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 font = {'fontweight': 'normal', 'fontsize': 12}
-font_title = {'fontweight': 'medium', 'fontsize': 20}
+font_title = {'fontweight': 'medium', 'fontsize': 18}
 
 
 def plot_exec_time(execution_time, model_name, model_str):
