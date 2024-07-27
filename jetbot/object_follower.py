@@ -27,10 +27,7 @@ import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
-import time
 
-# from jetbot import ObjectDetector
-# from jetbot.object_detection_yolo import ObjectDetector_YOLO
 from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg

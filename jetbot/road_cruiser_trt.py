@@ -1,15 +1,11 @@
-import os
 import time
-
 import PIL.Image
 
 import numpy as np
 import torch
-import torchvision
 import torchvision.transforms as transforms
 import traitlets
 from traitlets import HasTraits, Unicode, Float
-# import torchvision.models as models
 from torch2trt import TRTModule
 
 from jetbot import Camera
