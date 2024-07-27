@@ -50,19 +50,20 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
 # plot the statistical histogram of learning time in terms of epoch and sample
 def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method):
     # ----- training time statistics in terms of epoch
+    lt_epoch[0] -= lt_sample[0]
     learning_time_epoch = np.array(lt_epoch)
     mean_lt_epoch = np.mean(learning_time_epoch)
     max_lt_epoch = np.amax(learning_time_epoch)
-    min_lt_epoch = np.amax(learning_time_epoch)
+    min_lt_epoch = np.amin(learning_time_epoch)
     print(
         "mean learning time per epoch: {:.3f} s, maximum epoch learning time: {:.3f} s, minimum epoch learning time: {:.3f} s".
         format(mean_lt_epoch, max_lt_epoch, min_lt_epoch))
 
     # ----- training time statistics in terms of sample
-    learning_time_sample = np.array(lt_sample)
+    learning_time_sample = np.array(lt_sample[1:])
     mean_lt_sample = np.mean(learning_time_sample)
     max_lt_sample = np.amax(learning_time_sample)
-    min_lt_sample = np.amax(learning_time_sample)
+    min_lt_sample = np.amin(learning_time_sample)
     print(
         "mean learning time per sample: {:.3f} s, maximum sample learning time: {:.3f} s, minimum sample learning time: {:.3f} s".
         format(mean_lt_sample, max_lt_sample, min_lt_sample))
