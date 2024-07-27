@@ -22,7 +22,7 @@ def plot_exec_time(execution_time, model_name, model_str):
         % (model_name, float(mean_execute_time), float(max_execute_time), float(min_execute_time)))
 
     # fig = plt.figure()
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(12, 6))
     # ax = fig.add_subplot()
     nbin = 150
     sbin = (max_execute_time * 1.2 - min_execute_time * 0.8) / nbin
