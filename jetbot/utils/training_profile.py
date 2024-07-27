@@ -60,7 +60,8 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
         format(mean_lt_epoch, max_lt_epoch, min_lt_epoch))
 
     # ----- training time statistics in terms of sample
-    learning_time_sample = np.array(lt_sample.sort()[10])
+    lt_sample.sort(reverse = True)
+    learning_time_sample = np.array(lt_sample[10:])
     mean_lt_sample = np.mean(learning_time_sample)
     max_lt_sample = np.amax(learning_time_sample)
     min_lt_sample = np.amin(learning_time_sample)
