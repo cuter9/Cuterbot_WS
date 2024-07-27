@@ -21,7 +21,6 @@
 # In[ ]:
 
 from queue import Empty
-import torch.nn.functional as F
 import cv2
 import numpy as np
 import traitlets
@@ -29,69 +28,72 @@ import traitlets
 from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg
-from jetbot import ObjectDetector
 from jetbot import RoadCruiser
+from jetbot import ObjectFollower
 from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
+from traitlets import Float, Bool, Any
 
 import time
 
 
-class Fleeter(traitlets.HasTraits):
-    cap_image = traitlets.Any()
-    label = traitlets.Integer(default_value=1).tag(config=True)
-    label_text = traitlets.Unicode(default_value='').tag(config=True)
-    speed = traitlets.Float(default_value=0.10).tag(config=True)
-    speed_gain = traitlets.Float(default_value=0.01).tag(config=True)
-    speed_dev = traitlets.Float(default_value=0.5).tag(config=True)
-    turn_gain = traitlets.Float(default_value=0.3).tag(config=True)
-    steering_bias = traitlets.Float(default_value=0.0).tag(config=True)
-    blocked = traitlets.Float(default_value=0).tag(config=True)
-    target_view = traitlets.Float(default_value=0.6).tag(config=True)
-    mean_view = traitlets.Float(default_value=0).tag(config=True)
-    e_view = traitlets.Float(default_value=0).tag(config=True)
-    is_dectecting = traitlets.Bool(default_value=True).tag(config=True)
-    is_dectected = traitlets.Bool(default_value=False).tag(config=True)
+def object_center_detection(det):
+    """Computes the center x, y coordinates of the object"""
+    # print(self.matching_detections)
+    bbox = det['bbox']
+    center_x = (bbox[0] + bbox[2]) / 2.0 - 0.5
+    center_y = (bbox[1] + bbox[3]) / 2.0 - 0.5
+    object_center = (center_x, center_y)
+    return object_center
 
-    def __init__(self, follower_model='ssd_mobilenet_v2_coco_onnx.engine', type_follower_model="SSD",
-                 cruiser_model='resnet18', type_cruiser_model='resnet', conf_th=0.5):
 
-        self.follower_model = follower_model
-        self.type_follower_model = type_follower_model
-        self.conf_th = conf_th
-        # self.obstacle_detector = Avoider(model_params=self.avoider_model)
-        if (self.type_follower_model == "SSD" or
-                self.type_follower_model == "SSD_FPN" or
-                self.type_follower_model == "YOLO" or
-                self.type_follower_model == "YOLO_v7"):
-            # from jetbot import ObjectDetector
-            self.object_detector = ObjectDetector(self.follower_model, type_model=self.type_follower_model,
-                                                  conf_th=self.conf_th)
-        # elif type_model == "YOLO":
-        #    from jetbot.object_detection_yolo import ObjectDetector_YOLO
-        #    self.object_detector = ObjectDetector_YOLO(self.follower_model)
+def norm(vec):
+    """Computes the length of the 2D vector"""
+    return np.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
-        self.cruiser_model = cruiser_model
-        self.type_cruiser_model = type_cruiser_model
-        self.road_cruiser = RoadCruiser(cruiser_model=self.cruiser_model, type_cruiser_model=self.type_cruiser_model)
 
-        # self.robot = self.road_cruiser.robot
-        self.robot = Robot.instance()
+class Fleeter(ObjectFollower, RoadCruiser):
+    cap_image = Any()
+    conf_th = Float(default_value=0.5).tag(config=True)
+    # label = Integer(default_value=1).tag(config=True)
+    # label_text = Unicode(default_value='').tag(config=True)
+    speed_fm = Float(default_value=0.10).tag(config=True)
+    speed_gain_fm = Float(default_value=0.01).tag(config=True)
+    speed_dev_fm = Float(default_value=0.5).tag(config=True)
+    turn_gain_fm = Float(default_value=0.3).tag(config=True)
+    steering_bias_fm = Float(default_value=0.0).tag(config=True)
+    # blocked = Float(default_value=0).tag(config=True)
+    target_view = Float(default_value=0.6).tag(config=True)
+    mean_view = Float(default_value=0).tag(config=True)
+    e_view = Float(default_value=0).tag(config=True)
+    # is_detecting = Bool(default_value=True).tag(config=True)
+    is_detected = Bool(default_value=False).tag(config=True)
+
+    def __init__(self, init_sensor_fm=False):
+
+        # causing the  re-instantiation error of camera and robot motor,
+        # which should be avoided when design the parent classes
+        ObjectFollower.__init__(self, init_sensor_of=False)
+        RoadCruiser.__init__(self, init_sensor_rc=False)
+
         self.detections = None
         self.matching_detections = None
         self.object_center = None
         self.closest_object = None
-        self.is_dectecting = True
-        self.is_dectected = False
+        self.is_detecting = True
+        self.is_detected = False
+        self.is_loaded = False
 
-        # Camera instance would be better to put after all models instantiation
-        # self.capturer = Camera()
-        self.capturer = self.road_cruiser.camera
-        self.img_width = self.capturer.width
-        self.img_height = self.capturer.height
-        self.cap_image = np.empty((self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
-        self.current_image = np.empty((self.img_height, self.img_width, 3))
+        self.robot = None
+        self.capturer = None
+        if init_sensor_fm:
+            self.robot = Robot.instance()
+            self.capturer = Camera()
+            self.img_width = self.capturer.width
+            self.img_height = self.capturer.height
+            self.cap_image = np.empty(shape=(self.img_height, self.img_width, 3), dtype=np.uint8).tobytes()
+            self.current_image = np.empty((self.img_height, self.img_width, 3))
 
-        self.default_speed = self.speed
+        self.default_speed = self.speed_fm
         self.detect_duration_max = 10
         self.no_detect = 0
         self.target_view = 0.5
@@ -100,76 +102,35 @@ class Fleeter(traitlets.HasTraits):
         self.e_view = 0
         self.e_view_prev = 0
 
-        self.execution_time = []
+        self.execution_time_fm = []
         # self.fps = []
 
-    def run_objects_detection(self):
-        # self.image = self.capturer.value
-        # print(self.image[1][1], np.shape(self.image))
-        self.detections = self.object_detector(self.current_image)
-        self.matching_detections = [d for d in self.detections[0] if d['label'] == int(self.label)]
-
-        if int(self.label) >= 0:
-            if self.type_follower_model == "SSD" or self.type_follower_model == "SSD_FPN":
-                self.label_text = get_cls_dict_ssd('coco')[int(self.label)]
-            elif self.type_follower_model == "YOLO" or self.type_follower_model == "YOLO_v7":
-                self.label_text = get_cls_dict_yolo('coco')[int(self.label)]
-        else:
-            self.label_text = " Not defined !"
-        # print(int(self.label), "\n", self.matching_detections)
-
-    def object_center_detection(self, det):
-        """Computes the center x, y coordinates of the object"""
-        # print(self.matching_detections)
-        bbox = det['bbox']
-        center_x = (bbox[0] + bbox[2]) / 2.0 - 0.5
-        center_y = (bbox[1] + bbox[3]) / 2.0 - 0.5
-        object_center = (center_x, center_y)
-        return object_center
-
-    def norm(self, vec):
-        """Computes the length of the 2D vector"""
-        return np.sqrt(vec[0] ** 2 + vec[1] ** 2)
-
-    def closest_object_detection(self):
-        """Finds the detection closest to the image center"""
-        closest_detection = None
-        if len(self.matching_detections) != 0:
-            for det in self.matching_detections:
-                if closest_detection is None:
-                    closest_detection = det
-                elif self.norm(self.object_center_detection(det)) < self.norm(
-                        self.object_center_detection(closest_detection)):
-                    closest_detection = det
-
-        self.closest_object = closest_detection
-
-    def execute_fleeting(self, change):
+    def execute_fm(self, change):
 
         # do object following
         start_time = time.process_time()
         self.execute(change)
         end_time = time.process_time()
         # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
-        self.execution_time.append(end_time - start_time)
+        self.execution_time_fm.append(end_time - start_time)
         # self.fps.append(1/(end_time - start_time))
 
         # if closest object is not detected and followed, do road cruising
-        if not self.is_dectected:
-            self.road_cruiser.execute(change)
-            self.speed = self.road_cruiser.speed
+        if not self.is_detected:
+            self.execute_rc(change)
+            self.speed_fm = self.speed_rc
 
-    def start_run(self, change):
+    def start_fm(self, change):
+        self.load_object_detector(change)  # load object detector function in object follower module
+        self.load_road_cruiser(change)  # load_road_cruiser function in road_cruiser_trt module
         self.capturer.unobserve_all()
+
         print("start running")
-        self.road_cruiser.execute({'new': self.capturer.value})
-        self.capturer.observe(self.execute_fleeting, names='value')
+        self.capturer.observe(self.execute_fm, names='value')
 
     def execute(self, change):
-        # print("start excution !")
+        # print("start execution !")
         self.current_image = change['new']
-        width = self.img_width
-        height = self.img_height
 
         # compute all detected objects
         self.run_objects_detection()
@@ -180,26 +141,26 @@ class Fleeter(traitlets.HasTraits):
         # draw all detections on image
         for det in self.detections[0]:
             bbox = det['bbox']
-            cv2.rectangle(self.current_image, (int(width * bbox[0]), int(height * bbox[1])),
-                          (int(width * bbox[2]), int(height * bbox[3])), (255, 0, 0), 2)
+            cv2.rectangle(self.current_image, (int(self.img_width * bbox[0]), int(self.img_height * bbox[1])),
+                          (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (255, 0, 0), 2)
 
         # select detections that match selected class label
         # get detection closest to center of field of view and draw it
         cls_obj = self.closest_object
         if cls_obj is not None:
-            self.is_dectected = True
+            self.is_detected = True
             self.no_detect = self.detect_duration_max  # set max detection no to prevent temperary loss of object detection
             bbox = cls_obj['bbox']
-            cv2.rectangle(self.current_image, (int(width * bbox[0]), int(height * bbox[1])),
-                          (int(width * bbox[2]), int(height * bbox[3])), (0, 255, 0), 5)
+            cv2.rectangle(self.current_image, (int(self.img_width * bbox[0]), int(self.img_height * bbox[1])),
+                          (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (0, 255, 0), 5)
 
             self.mean_view = 0.8 * (bbox[2] - bbox[0]) + 0.2 * self.mean_view_prev
             self.e_view = self.target_view - self.mean_view
 
             if np.abs(self.e_view / self.target_view) > 0.1:
-                self.speed = self.speed + self.speed_gain * self.e_view + self.speed_dev * (
+                self.speed_fm = self.speed_fm + self.speed_gain_fm * self.e_view + self.speed_dev_fm * (
                         self.e_view - self.e_view_prev)
-            self.road_cruiser.speed = self.speed
+            # self.speed_rc = self.speed_fm
 
             self.mean_view_prev = self.mean_view
             self.e_view_prev = self.e_view
@@ -209,7 +170,7 @@ class Fleeter(traitlets.HasTraits):
             if self.no_detect <= 0:  # if object is not detected for a duration, road cruising
                 self.mean_view = 0.0
                 self.mean_view_prev = 0.0
-                self.is_dectected = False
+                self.is_detected = False
                 self.cap_image = bgr8_to_jpeg(self.current_image)
                 return
 
@@ -220,10 +181,10 @@ class Fleeter(traitlets.HasTraits):
         # otherwise steer towards target
         else:
             # move robot forward and steer proportional target's x-distance from center
-            center = self.object_center_detection(cls_obj)
+            center = object_center_detection(cls_obj)
             self.robot.set_motors(
-                float(self.speed + self.turn_gain * center[0] + self.steering_bias),
-                float(self.speed - self.turn_gain * center[0] + self.steering_bias)
+                float(self.speed_fm + self.turn_gain_fm * center[0] + self.steering_bias_fm),
+                float(self.speed_fm - self.turn_gain_fm * center[0] + self.steering_bias_fm)
             )
 
         # update image widget
@@ -231,7 +192,7 @@ class Fleeter(traitlets.HasTraits):
         # print("ok!")
         # return self.cap_image
 
-    def stop_run(self, change):
+    def stop_fm(self, change):
         from jetbot.utils import plot_exec_time
         print("start stopping!")
 
@@ -243,10 +204,12 @@ class Fleeter(traitlets.HasTraits):
         # self.road_cruiser.stop_cruising(change)
         # plot execution time of road cruiser model processing
         cruiser_model_name = "road cruiser model"
-        plot_exec_time(self.road_cruiser.execution_time[1:], cruiser_model_name, self.road_cruiser.cruiser_model_str)
+        cruiser_model_str = self.cruiser_model.split("/")[-1].split('.')[0]
+        plot_exec_time(self.execution_time_rc[1:], cruiser_model_name, cruiser_model_str)
 
         # plot execution time of fleet controller model processing
         follower_model_name = "fleet controller model"
-        plot_exec_time(self.execution_time[1:], follower_model_name, self.follower_model.split(".")[0])
+        follower_model_str = self.follower_model.split("/")[-1].split(".")[0]
+        plot_exec_time(self.execution_time_fm[1:], follower_model_name, follower_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
         # plt.show()

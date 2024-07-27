@@ -24,7 +24,7 @@ from queue import Empty
 import cv2
 import numpy as np
 import traitlets
-from traitlets import HasTraits, Unicode, Float, Integer, Bool, Any
+from traitlets import Float, Bool, Any
 
 from jetbot import Camera
 from jetbot import Robot
@@ -132,6 +132,7 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
         self.load_object_detector(change)  # load object detector function in object follower module
         self.load_road_cruiser(change)  # load_road_cruiser function in road_cruiser_trt module
         self.capturer.unobserve_all()
+
         print("start running")
         self.capturer.observe(self.execute_fm, names='value')
 
@@ -214,7 +215,7 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
 
         # plot execution time of fleet controller model processing
         follower_model_name = "fleet controller model"
-        follower_model_str = self.follower_model.split(".")[0]
+        follower_model_str = self.follower_model.split("/")[-1].split(".")[0]
         plot_exec_time(self.execution_time_fm[1:], follower_model_name, follower_model_str)
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])
         # plt.show()

@@ -16,9 +16,9 @@ from jetbot import Robot
 
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     if pretrained:
-        model = getattr(pth_models, pth_model_name)()
+        model = getattr(pth_models, pth_model_name)()       # for fine tuning
     else:
-        model = getattr(pth_models, pth_model_name)(pretrained=False)
+        model = getattr(pth_models, pth_model_name)(pretrained=False)   # for inferencig
     # ----- modify last layer for classification, and the model used in notebook should be modified too.
 
     if pth_model_name == 'mobilenet_v3_large':  # MobileNet
@@ -49,14 +49,14 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 class RoadCruiser(HasTraits):
     cruiser_model = Unicode(default_value='').tag(config=True)
     type_cruiser_model = Unicode(default_value='').tag(config=True)
-    speed_gain = Float(default_value=0.15).tag(config=True)
-    steering_gain = Float(default_value=0.08).tag(config=True)
-    steering_dgain = Float(default_value=1.5).tag(config=True)
-    steering_bias = Float(default_value=0.0).tag(config=True)
-    steering = Float(default_value=0.0).tag(config=True)
+    speed_rc = Float(default_value=0).tag(config=True)
+    speed_gain_rc = Float(default_value=0.15).tag(config=True)
+    steering_gain_rc = Float(default_value=0.08).tag(config=True)
+    steering_dgain_rc = Float(default_value=1.5).tag(config=True)
+    steering_bias_rc = Float(default_value=0.0).tag(config=True)
+    steering_rc = Float(default_value=0.0).tag(config=True)
     x_slider = Float(default_value=0).tag(config=True)
     y_slider = Float(default_value=0).tag(config=True)
-    speed = Float(default_value=0).tag(config=True)
     use_gpu = Unicode(default_value='gpu').tag(config=True)
 
     def __init__(self, init_sensor_rc=False):
@@ -153,18 +153,18 @@ class RoadCruiser(HasTraits):
         self.x_slider = x.item()
         self.y_slider = y.item()
 
-        self.speed = self.speed_gain
+        self.speed_rc = self.speed_gain_rc
 
         # angle = np.sqrt(xy)*np.arctan2(x, y)
         angle_1 = np.arctan2(x, y)
         self.angle = 0.5 * np.pi * np.tanh(0.5 * angle_1)
-        pid = self.angle * self.steering_gain + (self.angle - self.angle_last) * self.steering_dgain
+        pid = self.angle * self.steering_gain_rc + (self.angle - self.angle_last) * self.steering_dgain_rc
         self.angle_last = self.angle
 
-        self.steering = pid + self.steering_bias
+        self.steering = pid + self.steering_bias_rc
 
-        self.robot.left_motor.value = max(min(self.speed_gain + self.steering, 1.0), 0.0)
-        self.robot.right_motor.value = max(min(self.speed_gain - self.steering, 1.0), 0.0)
+        self.robot.left_motor.value = max(min(self.speed_gain_rc + self.steering, 1.0), 0.0)
+        self.robot.right_motor.value = max(min(self.speed_gain_rc - self.steering, 1.0), 0.0)
 
         end_time = time.process_time()
         # self.execution_time.append(end_time - start_time + self.camera.cap_time)
