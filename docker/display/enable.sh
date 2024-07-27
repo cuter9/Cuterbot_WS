@@ -9,3 +9,5 @@ sudo docker run -it -d \
     -v "$HOME"/.Xauthority:/root/.Xauthority \
     -v /run/jtop.sock:/run/jtop.sock \
     "$JETBOT_DOCKER_REMOTE"/jetbot:display-"$JETBOT_VERSION"-"$L4T_VERSION"
+
+sudo systemctl restart jtop.service
