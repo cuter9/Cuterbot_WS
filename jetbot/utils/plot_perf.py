@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib
 
 matplotlib.use("TkAgg")
-
 import matplotlib.pyplot as plt
 
 
@@ -23,6 +22,7 @@ def plot_exec_time(execution_time, model_name, model_str):
         "The execution time statistics of %s  ----- \n     Mean execution time of : %.4f sec.\n     Max execution time : %.4f sec.\n     Min execution time of : %.4f sec. " \
         % (model_name, mean_execute_time, max_execute_time, min_execute_time))
 
+    plt.clf()
     # fig = plt.figure()
     fig, ax = plt.subplots()
     # ax = fig.add_subplot()

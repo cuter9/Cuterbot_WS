@@ -4,9 +4,9 @@
 import numpy as np
 import os
 import matplotlib
-import matplotlib.pyplot as plt
 
 matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
 
 # dir_training_records = os.path.join(dir_depo, 'training records', TRAIN_MODEL)
 # os.makedirs(dir_training_records, exist_ok=True)
@@ -73,7 +73,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[0].set_xlabel('time of training in an epoch , sec.', fontdict=font)
     cf = np.floor(0.9 * min_lt_epoch)
     cc = np.ceil(1.1 * max_lt_epoch)
-    bins_epochs_time = np.arange(cf, cc, np.ceil((cc-cf)/50))
+    bins_epochs_time = np.arange(cf, cc, np.ceil((cc - cf) / 50))
     axh[0].hist(learning_time_epoch, bins=bins_epochs_time.tolist())
     axh[0].tick_params(axis='both', labelsize='large')
 
@@ -81,7 +81,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[1].set_xlabel('time for training a sample , sec.', fontdict=font)
     sf = np.floor(0.9 * min_lt_sample)
     sc = np.ceil(1.1 * max_lt_sample)
-    bins_samples_time = np.arange(sf, sc, np.ceil((sc-sf)/50))
+    bins_samples_time = np.arange(sf, sc, np.ceil((sc - sf) / 50))
     axh[1].hist(learning_time_sample, bins=bins_samples_time.tolist())
     # axh[1].hist(learning_time_sample, bins=(0.01 * np.array(list(range(101)))).tolist())
     axh[1].tick_params(axis='both', labelsize='large')
