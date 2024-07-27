@@ -79,7 +79,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[0].tick_params(axis='both', labelsize='large')
 
     axh[1].set_ylabel('no. of sample', fontdict=font)
-    axh[1].set_xlabel('time for training a sample , sec.', fontdict=font)
+    axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
     sf = 0.9 * min_lt_sample
     sc = 1.1 * max_lt_sample
     bins_samples_time = np.arange(sf, sc, (sc - sf)/50)
