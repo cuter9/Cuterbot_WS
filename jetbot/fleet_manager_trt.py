@@ -198,7 +198,6 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
         # return self.cap_image
 
     def stop_fm(self, change):
-        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         print("start stopping!")
 

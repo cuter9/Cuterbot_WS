@@ -118,7 +118,6 @@ class RoadCruiserTRT(HasTraits):
         self.capturer.observe(self.execute_rc, names='value')
 
     def stop_rc(self, change):
-        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         # self.camera.unobserve(self.execute, names='value')
         self.capturer.unobserve_all()

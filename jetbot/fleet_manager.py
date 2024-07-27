@@ -232,7 +232,6 @@ class Fleeter(traitlets.HasTraits):
         # return self.cap_image
 
     def stop_run(self, change):
-        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         print("start stopping!")
 
@@ -242,11 +241,11 @@ class Fleeter(traitlets.HasTraits):
         self.capturer.stop()
 
         # self.road_cruiser.stop_cruising(change)
-        # plot exection time of road cruiser model processing
+        # plot execution time of road cruiser model processing
         cruiser_model_name = "road cruiser model"
         plot_exec_time(self.road_cruiser.execution_time[1:], cruiser_model_name, self.road_cruiser.cruiser_model_str)
 
-        # plot exection time of fleet controller model processing
+        # plot execution time of fleet controller model processing
         follower_model_name = "fleet controller model"
         plot_exec_time(self.execution_time[1:], follower_model_name, self.follower_model.split(".")[0])
         # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.follower_model.split(".")[0])

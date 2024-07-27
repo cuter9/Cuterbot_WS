@@ -206,7 +206,6 @@ class ObjectFollower(ObjectDetector):
         # return self.cap_image
 
     def stop_of(self, change):
-        import matplotlib.pyplot as plt
         from jetbot.utils import plot_exec_time
         print("stop running!")
         self.capturer.unobserve_all()
