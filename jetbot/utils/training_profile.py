@@ -75,18 +75,26 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[0].set_xlabel('time of training in an epoch , sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
     cc = 1.1 * max_lt_epoch
-    bins_epochs_time = np.arange(cf, cc, (cc - cf)/50)
+    bins_epochs_time = np.arange(cf, cc, (cc - cf)/100)
     axh[0].hist(learning_time_epoch, bins=bins_epochs_time.tolist())
     axh[0].tick_params(axis='both', labelsize='large')
+    props = dict(boxstyle='round', facecolor='wheat')
+    text_str_0 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
+                  % (float(mean_lt_epoch), float(max_lt_sample), float(min_lt_sample)))
+    axh[0].text(0.55, 0.85, text_str_0, transform=axh[0].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     axh[1].set_ylabel('no. of sample', fontdict=font)
     axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
     sf = 0.9 * min_lt_sample
     sc = 1.1 * max_lt_sample
-    bins_samples_time = np.arange(sf, sc, (sc - sf)/50)
+    bins_samples_time = np.arange(sf, sc, (sc - sf)/100)
     axh[1].hist(learning_time_sample, bins=bins_samples_time.tolist())
     # axh[1].hist(learning_time_sample, bins=(0.01 * np.array(list(range(101)))).tolist())
     axh[1].tick_params(axis='both', labelsize='large')
+    props = dict(boxstyle='round', facecolor='wheat')
+    text_str_1 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
+                  % (float(mean_lt_epoch), float(max_lt_sample), float(min_lt_sample)))
+    axh[1].text(0.55, 0.85, text_str_1, transform=axh[1].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     fig_2.canvas.draw()
     fig_2.canvas.flush_events()
