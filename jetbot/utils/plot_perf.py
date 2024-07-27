@@ -22,7 +22,7 @@ def plot_exec_time(execution_time, model_name, model_str):
         % (model_name, float(mean_execute_time), float(max_execute_time), float(min_execute_time)))
 
     # fig = plt.figure()
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
     # ax = fig.add_subplot()
     nbin = 150
     sbin = (max_execute_time * 1.2 - min_execute_time * 0.8) / nbin
@@ -35,7 +35,7 @@ def plot_exec_time(execution_time, model_name, model_str):
     text_str = " mean execution time : %.4f sec. (%.1f FPS)\n max execution time : %.4f sec. (%.1f FPS)\n min execution time : %.4f sec. (%.1f FPS)" \
                % (float(mean_execute_time), float(mean_fps), float(max_execute_time), float(min_fps),
                   float(min_execute_time), float(max_fps))
-    ax.text(0.5, 0.85, text_str, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=props)
+    ax.text(0.7, 0.85, text_str, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
 
     fig.canvas.draw()
     fig.canvas.flush_events()
