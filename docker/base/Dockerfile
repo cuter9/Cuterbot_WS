@@ -25,12 +25,15 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
 		  gfortran \
 		  build-essential \
-		  liblapack-dev \ 
-		  libblas-dev \
+		  liblapack-dev \
+    	  libblas-dev \
 		  libhdf5-serial-dev \
 		  hdf5-tools \
 		  libhdf5-dev \
 		  zlib1g-dev \
+          libfreetype6-dev \
+          libpng-dev \
+          libjpeg-dev \
 		  zip \
 		  libjpeg8-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -40,7 +43,7 @@ RUN apt-get install -y python3-pip
 RUN pip3 install pip -U   # upgrade pip for following installation of protobuf
 RUN pip3 install setuptools 'Cython<3.0' wheel
 RUN pip3 install 'numpy<1.19.0'
-RUN pip3 install matplotlib
+RUN pip3 install matplotlib pillow
 
 RUN pip3 install h5py==2.10.0
 # RUN pip3 install future==0.17.1 mock==3.0.5 keras_preprocessing==1.0.5 keras_applications==1.0.8 gast==0.3.3 futures protobuf pybind11

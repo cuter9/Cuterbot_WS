@@ -19,7 +19,7 @@
       <paths name="cuterbot@192.168.1.113:22 password">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/cuterbot/Cuterbot_Demo" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/cuterbot/Cuterbot_Demo_v1" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
