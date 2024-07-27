@@ -20,9 +20,9 @@ def plot_exec_time(execution_time, model_name, model_str):
 
     print(
         "The execution time statistics of %s  ----- \n     Mean execution time of : %.4f sec.\n     Max execution time : %.4f sec.\n     Min execution time of : %.4f sec. " \
-        % (model_name, mean_execute_time, max_execute_time, min_execute_time))
+        % (model_name, float(mean_execute_time), float(max_execute_time), float(min_execute_time)))
 
-    plt.clf()
+    # plt.clf()
     # fig = plt.figure()
     fig, ax = plt.subplots()
     # ax = fig.add_subplot()
@@ -35,6 +35,9 @@ def plot_exec_time(execution_time, model_name, model_str):
     ax.set_title('Histogram of processing time of  ' + model_name + "\n" + model_str)
     props = dict(boxstyle='round', facecolor='wheat')
     text_str = " mean execution time : %.4f sec. (%.1f FPS)\n max execution time : %.4f sec. (%.1f FPS)\n min execution time : %.4f sec. (%.1f FPS)" \
-               % (mean_execute_time, mean_fps, max_execute_time, min_fps, min_execute_time, max_fps)
+               % (float(mean_execute_time), float(mean_fps), float(max_execute_time), float(min_fps), float(min_execute_time), float(max_fps))
     ax.text(0.5, 0.85, text_str, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=props)
+
+    fig.canvas.draw()
+    fig.canvas.flush_events()
     plt.show(block=False)
