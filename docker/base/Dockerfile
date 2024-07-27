@@ -26,7 +26,7 @@ RUN apt-get update && \
 		  gfortran \
 		  build-essential \
 		  liblapack-dev \
-    	  libblas-dev \
+ 	      libblas-dev \
 		  libhdf5-serial-dev \
 		  hdf5-tools \
 		  libhdf5-dev \
