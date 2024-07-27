@@ -79,8 +79,8 @@ if 60 in addresses:
         x = 0
 
         # Load default font.
-        # font = ImageFont.load_default()
-        font = ImageFont.truetype("DejaVuSans-Bold.ttf", 9)
+        font = ImageFont.load_default()
+        # font = ImageFont.truetype("DejaVuSans-Bold.ttf", 9)
 
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, width, height), outline=0, fill=0)
