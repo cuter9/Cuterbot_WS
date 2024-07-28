@@ -18,7 +18,7 @@ font_title = {'fontweight': 'medium', 'fontsize': 20}
 
 
 # plot the training convergence profile
-def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model, train_method):
+def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model, train_method, show_training_plot=False):
     plt.cla()
     plt.tick_params(axis='both', labelsize='large')
     epochs = range(len(loss_data))
@@ -38,7 +38,8 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
 
     fig_1.canvas.draw()
     fig_1.canvas.flush_events()
-    plt.show(block=False)
+    if show_training_plot:
+        plt.show(block=False)
     if len(loss_data) >= no_epoch:
         profile_plot = os.path.join(dir_training_records,
                                     "Training_convergence_plot_Model_{:s}_Training_Method_{:s})".
