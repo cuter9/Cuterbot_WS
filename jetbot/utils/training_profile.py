@@ -30,11 +30,11 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
     xlim = epochs[-1] + 2
     ax_1.set_xlim(0, xlim)
 
-    plt.legend(fontsize='x-large')
     plt.title("Training convergence -- {:s} \n current best test loss : {:.4f}".format(train_model, best_loss),
               fontdict=font_title)
     plt.xlabel('epoch', fontdict=font)
     plt.ylabel('loss', fontdict=font)
+    plt.legend(fontsize='x-large')
 
     fig_1.canvas.draw()
     fig_1.canvas.flush_events()
@@ -77,7 +77,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[0].set_xlabel('time of training in an epoch , sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
     cc = 1.1 * max_lt_epoch
-    bins_epochs_time = np.arange(cf, cc, (cc - cf) / 40)
+    bins_epochs_time = np.arange(cf, cc, (cc - cf) / 30)
     axh[0].hist(learning_time_epoch, bins=bins_epochs_time.tolist())
     axh[0].tick_params(axis='both', labelsize='large')
     props = dict(boxstyle='round', facecolor='wheat')
@@ -89,7 +89,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
     sf = 0.9 * min_lt_sample
     sc = 1.1 * max_lt_sample
-    bins_samples_time = np.arange(sf, sc, (sc - sf) / 40)
+    bins_samples_time = np.arange(sf, sc, (sc - sf) / 30)
     axh[1].hist(learning_time_sample, bins=bins_samples_time.tolist())
     # axh[1].hist(learning_time_sample, bins=(0.01 * np.array(list(range(101)))).tolist())
     axh[1].tick_params(axis='both', labelsize='large')
