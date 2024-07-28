@@ -51,7 +51,7 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
 def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method):
     from math import ceil, floor
     # ----- training time statistics in terms of epoch
-    lt_epoch[0] -= lt_sample[0]
+    # lt_epoch[0] -= lt_sample[0]
     learning_time_epoch = np.array(lt_epoch)
     mean_lt_epoch = np.mean(learning_time_epoch)
     max_lt_epoch = np.amax(learning_time_epoch)
