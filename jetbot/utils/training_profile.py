@@ -49,6 +49,7 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
 
 # plot the statistical histogram of learning time in terms of epoch and sample
 def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method):
+    from math import ceil, floor
     # ----- training time statistics in terms of epoch
     lt_epoch[0] -= lt_sample[0]
     learning_time_epoch = np.array(lt_epoch)
@@ -60,8 +61,9 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
         format(mean_lt_epoch, max_lt_epoch, min_lt_epoch))
 
     # ----- training time statistics in terms of sample
-    lt_sample.sort(reverse = True)
-    learning_time_sample = np.array(lt_sample[10:])
+    lt_sample.sort(reverse=True)
+    nex = ceil(0.001 * len(lt_sample))
+    learning_time_sample = np.array(lt_sample[nex: -nex])
     mean_lt_sample = np.mean(learning_time_sample)
     max_lt_sample = np.amax(learning_time_sample)
     min_lt_sample = np.amin(learning_time_sample)
@@ -75,7 +77,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[0].set_xlabel('time of training in an epoch , sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
     cc = 1.1 * max_lt_epoch
-    bins_epochs_time = np.arange(cf, cc, (cc - cf)/40)
+    bins_epochs_time = np.arange(cf, cc, (cc - cf) / 40)
     axh[0].hist(learning_time_epoch, bins=bins_epochs_time.tolist())
     axh[0].tick_params(axis='both', labelsize='large')
     props = dict(boxstyle='round', facecolor='wheat')
@@ -87,7 +89,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
     sf = 0.9 * min_lt_sample
     sc = 1.1 * max_lt_sample
-    bins_samples_time = np.arange(sf, sc, (sc - sf)/40)
+    bins_samples_time = np.arange(sf, sc, (sc - sf) / 40)
     axh[1].hist(learning_time_sample, bins=bins_samples_time.tolist())
     # axh[1].hist(learning_time_sample, bins=(0.01 * np.array(list(range(101)))).tolist())
     axh[1].tick_params(axis='both', labelsize='large')
