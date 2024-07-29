@@ -75,7 +75,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     fig_2, axh = plt.subplots(1, 2, figsize=(14, 6))
     fig_2.suptitle("Training Time Statistics -- {:s}".format(train_model), fontsize=20, fontweight='medium')
     axh[0].set_ylabel('no. of epoch', fontdict=font)
-    axh[0].set_xlabel('time of training in an epoch , sec.', fontdict=font)
+    axh[0].set_xlabel('time of training in an epoch, sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
     cc = 1.1 * max_lt_epoch
     bins_epochs_time = np.arange(cf, cc, (cc - cf) / 30)
@@ -84,7 +84,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     props = dict(boxstyle='round', facecolor='wheat')
     text_str_0 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
                   % (float(mean_lt_epoch), float(max_lt_epoch), float(min_lt_epoch)))
-    axh[0].text(0.01, 0.85, text_str_0, transform=axh[0].transAxes, fontsize=10, verticalalignment='top', bbox=props)
+    axh[0].text(0.05, 0.85, text_str_0, transform=axh[0].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     axh[1].set_ylabel('no. of sample', fontdict=font)
     axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
@@ -97,7 +97,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     props = dict(boxstyle='round', facecolor='wheat')
     text_str_1 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
                   % (float(mean_lt_sample), float(max_lt_sample), float(min_lt_sample)))
-    axh[1].text(0.01, 0.85, text_str_1, transform=axh[1].transAxes, fontsize=10, verticalalignment='top', bbox=props)
+    axh[1].text(0.05, 0.85, text_str_1, transform=axh[1].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     fig_2.canvas.draw()
     fig_2.canvas.flush_events()
