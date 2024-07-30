@@ -18,7 +18,9 @@ font_title = {'fontweight': 'medium', 'fontsize': 20}
 
 
 # plot the training convergence profile
-def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model, train_method, show_training_plot=False):
+def plot_loss(loss_data, best_loss, no_epoch,
+              dir_training_records, train_model, train_method, processor,
+              show_training_plot=False):
     plt.cla()
     plt.tick_params(axis='both', labelsize='large')
     epochs = range(len(loss_data))
@@ -30,7 +32,8 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
     xlim = epochs[-1] + 2
     ax_1.set_xlim(0, xlim)
 
-    plt.title("Training convergence -- {:s} \n current best test loss : {:.4f}".format(train_model, best_loss),
+    plt.title("Training convergence ({:s} with {:s}) -- {:s} \n current best test loss : {:.4f}".
+              format(processor, train_method, train_model, best_loss),
               fontdict=font_title)
     plt.xlabel('epoch', fontdict=font)
     plt.ylabel('loss', fontdict=font)
@@ -49,7 +52,7 @@ def plot_loss(loss_data, best_loss, no_epoch, dir_training_records, train_model,
 
 
 # plot the statistical histogram of learning time in terms of epoch and sample
-def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method):
+def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method, processor):
     from math import ceil, floor
     # ----- training time statistics in terms of epoch
     # lt_epoch[0] -= lt_sample[0]
@@ -73,7 +76,8 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
         format(mean_lt_sample, max_lt_sample, min_lt_sample))
 
     fig_2, axh = plt.subplots(1, 2, figsize=(14, 6))
-    fig_2.suptitle("Training Time Statistics -- {:s}".format(train_model), fontsize=20, fontweight='medium')
+    fig_2.suptitle("Training Time Statistics ({:s} with {:s}) -- {:s}".
+                   format(processor, train_method, train_model), fontsize=20, fontweight='medium')
     axh[0].set_ylabel('no. of epoch', fontdict=font)
     axh[0].set_xlabel('time of training in an epoch, sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
