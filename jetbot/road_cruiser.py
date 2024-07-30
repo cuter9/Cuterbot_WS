@@ -38,6 +38,9 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
                                    2)  # for resnet model must add the block expansion factor 4
         # model.fc = torch.nn.Linear(512, 2)
 
+    elif 'efficientnet' in pth_model_name:  # ResNet
+        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
+
     elif pth_model_name == 'inception_v3':  # Inception_v3
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         if model.aux_logits:
