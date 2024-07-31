@@ -20,19 +20,19 @@ class model_selection(HasTraits):
     selected_model_path = Unicode(default_value='').tag(config=True)
     is_selected = Bool(default_value=False).tag(config=True)
 
-    def __init__(self, core_library='TensorRT'):
+    def __init__(self, core_library='TensorRT', dir_model_repo=MODEL_REPO_DIR_DOCKER):
         super().__init__()
 
         self.core_library = core_library
         if self.core_library == 'TensorRT':
-            self.df = pd.read_csv(os.path.join(MODEL_REPO_DIR_DOCKER, "trt_model_tbl.csv"),
+            self.df = pd.read_csv(os.path.join(dir_model_repo, "trt_model_tbl.csv"),
                                   header=None, names=HEAD_LIST)
         elif self.core_library == 'Pytorch':
-            self.df = pd.read_csv(os.path.join(MODEL_REPO_DIR_DOCKER, "torch_model_tbl.csv"),
+            self.df = pd.read_csv(os.path.join(dir_model_repo, "torch_model_tbl.csv"),
                                   header=None, names=HEAD_LIST)
 
         for p in self.df.values:
-            p[2] = os.path.join(MODEL_REPO_DIR_DOCKER, p[2].split("/", 1)[1])
+            p[2] = os.path.join(dir_model_repo, p[2].split("/", 1)[1])
 
         self.model_function_list = list(self.df["model_function"].astype("category").cat.categories)
         self.update_model_type_list()
