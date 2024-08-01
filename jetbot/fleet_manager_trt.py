@@ -116,9 +116,9 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
     def execute_fm(self, change):
 
         # do object following
-        start_time = time.process_time()
+        start_time = time.time()
         self.execute(change)
-        end_time = time.process_time()
+        end_time = time.time()
         # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
         self.execution_time_fm.append(end_time - start_time)
         # self.fps.append(1/(end_time - start_time))

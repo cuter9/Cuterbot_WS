@@ -52,8 +52,9 @@ def plot_loss(loss_data, best_loss, no_epoch,
 
 
 # plot the statistical histogram of learning time in terms of epoch and sample
-def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method, processor):
+def lt_plot(lt_epoch, lt_sample, overall_time, dir_training_records, train_model, train_method, processor):
     from math import ceil, floor
+    import time
     # ----- training time statistics in terms of epoch
     # lt_epoch[0] -= lt_sample[0]
     learning_time_epoch = np.array(lt_epoch)
@@ -76,8 +77,10 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
         format(mean_lt_sample, max_lt_sample, min_lt_sample))
 
     fig_2, axh = plt.subplots(1, 2, figsize=(14, 6))
-    fig_2.suptitle("Training Time Statistics ({:s} with {:s}) -- {:s}".
-                   format(processor, train_method, train_model), fontsize=20, fontweight='medium')
+    fig_2.suptitle("Training Time Statistics ({:s} with {:s}) -- {:s} \n Overall training time : {:s} ({:.2f} sec.)".
+                   format(processor, train_method, train_model,
+                          time.strftime("%H:%M:%S", time.gmtime(ceil(overall_time))), overall_time),
+                   fontsize=20, fontweight='medium')
     axh[0].set_ylabel('no. of epoch', fontdict=font)
     axh[0].set_xlabel('time of training in an epoch, sec.', fontdict=font)
     cf = 0.9 * min_lt_epoch
@@ -88,7 +91,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     props = dict(boxstyle='round', facecolor='wheat')
     text_str_0 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
                   % (float(mean_lt_epoch), float(max_lt_epoch), float(min_lt_epoch)))
-    axh[0].text(0.05, 0.85, text_str_0, transform=axh[0].transAxes, fontsize=10, verticalalignment='top', bbox=props)
+    axh[0].text(0.65, 0.85, text_str_0, transform=axh[0].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     axh[1].set_ylabel('no. of sample', fontdict=font)
     axh[1].set_xlabel('time for training a batch of samples , sec.', fontdict=font)
@@ -101,7 +104,7 @@ def lt_plot(lt_epoch, lt_sample, dir_training_records, train_model, train_method
     props = dict(boxstyle='round', facecolor='wheat')
     text_str_1 = (" mean time: %.4f sec. \n max time: %.4f sec. \n min time: %.4f sec. "
                   % (float(mean_lt_sample), float(max_lt_sample), float(min_lt_sample)))
-    axh[1].text(0.05, 0.85, text_str_1, transform=axh[1].transAxes, fontsize=10, verticalalignment='top', bbox=props)
+    axh[1].text(0.65, 0.85, text_str_1, transform=axh[1].transAxes, fontsize=10, verticalalignment='top', bbox=props)
 
     fig_2.canvas.draw()
     fig_2.canvas.flush_events()

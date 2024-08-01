@@ -82,7 +82,7 @@ class RoadCruiserTRT(HasTraits):
         return image[None, ...]
 
     def execute_rc(self, change):
-        start_time = time.process_time()
+        start_time = time.time()
         # global angle, angle_last
         image = change['new']
         xy = self.trt_model_rc(self.preprocess_rc(image)).detach().float().cpu().numpy().flatten()
@@ -106,7 +106,7 @@ class RoadCruiserTRT(HasTraits):
         self.robot.left_motor.value = max(min(self.speed_gain_rc + self.steering_rc, 1.0), 0.0)
         self.robot.right_motor.value = max(min(self.speed_gain_rc - self.steering_rc, 1.0), 0.0)
 
-        end_time = time.process_time()
+        end_time = time.time()
         # self.execution_time.append(end_time - start_time + self.camera.cap_time)
         self.execution_time_rc.append(end_time - start_time)
         # self.fps.append(1/(end_time - start_time))

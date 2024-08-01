@@ -141,7 +141,7 @@ class ObjectFollower(ObjectDetector):
 
     def execute_of(self, change):
         # print("start execution !")
-        start_time = time.process_time()
+        start_time = time.time()
 
         self.current_image = change['new']
         # width = self.img_width
@@ -194,7 +194,7 @@ class ObjectFollower(ObjectDetector):
                 float(self.speed_gain_of - self.turn_gain_of * center[0] + self.steering_bias_of)
             )
 
-        end_time = time.process_time()
+        end_time = time.time()
         # self.execution_time.append(end_time - start_time + self.capturer.cap_time)
         self.execution_time_of.append(end_time - start_time)
         # self.fps.append(1/(end_time - start_time))
