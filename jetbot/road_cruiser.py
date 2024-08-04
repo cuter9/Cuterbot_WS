@@ -135,7 +135,6 @@ class RoadCruiser(HasTraits):
         self.robot.right_motor.value = max(min(self.speed_gain_rc - self.steering, 1.0), 0.0)
 
         end_time = time.time()
-        # self.execution_time.append(end_time - start_time + self.camera.cap_time)
         self.execution_time_rc.append(end_time - start_time)
         # self.fps.append(1/(end_time - start_time))
 
@@ -157,5 +156,4 @@ class RoadCruiser(HasTraits):
         model_name = "road cruiser model"
         cruiser_model_str = self.cruiser_model.split("/")[-1].split('.')[0]
         plot_exec_time(self.execution_time_rc[1:], model_name, cruiser_model_str)
-        # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
         # plt.show()

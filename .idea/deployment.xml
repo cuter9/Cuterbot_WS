@@ -12,14 +12,7 @@
       <paths name="cuterbot@192.168.1.110:22 password">
         <serverdata>
           <mappings>
-            <mapping deploy="/tmp/pycharm_project_441" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="cuterbot@192.168.1.110:22 password (2)">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/tmp/pycharm_project_528" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/cuterbot/Cuterbot_Demo_v1" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

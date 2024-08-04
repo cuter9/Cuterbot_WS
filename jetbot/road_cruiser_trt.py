@@ -119,7 +119,6 @@ class RoadCruiserTRT(HasTraits):
 
     def stop_rc(self, change):
         from jetbot.utils import plot_exec_time
-        # self.camera.unobserve(self.execute, names='value')
         self.capturer.unobserve_all()
         time.sleep(1.0)
         self.robot.stop()
@@ -129,5 +128,4 @@ class RoadCruiserTRT(HasTraits):
         model_name = 'road cruiser model'
         cruiser_model_name = self.cruiser_model.split("/")[-1].split('.')[0]
         plot_exec_time(self.execution_time_rc[1:], model_name, cruiser_model_name)
-        # plot_exec_time(self.execution_time[1:], self.fps[1:], model_name, self.cruiser_model_str)
         # plt.show()
