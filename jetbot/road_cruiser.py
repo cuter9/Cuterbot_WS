@@ -28,6 +28,7 @@ class RoadCruiser(HasTraits):
     def __init__(self, init_sensor_rc=False):
         super().__init__()
 
+        self.cruiser_model_type_pth = None
         self.cruiser_model_pth = None
 
         if init_sensor_rc:
@@ -47,9 +48,11 @@ class RoadCruiser(HasTraits):
     def load_road_cruiser(self, change):
         # The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
         self.cruiser_model_pth = None
+        self.cruiser_model_type_pth = None
+
         pth_model_name = self.cruiser_model.split('/')[-1].split('.')[0].split('_', 4)[-1].split('-')[0]
         print('pytorch model name: %s' % pth_model_name)
-        self.cruiser_model_pth = load_tune_pth_model(pth_model_name=pth_model_name, pretrained=False)
+        self.cruiser_model_pth, self.cruiser_model_type_pth = load_tune_pth_model(pth_model_name=pth_model_name, pretrained=False)
 
         print('path of cruiser model: %s' % self.cruiser_model)
         print('use %s' % self.use_gpu)
