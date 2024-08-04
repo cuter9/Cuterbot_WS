@@ -8,7 +8,6 @@ import torchvision
 import torchvision.transforms as transforms
 import traitlets
 from traitlets import HasTraits, Float, Unicode
-import torchvision.models as pth_models
 
 from jetbot import Camera
 from jetbot import Robot
