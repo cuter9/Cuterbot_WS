@@ -83,7 +83,7 @@ class RoadCruiserTRT(HasTraits):
 
     def execute_rc(self, change):
         start_time = time.time()
-        # global angle, angle_last
+
         image = change['new']
         xy = self.trt_model_rc(self.preprocess_rc(image)).detach().float().cpu().numpy().flatten()
         x = xy[0]
