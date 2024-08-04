@@ -54,6 +54,9 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             model.aux.fc2 = torch.nn.Linear(model.aux.fc2.in_features, 2)
         #   model.aux.dropout = torch.nn.Dropout(p=dropout)
 
+    elif "densenet" in pth_model_name:  # densenet121, densenet161, densenet169, densenet201
+        model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
+
     return model
 
 
