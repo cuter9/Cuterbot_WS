@@ -4,9 +4,7 @@ import PIL.Image
 
 import numpy as np
 import torch
-import torchvision
 import torchvision.transforms as transforms
-import traitlets
 from traitlets import HasTraits, Float, Unicode
 
 from jetbot import Camera

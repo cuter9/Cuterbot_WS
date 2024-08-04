@@ -4,7 +4,6 @@ import PIL.Image
 import numpy as np
 import torch
 import torchvision.transforms as transforms
-import traitlets
 from traitlets import HasTraits, Unicode, Float
 from torch2trt import TRTModule
 
