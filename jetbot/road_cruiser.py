@@ -12,7 +12,7 @@ import torchvision.models as pth_models
 
 from jetbot import Camera
 from jetbot import Robot
-from jetbot.utils import load_tune_pth_model
+from jetbot.utils.model_selection import load_tune_pth_model
 
 
 class RoadCruiser(HasTraits):
