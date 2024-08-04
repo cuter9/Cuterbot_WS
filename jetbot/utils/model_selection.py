@@ -39,11 +39,20 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif 'efficientnet' in pth_model_name:  # ResNet
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
+        # model.classifier[0].dropout = torch.nn.Dropout(p=dropout)
 
     elif pth_model_name == 'inception_v3':  # Inception_v3
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
+        # model.dropout = torch.nn.Dropout(p=dropout)
         if model.aux_logits:
             model.AuxLogits.fc = torch.nn.Linear(model.AuxLogits.fc.in_features, 2)
+
+    elif pth_model_name == 'googlenet':  # Inception_v3
+        model.fc = torch.nn.Linear(model.fc.in_features, 2)
+        # model.dropout = torch.nn.Dropout(p=dropout)
+        if model.aux_logits:
+            model.aux.fc2 = torch.nn.Linear(model.aux.fc2.in_features, 2)
+        #   model.aux.dropout = torch.nn.Dropout(p=dropout)
 
     return model
 
