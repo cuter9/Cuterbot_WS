@@ -12,8 +12,9 @@ import torchvision.models as pth_models
 
 from jetbot import Camera
 from jetbot import Robot
+from jetbot.utils import load_tune_pth_model
 
-
+'''
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     if pretrained:
         model = getattr(pth_models, pth_model_name)()       # for fine tuning
@@ -47,6 +48,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             model.AuxLogits.fc = torch.nn.Linear(model.AuxLogits.fc.in_features, 2)
 
     return model
+'''
 
 
 class RoadCruiser(HasTraits):

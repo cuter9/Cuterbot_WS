@@ -3,11 +3,49 @@ import os
 from traitlets import HasTraits, Unicode, List, Bool
 import numpy as np
 
+import torch
+import torchvision.models as pth_models
+
 HEAD_LIST = ['model_function', 'model_type', 'model_path']
 MODEL_REPO_DIR = os.path.join(os.environ["HOME"], "model_repo")
 MODEL_REPO_DIR_DOCKER = os.path.join("/workspace", "model_repo")
 os.environ['MODEL_REPO_DIR_DOCKER'] = MODEL_REPO_DIR_DOCKER
 os.environ['MODEL_REPO_DIR'] = MODEL_REPO_DIR
+
+
+def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
+    if pretrained:
+        model = getattr(pth_models, pth_model_name)()  # for fine tuning
+    else:
+        model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencig
+    # ----- modify last layer for classification, and the model used in notebook should be modified too.
+
+    if pth_model_name == 'mobilenet_v3_large':  # MobileNet
+        model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
+                                              2)  # for mobilenet_v3 model. must add the block expansion factor 4
+
+    elif pth_model_name == 'mobilenet_v2':
+        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features,
+                                              2)  # for mobilenet_v2 model. must add the block expansion factor 4
+
+    elif pth_model_name == 'vgg11':  # VGGNet
+        model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features,
+                                              2)  # for VGG model. must add the block expansion factor 4
+
+    elif 'resnet' in pth_model_name:  # ResNet
+        model.fc = torch.nn.Linear(model.fc.in_features,
+                                   2)  # for resnet model must add the block expansion factor 4
+        # model.fc = torch.nn.Linear(512, 2)
+
+    elif 'efficientnet' in pth_model_name:  # ResNet
+        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
+
+    elif pth_model_name == 'inception_v3':  # Inception_v3
+        model.fc = torch.nn.Linear(model.fc.in_features, 2)
+        if model.aux_logits:
+            model.AuxLogits.fc = torch.nn.Linear(model.AuxLogits.fc.in_features, 2)
+
+    return model
 
 
 class model_selection(HasTraits):
