@@ -27,7 +27,6 @@ then
 	    --memory-swap="$JETBOT_JUPYTER_MEMORY_SWAP" \
 	    --env JETBOT_DEFAULT_CAMERA="$JETBOT_CAMERA" \
       --env DISPLAY="$DISPLAY" \
-      -v /run/jtop.sock:/run/jtop.sock \
 	    "$JETBOT_DOCKER_REMOTE"/jetbot:jupyter-"$JETBOT_VERSION"-"$L4T_VERSION"
 
 else
