@@ -9,10 +9,13 @@ WINDOW_NAME = 'TrtSsdModelTest'
 
 from jetbot import ObjectDetector
 
-follower_model = "/home/cuterbot/model_repo/object_detection/ssd_mobilenet_v2_fpnlite_320x320_coco17.engine"
-# follower_model = "/home/cuterbot/Data_Repo/Model_Conversion/SSD_mobilenet/ONNX_Model/Repo/ssd_mobilenet_v2_320x320_coco17_tpu-8_tf_v2.engine"
+follower_model = "/workspace/model_repo/object_detection/ssd_mobilenet_v2_fpnlite_320x320_coco17.engine"
 
-detector = ObjectDetector(follower_model, type_model='SSD_FPN')
+detector = ObjectDetector()
+detector.engine_path = follower_model
+detector.type_model_od = "SSD_FPN"
+detector.load_od_engine()
+
 [height, width] = detector.input_shape
 print("model input size - width, height", width, height)
 
@@ -24,7 +27,7 @@ img_handle = cv2.imread("test.jpg")
 img_height, img_width, _ = img_handle.shape
 print(img_width, img_height)
 
-detections = detector.execute(img_handle, conf_th=0.5)
+detections = detector.execute_od(img_handle, conf_th=0.5)
 print(detections[0])
 for det in detections[0]:
     bbox = det['bbox']
