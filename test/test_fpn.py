@@ -36,4 +36,4 @@ for det in detections[0]:
 image = bgr8_to_jpeg(img_handle)
 cv2.imshow(WINDOW_NAME, img_handle)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
