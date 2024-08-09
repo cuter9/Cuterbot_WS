@@ -9,7 +9,7 @@ WINDOW_NAME = 'TrtSsdModelTest'
 
 from jetbot import ObjectDetector
 
-follower_model = "/home/cuterbot/Data_Repo/Model_Conversion/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/ONNX_Model/Repo/ssd_mobilenet_v2_fpnlite_320x320_coco17.engine"
+follower_model = "/home/cuterbot/model_repo/object_detection/ssd_mobilenet_v2_fpnlite_320x320_coco17.engine"
 # follower_model = "/home/cuterbot/Data_Repo/Model_Conversion/SSD_mobilenet/ONNX_Model/Repo/ssd_mobilenet_v2_320x320_coco17_tpu-8_tf_v2.engine"
 
 detector = ObjectDetector(follower_model, type_model='SSD_FPN')
