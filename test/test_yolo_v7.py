@@ -9,7 +9,8 @@ WINDOW_NAME = 'TrtSsdModelTest'
 
 from jetbot import ObjectDetector
 
-follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7.engine"
+follower_model = "/workspace/model_repo/object_detection/yolo_v7.engine"
+# follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7.engine"
 # follower_model = "/home/cuterbot/Data_Repo/Model_Conversion/SSD_mobilenet/ONNX_Model/Repo/ssd_mobilenet_v2_320x320_coco17_tpu-8_tf_v2.engine"
 
 # detector = ObjectDetector(follower_model, type_model='YOLO_v7', conf_th=0.3)
@@ -29,7 +30,7 @@ img_handle = cv2.imread("test.jpg")
 img_height, img_width, _ = img_handle.shape
 print(img_width, img_height)
 
-detections = detector.execute(img_handle)
+detections = detector.execute_od(img_handle)
 print(detections[0])
 for det in detections[0]:
     bbox = det['bbox']
@@ -38,4 +39,4 @@ for det in detections[0]:
 image = bgr8_to_jpeg(img_handle)
 cv2.imshow(WINDOW_NAME, img_handle)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()
