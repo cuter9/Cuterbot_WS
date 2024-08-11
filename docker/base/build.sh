@@ -12,5 +12,5 @@ docker build \
     --build-arg BASE_IMAGE="$JETBOT_BASE_IMAGE" \
     -t "$JETBOT_DOCKER_REMOTE"/jetbot:base-"$JETBOT_VERSION"-$L4T_VERSION \
     -f Dockerfile \
-    ../..  # jetbot repo root as context
+    ../..  2>&1 | tee build_cuterbot_docker.log   # jetbot repo root as context
 
