@@ -17,7 +17,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     if pretrained:
         model = getattr(pth_models, pth_model_name)()  # for fine tuning
     else:
-        model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencig
+        model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
     # ----- modify last layer for classification, and the model used in notebook should be modified too.
 
     if pth_model_name == 'mobilenet_v3_large':  # MobileNet
