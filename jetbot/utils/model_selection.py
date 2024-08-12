@@ -21,39 +21,40 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     # ----- modify last layer for classification, and the model used in notebook should be modified too.
 
     if pth_model_name == 'mobilenet_v3_large':  # MobileNet
+        model_type = "MobileNet"
         model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
                                               2)  # for mobilenet_v3 model. must add the block expansion factor 4
-        model_type = "MobileNet"
 
     elif pth_model_name == 'mobilenet_v2':
+        model_type = "MobileNet"
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features,
                                               2)  # for mobilenet_v2 model. must add the block expansion factor 4
-        model_type = "MobileNet"
 
     elif pth_model_name == 'vgg11':  # VGGNet
+        model_type = "VggNet"
         model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features,
                                               2)  # for VGG model. must add the block expansion factor 4
-        model_type = "VggNet"
 
     elif 'resnet' in pth_model_name:  # ResNet
+        model_type = "ResNet"
         model.fc = torch.nn.Linear(model.fc.in_features,
                                    2)  # for resnet model must add the block expansion factor 4
         # model.fc = torch.nn.Linear(512, 2)
-        model_type = "ResNet"
 
     elif 'efficientnet' in pth_model_name:  # ResNet
+        model_type = "EfficientNet"
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
         # model.classifier[0].dropout = torch.nn.Dropout(p=dropout)
-        model_type = "EfficientNet"
 
     elif pth_model_name == 'inception_v3':  # Inception_v3
+        model_type = "InceptionNet"
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         # model.dropout = torch.nn.Dropout(p=dropout)
         if model.aux_logits:
             model.AuxLogits.fc = torch.nn.Linear(model.AuxLogits.fc.in_features, 2)
-        model_type = "InceptionNet"
 
     elif pth_model_name == 'googlenet':  # Inception_v3
+        model_type = "GoogleNet"
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         # model.dropout = torch.nn.Dropout(p=dropout)
         if model.aux_logits:
@@ -61,11 +62,10 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             model.aux2.fc2 = torch.nn.Linear(model.aux2.fc2.in_features, 2)
         #   model.aux1.dropout = torch.nn.Dropout(p=dropout)
         #   model.aux2.dropout = torch.nn.Dropout(p=dropout)
-        model_type = "GoogleNet"
 
     elif "densenet" in pth_model_name:  # densenet121, densenet161, densenet169, densenet201
-        model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
         model_type = "DenseNet"
+        model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
     else:
         model_type = None
     return model, model_type
