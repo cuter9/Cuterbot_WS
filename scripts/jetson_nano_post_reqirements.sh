@@ -14,7 +14,7 @@ sudo apt update
 # sudo apt install -y python3-pip python3-pil
 sudo apt install -y python3-pip
 sudo -H python3 -m pip install pip -U
-sudo -H python3 -m pip install pillow
+sudo -H python3 -m pip install pillow --force-reinstall
 sudo -H python3 -m pip install "Cython<3"
 sudo -H python3 -m pip install --upgrade "numpy<1.19.0"
 
