@@ -69,6 +69,8 @@ sudo -H python3 setup.py install
 echo -e "\e[45m Install pycuda package \e[0m"
 set -e
 
+VER_PYCUDA="v2024.1.2"
+
 if ! which nvcc > /dev/null; then
   echo "ERROR: nvcc not found"
   exit
@@ -79,9 +81,8 @@ sudo apt-get install -y build-essential python3-dev
 sudo apt-get install -y libboost-python-dev libboost-thread-dev
 sudo pip3 install setuptools
 
-wget https://files.pythonhosted.org/packages/3f/50/dd356c8afe228baecaf0259b9579121dd869c5ace07a296158c39ac5065a/pycuda-2024.1.tar.gz
-tar xvf pycuda-2024.1.tar.gz
+git clone -b $VER_PYCUDA --recurse-submodules https://github.com/inducer/pycuda.git
+cd pycuda
 
-cd pycuda-2024.1
 python3 configure.py --cuda-root="/usr/local/cuda-10.2/" 
 sudo make install
