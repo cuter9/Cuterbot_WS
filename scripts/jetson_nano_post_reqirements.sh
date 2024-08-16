@@ -44,7 +44,7 @@ sudo -H python3 -m pip install torch-1.10.0-cp36-cp36m-linux_aarch64.whl
 
 # Install torchvision package
 echo -e "\e[45m Install torchvision package \e[0m"
-cd
+cd $HOME/Downloads
 sudo apt install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev
 sudo rm -rf torchvision
 git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
@@ -57,7 +57,7 @@ sudo -H python3 setup.py install
 
 # Install torch2trt
 echo -e "\e[45m Install torch2trt package \e[0m"
-cd $HOME
+cd $HOME/Downloads
 sudo rm -rf torch2trt
 sudo -H python3 -m pip install packaging
 git clone https://github.com/NVIDIA-AI-IOT/torch2trt
@@ -69,6 +69,7 @@ sudo -H python3 setup.py install
 echo -e "\e[45m Install pycuda package \e[0m"
 set -e
 
+cd $HOME/Downloads
 VER_PYCUDA="v2024.1.2"
 
 if ! which nvcc > /dev/null; then
@@ -86,3 +87,5 @@ cd pycuda
 
 python3 configure.py --cuda-root="/usr/local/cuda-10.2/" 
 sudo make install
+
+sudo pip3 install "onnx==1.11.0"
