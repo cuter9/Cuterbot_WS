@@ -33,26 +33,36 @@ sudo -H python3 -m pip install -U testresources setuptools numpy==1.18.5 future=
 # TF-1.15
 sudo -H python3 -m pip install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v461 'tensorflow<2'
 
-# Install the pre-built PyTorch pip wheel 
+# Install the pre-built PyTorch pip wheel
+# https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048
 echo -e "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
-cd
+
+cd $HOME/Downloads
+sudo apt install -y libopenblas-base libopenmpi-dev
+
 # wget -N https://nvidia.box.com/shared/static/yr6sjswn25z7oankw8zy1roow9cy5ur1.whl -O torch-1.6.0rc2-cp36-cp36m-linux_aarch64.whl
 wget -N https://nvidia.box.com/shared/static/fjtbno0vpo676a25cgvuqc1wty0fkkg6.whl -O torch-1.10.0-cp36-cp36m-linux_aarch64.whl
-sudo apt install -y libopenblas-base libopenmpi-dev 
-# sudo -H python3 -m pip install Cython
 sudo -H python3 -m pip install torch-1.10.0-cp36-cp36m-linux_aarch64.whl 
 
+# wget https://developer.download.nvidia.com/compute/redist/jp/v461/pytorch/torch-1.11.0a0+17540c5+nv22.01-cp36-cp36m-linux_aarch64.whl -O torch-1.11.0-cp36-cp36m-linux_aarch64.whl
+# sudo -H python3 -m pip install torch-1.11.0-cp36-cp36m-linux_aarch64.whl 
+
 # Install torchvision package
+# https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048
+
 echo -e "\e[45m Install torchvision package \e[0m"
+
 cd $HOME/Downloads
-sudo apt install libjpeg-dev zlib1g-dev libpython3-dev libavcodec-dev libavformat-dev libswscale-dev
+# sudo apt install -y libjpeg-dev zlib1g-dev libpython3-dev libopenblas-dev libavcodec-dev libavformat-dev libswscale-dev libomp-dev ffmpeg
+sudo apt install -y libjpeg-dev zlib1g-dev libpython3-dev libopenblas-dev libavcodec-dev libavformat-dev libswscale-dev
+export BUILD_VERSION=0.11.1  # for torch version v1.10.0
+# export BUILD_VERSION=0.12.0
 sudo rm -rf torchvision
-git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
-# git clone https://github.com/pytorch/vision torchvision
+git clone --branch v$BUILD_VERSION https://github.com/pytorch/vision torchvision
 cd torchvision
-export BUILD_VERSION=0.11.1
-#git checkout v0.4.0
-sudo -H python3 setup.py install
+sudo -H python3 setup.py bdist_wheel
+cd dist
+sudo pip3 install *.whl
 # sudo -H python3 -m pip install torchvision
 
 # Install torch2trt
@@ -82,9 +92,9 @@ sudo apt-get install -y build-essential python3-dev
 sudo apt-get install -y libboost-python-dev libboost-thread-dev
 sudo pip3 install setuptools
 
+sudo rm -rf pycuda
 git clone -b $VER_PYCUDA --recurse-submodules https://github.com/inducer/pycuda.git
 cd pycuda
-
 python3 configure.py --cuda-root="/usr/local/cuda-10.2/" 
 sudo make install
 
