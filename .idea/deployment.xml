@@ -16,10 +16,17 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="cuterbot@192.168.1.109:22 password">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="cuterbot@192.168.1.110:22 password">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/cuterbot/Cuterbot_Demo_v1" local="$PROJECT_DIR$" />
+            <mapping deploy="/home/cuterbot/Cuterbot_Demo" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
