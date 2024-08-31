@@ -94,19 +94,22 @@ RUN apt-get update && \
 # Install traitlets (master, to support the unlink() method)
 RUN echo -e "\e[48;5;172m Install traitlets \e[0m"
 #sudo python3 -m pip install git+https://github.com/ipython/traitlets@master
-RUN python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
+# RUN python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
+ENV REPO_DIR=/opt/
+RUN cd ${REPO_DIR} && git clone -b 4.3.3 https://github.com/ipython/traitlets.git && cd traitlets && pip3 install -e .
 
 # Install jupyter lab
 RUN echo -e "\e[48;5;172m Install Jupyter Lab \e[0m"
 RUN apt-get update
 RUN apt-get install -y curl
 # RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+# RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs libffi-dev
 # RUN pip3 install jupyter jupyterlab==2.2.6
 RUN pip3 install jupyter jupyterlab jupyter_packaging
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
-RUN pip3 install ipywidgets -U      # update the latest ipython widgets
+# RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+# RUN pip3 install ipywidgets -U      # update the latest ipython widgets
 
 # Install jupyter_clickable_image_widget
 RUN echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
