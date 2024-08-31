@@ -14,19 +14,25 @@ SudoPass = 'cuterbot'
 def capture_frames(cam):
     while True:
 
-        if cam.stop_thread.is_set():
-            break
+        # if cam.stop_thread.is_set():
+        #    break
 
         # start = time.process_time()            
-        nc = 0
+        # nc = 0
         re, image = cam.cap.read()
         if re:
             cam.value = image
             # print(image)
             # print("Observed and No of times previous capture nothong : ", nc)
-            nc = 0
+            # nc = 0
             # end = time.process_time()
             # cam.cap_time = end - start
+        else:
+            print("No frame was captured, check the cam capture function works normally, "
+                  "and the cam capture thread will be terminated!")
+            break
+
+        '''
         else:
             if nc <= 10:
                 nc += 1
@@ -36,6 +42,7 @@ def capture_frames(cam):
                 print("No frame was captureed for a while, check the cam capture function works normally , \
                         and the cam capture trhread will be terminated!")
                 break
+        '''
 
 
 class OpenCvGstCamera(CameraBase):
@@ -55,22 +62,25 @@ class OpenCvGstCamera(CameraBase):
     # cap_time = traitlets.Float(default_value=0).tag(config=True)
 
     def __init__(self, *args, **kwargs):
-        # self.value = np.empty((self.height, self.width, 3), dtype=np.uint8)
-        self.value = np.empty((self.capture_height, self.capture_width, 3), dtype=np.uint8)
+        self.value = np.empty((self.height, self.width, 3), dtype=np.uint8)
+        # self.thread = None
+        # self.value = np.empty((self.capture_height, self.capture_width, 3), dtype=np.uint8)
         self.stop_thread = threading.Event()
         # self.cap_time = 0
         super().__init__(self, *args, **kwargs)
 
         try:
             self.cap = cv2.VideoCapture(self._gst_str(), cv2.CAP_GSTREAMER)
+            if not self.cap.isOpened():
+                self.cap.open(self._gst_str(), cv2.CAP_GSTREAMER)
 
             re, image = self.cap.read()
-
             if not re:
                 raise RuntimeError('Could not read image from camera.')
 
             self.value = image
             self.start()
+
         except:
             self.stop()
             raise RuntimeError(
@@ -86,34 +96,30 @@ class OpenCvGstCamera(CameraBase):
                 break
 
             # start = time.process_time()            
-            nc = 0
+            #            nc = 0
+            if not self.cap.isOpened():
+                self.cap.open(self._gst_str(), cv2.CAP_GSTREAMER)
             re, image = self.cap.read()
             if re:
                 self.value = image
                 # print(image)
                 # print("Observed and No of times previous capture nothong : ", nc)
-                nc = 0
-                # end = time.process_time()
-                # self.cap_time = end - start
+            #                nc = 0
             else:
-                if nc <= 5:
-                    nc += 1
-                    # print("No of times capture nothong : ", nc)
-                    continue
-                else:
-                    print("No frame was captureed for a while, check the cam capture function works normally , \
-                          and the cam capture trhread will be terminated!")
-                    break
+                print("No frame was captured, check the cam capture function works normally, "
+                      "and the cam capture thread will be terminated!")
+                break
 
     def _gst_str(self):
         # return 'nvarguscamerasrc sensor-mode=3 ! video/x-raw(memory:NVMM), width=%d, height=%d, format=(string)NV12, framerate=(fraction)%d/1 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % \
         #   (self.capture_width, self.capture_height, self.fps, self.width, self.height)
         return 'nvarguscamerasrc sensor-mode=3 ! nvvidconv ! video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! videoconvert ! appsink' % (
-        self.width, self.height)
+            self.width, self.height)
 
     def start(self):
         if not self.cap.isOpened():
             self.cap.open(self._gst_str(), cv2.CAP_GSTREAMER)
+
         if not hasattr(self, 'thread') or not self.thread.isAlive():
             self.thread = threading.Thread(target=self._capture_frames)
             # self.thread = threading.Thread(target=capture_frames, args=(self,))
@@ -121,14 +127,14 @@ class OpenCvGstCamera(CameraBase):
 
     def stop(self):
 
+        if hasattr(self, 'cap'):
+            self.cap.release()
+            print("Camera operation is released ! ")
+
         if hasattr(self, 'thread'):
             self.stop_thread.set()
             self.thread.join()
             print("Capture thread is stopped")
-
-        if hasattr(self, 'cap'):
-            self.cap.release()
-            print("Camera operation is released ! ")
 
     #           os.popen("sudo -S %s"%('service nvargus-daemon restart'), 'w').write(SudoPass)
     #           print("service nvargus-daemon is restarted ! ")
