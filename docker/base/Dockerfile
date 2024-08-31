@@ -137,7 +137,7 @@ ENV TORCH2TRT_REPO_DIR=/opt/
 RUN cd ${TORCH2TRT_REPO_DIR} && \
     git clone https://github.com/NVIDIA-AI-IOT/torch2trt && \
     cd torch2trt && \
-    python3 setup.py install
+    python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
 
 # ==================================
 # INSTALL JETBOT DEPENDENCIES QWIIC
@@ -158,6 +158,6 @@ RUN python3 -m pip install pyserial pandas jetson-stats
 RUN python3 -m pip install pillow --force-reinstall
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
-RUN cd ${JETBOT_REPO_DIR} && python3 setup.py install
+RUN cd ${JETBOT_REPO_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
 
 
