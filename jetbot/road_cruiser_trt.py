@@ -114,6 +114,7 @@ class RoadCruiserTRT(HasTraits):
     def start_rc(self, change):
         # self.execute({'new': self.camera.value})
         self.load_road_cruiser(change)
+        print("start running!")
         self.capturer.observe(self.execute_rc, names='value')
 
     def stop_rc(self, change):
