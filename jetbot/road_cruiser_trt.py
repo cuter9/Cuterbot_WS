@@ -63,7 +63,7 @@ class RoadCruiserTRT(HasTraits):
             self.trt_model_rc.load_state_dict(torch.load(self.cruiser_model))
         else:
             self.trt_model_rc.load_state_dict(torch.load('best_steering_model_xy_trt_' + self.cruiser_model + '.pth'))
-
+        print("The loaded TRT model converted from pytorch model.")
     def preprocess_rc(self, image):
         mean = torch.Tensor([0.485, 0.456, 0.406]).cuda().half()
         std = torch.Tensor([0.229, 0.224, 0.225]).cuda().half()
