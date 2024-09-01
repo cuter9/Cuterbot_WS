@@ -136,7 +136,7 @@ class ObjectFollower(ObjectDetector):
     def start_of(self, change):
         self.load_object_detector(change)
         # self.capturer.unobserve_all()
-        print("start running")
+        print("start running!")
         self.capturer.observe(self.execute_of, names='value')
 
     def execute_of(self, change):

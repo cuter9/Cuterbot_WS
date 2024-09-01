@@ -120,6 +120,7 @@ class RoadCruiserTRT(HasTraits):
     def stop_rc(self, change):
         from jetbot.utils import plot_exec_time
         self.capturer.unobserve_all()
+        print("start stopping!")
         time.sleep(1.0)
         self.robot.stop()
         self.capturer.stop()

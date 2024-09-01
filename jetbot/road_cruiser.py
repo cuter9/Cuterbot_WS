@@ -55,7 +55,7 @@ class RoadCruiser(HasTraits):
         self.cruiser_model_pth, self.cruiser_model_type_pth = load_tune_pth_model(pth_model_name=pth_model_name, pretrained=False)
 
         print('path of cruiser model: %s' % self.cruiser_model)
-        print('use %s' % self.use_gpu)
+        print('use %s for inference.' % self.use_gpu)
         # self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_' + cruiser_model + '.pth'))
         self.cruiser_model_pth.load_state_dict(torch.load(self.cruiser_model))
 
@@ -143,10 +143,12 @@ class RoadCruiser(HasTraits):
     def start_rc(self, change):
         # self.execute({'new': self.camera.value})
         self.load_road_cruiser(change)
+        print("start running!")
         self.capturer.observe(self.execute_rc, names='value')
 
     def stop_rc(self, change):
         from jetbot.utils import plot_exec_time
+        print("start stopping!")
         # self.camera.unobserve(self.execute, names='value')
         self.capturer.unobserve_all()
         time.sleep(1.0)
