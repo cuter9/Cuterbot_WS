@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 from traitlets import HasTraits, Unicode, List, Bool
-import numpy as np
+# import numpy as np
 
 import torch
 import torchvision.models as pth_models
