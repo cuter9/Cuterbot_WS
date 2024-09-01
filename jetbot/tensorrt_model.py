@@ -3,7 +3,7 @@ import torch
 import tensorrt as trt
 import os
 import ctypes
-import atexit
+# import atexit
 
 
 def nms_boxes_yolo(detections, nms_threshold):

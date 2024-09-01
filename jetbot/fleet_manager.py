@@ -20,17 +20,17 @@
 
 # In[ ]:
 
-from queue import Empty
+# from queue import Empty
 import cv2
 import numpy as np
-import traitlets
+# import traitlets
 
 from jetbot import Camera
 from jetbot import Robot
 from jetbot import bgr8_to_jpeg
 from jetbot import RoadCruiser
 from jetbot import ObjectFollower
-from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
+# from jetbot.utils import get_cls_dict_yolo, get_cls_dict_ssd
 from traitlets import Float, Bool, Any
 
 import time

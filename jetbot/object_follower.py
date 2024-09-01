@@ -20,7 +20,7 @@
 
 # In[ ]:
 
-from queue import Empty
+# from queue import Empty
 import torch
 import torchvision
 import torch.nn.functional as F
