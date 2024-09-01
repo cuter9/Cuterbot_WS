@@ -5,7 +5,7 @@ Implementation of TrtYOLO class with the yolo_layer plugins.
 
 from __future__ import print_function
 
-import ctypes
+# import ctypes
 
 import numpy as np
 import cv2

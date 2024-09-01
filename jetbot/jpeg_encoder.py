@@ -1,11 +1,11 @@
-import traitlets
+# import traitlets
 import gi
 
 gi.require_version('Gst', '1.0')
-import logging
+# import logging
 import atexit
-import numpy as np
-import time
+# import numpy as np
+# import time
 from gi.repository import GObject, Gst
 
 Gst.init(None)

@@ -3,11 +3,10 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
 import ipywidgets
-from ipywidgets.widgets.trait_types import TypedTuple
+# from ipywidgets.widgets.trait_types import TypedTuple
 from traitlets import Bool, Int, Float, Unicode, Instance, List
 from ipywidgets.widgets.widget_controller import Axis, Button
-import traitlets
-import time
+# import traitlets
 import threading
 import time
 

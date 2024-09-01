@@ -24,7 +24,8 @@ import time
 from jetbot.utils.utils import get_ip_address
 
 # use ian3221 power monitor i2c device to get the jetson nano power status, the modules are ian3221.py and ian3221_jetbot.py in /jetbot/apps, 
-from jetbot.apps.jetbot_states import jetbot_states, nano_states
+from jetbot.apps.jetbot_states import nano_states
+# from jetbot.apps.jetbot_states import jetbot_states
 
 import subprocess
 

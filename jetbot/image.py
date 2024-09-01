@@ -1,4 +1,4 @@
-import enum
+# import enum
 import cv2
 from .jpeg_encoder import JpegEncoder
 

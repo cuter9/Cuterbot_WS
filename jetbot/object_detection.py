@@ -1,7 +1,8 @@
 from xml.sax.xmlreader import InputSource
 
 # import tensorrt as trt
-from jetbot.ssd_tensorrt import parse_boxes, parse_boxes_fpn, TRT_INPUT_NAME, TRT_OUTPUT_NAME
+from jetbot.ssd_tensorrt import parse_boxes, parse_boxes_fpn
+# from jetbot.ssd_tensorrt import TRT_INPUT_NAME, TRT_OUTPUT_NAME
 from .tensorrt_model import TRTModel, parse_boxes_yolo, parse_boxes_yolo_v7
 import numpy as np
 import cv2

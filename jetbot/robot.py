@@ -31,7 +31,7 @@
 # SOFTWARE.
 #==================================================================================
 
-import time
+# import time
 import traitlets
 from traitlets.config.configurable import SingletonConfigurable
 import qwiic

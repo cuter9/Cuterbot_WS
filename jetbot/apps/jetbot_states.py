@@ -8,9 +8,9 @@
 
 # imports
 
-import sys
-import time
-import datetime
+# import sys
+# import time
+# import datetime
 # from jetbot.apps.ina3221 import INA3221
 from jetbot.apps import INA3221
 from jtop import jtop
