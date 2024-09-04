@@ -15,10 +15,6 @@ RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 # RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
 # RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
 
-COPY jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
-RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
-RUN echo "deb https://repo.download.nvidia.com/jetson/t210 r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
-RUN apt-get update && apt-get upgrade -y && apt-get install -y nvidia-tensorrt
 RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
 
 
@@ -48,7 +44,7 @@ RUN apt-get update && \
 RUN apt-get install -y python3-pip
 RUN pip3 install pip -U   # upgrade pip for following installation of protobuf
 RUN pip3 install setuptools 'Cython<3.0' wheel
-RUN pip3 install 'numpy<1.19.0'
+# RUN pip3 install 'numpy<1.19.0'
 RUN pip3 install matplotlib pillow
 
 RUN pip3 install h5py==2.10.0
@@ -69,9 +65,10 @@ RUN python3 -m pip install --pre --extra-index-url https://developer.download.nv
 # ==============
 # INSTALL OPENCV
 # ==============
-ENV OPENCV_DIR=/opt/
+ENV OPENCV_DIR=/opt/repo
 COPY ./repo ${OPENCV_DIR}
-RUN cd ${OPENCV_DIR}/repo && bash *.sh && pip3 install *.whl && cd .. && rm -r ./repo
+RUN cd ${OPENCV_DIR} && bash *.sh && pip3 install *.whl && cd .. && rm -r ./repo
+RUN pip3 install "numpy<1.19.0" -U
 # COPY jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
 # RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
 #    apt-get update && \
@@ -163,7 +160,7 @@ RUN cd ${QWIIC_DIR}/qwiic/drivers && rm -rf qwiic_as6212 qwiic_kx13x && \
 RUN python3 -m pip install pyserial pandas jetson-stats
 RUN python3 -m pip install pillow --force-reinstall
 ENV JETBOT_REPO_DIR=/opt/jetbot
-COPY ./Cuterbo_Demo/* ${JETBOT_REPO_DIR}
+COPY ./Cuterbot_Demo ${JETBOT_REPO_DIR}
 RUN cd ${JETBOT_REPO_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
 
 

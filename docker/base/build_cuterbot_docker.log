@@ -1,0 +1,2247 @@
+Sending build context to Docker daemon  541.7MB
+Step 1/46 : ARG BASE_IMAGE=nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3
+Step 2/46 : FROM ${BASE_IMAGE}
+ ---> c8887f7ca152
+Step 3/46 : ENV DEBIAN_FRONTEND=noninteractive
+ ---> Using cache
+ ---> b9a659e82ac9
+Step 4/46 : RUN apt-get install software-properties-common wget ca-certificates gpg
+ ---> Using cache
+ ---> b6c0b924e178
+Step 5/46 : RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware-archive-keyring.gpg >/dev/null
+ ---> Using cache
+ ---> 04818c93b3d7
+Step 6/46 : RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+ ---> Using cache
+ ---> 3caced8a16d1
+Step 7/46 : RUN apt-get update && apt-get install -y net-tools nano cmake python3-tk
+ ---> Using cache
+ ---> 33ce2aaf4b28
+Step 8/46 : ARG HDF5_DIR="/usr/lib/aarch64-linux-gnu/hdf5/serial/"
+ ---> Using cache
+ ---> 34c223e7f030
+Step 9/46 : ARG MAKEFLAGS=-j6
+ ---> Using cache
+ ---> 1b363a5cf825
+Step 10/46 : RUN apt-get update &&     apt-get install -y --no-install-recommends 		  gfortran 		  build-essential 		  liblapack-dev  	      libblas-dev 		  libhdf5-serial-dev 		  hdf5-tools 		  libhdf5-dev 		  zlib1g-dev           libfreetype6-dev           libpng-dev           libjpeg-dev 		  zip 		  libjpeg8-dev     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 4b119264010a
+Step 11/46 : RUN apt-get install -y python3-pip
+ ---> Using cache
+ ---> a1c993470797
+Step 12/46 : RUN pip3 install pip -U   # upgrade pip for following installation of protobuf
+ ---> Using cache
+ ---> e93d7f60d971
+Step 13/46 : RUN pip3 install setuptools 'Cython<3.0' wheel
+ ---> Using cache
+ ---> 748e81d4bb32
+Step 14/46 : RUN pip3 install matplotlib pillow
+ ---> Using cache
+ ---> 2938529e7604
+Step 15/46 : RUN pip3 install h5py==2.10.0
+ ---> Using cache
+ ---> a31e76e15f35
+Step 16/46 : RUN pip3 install future==0.17.1 mock==3.0.5 keras_preprocessing==1.0.5 keras_applications==1.0.8 gast==0.3.3 futures==2.2.0 protobuf pybind11
+ ---> Using cache
+ ---> de6a5816d656
+Step 17/46 : RUN python3 -m pip install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v461 'tensorflow<2'
+ ---> Using cache
+ ---> c88ce8977423
+Step 18/46 : ENV OPENCV_DIR=/opt/repo
+ ---> Using cache
+ ---> e7e1fac393db
+Step 19/46 : COPY ./repo ${OPENCV_DIR}
+ ---> Using cache
+ ---> e25d65367c85
+Step 20/46 : RUN cd ${OPENCV_DIR} && bash *.sh && pip3 install *.whl && cd .. && rm -r ./repo
+ ---> Using cache
+ ---> f42a9d6f66fa
+Step 21/46 : RUN pip3 install "numpy<1.19.0" -U
+ ---> Running in 44aa9fe7e0f1
+Collecting numpy<1.19.0
+  Using cached numpy-1.18.5-cp36-cp36m-linux_aarch64.whl
+Installing collected packages: numpy
+  Attempting uninstall: numpy
+    Found existing installation: numpy 1.19.5
+    Uninstalling numpy-1.19.5:
+      Successfully uninstalled numpy-1.19.5
+[91mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+opencv-contrib-python 4.9.0.80 requires numpy>=1.19.3; python_version >= "3.6" and platform_system == "Linux" and platform_machine == "aarch64", but you have numpy 1.18.5 which is incompatible.
+[0mSuccessfully installed numpy-1.18.5
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 44aa9fe7e0f1
+ ---> 99d8ba8fad3f
+Step 22/46 : RUN apt-get update &&     apt-get install -y     libwayland-egl1     gstreamer1.0-plugins-bad     libgstreamer-plugins-bad1.0-0     gstreamer1.0-plugins-good     python3-gst-1.0
+ ---> Running in c185356397e9
+Hit:1 http://ports.ubuntu.com/ubuntu-ports bionic InRelease
+Hit:2 http://ports.ubuntu.com/ubuntu-ports bionic-updates InRelease
+Hit:3 https://apt.kitware.com/ubuntu bionic InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports bionic-backports InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports bionic-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+gstreamer1.0-plugins-good is already the newest version (1.14.5-0ubuntu1~18.04.3).
+libwayland-egl1 is already the newest version (1.16.0-1ubuntu1.1~18.04.4).
+libwayland-egl1 set to manually installed.
+gstreamer1.0-plugins-bad is already the newest version (1.14.5-0ubuntu1~18.04.1).
+libgstreamer-plugins-bad1.0-0 is already the newest version (1.14.5-0ubuntu1~18.04.1).
+libgstreamer-plugins-bad1.0-0 set to manually installed.
+The following NEW packages will be installed:
+  python3-gst-1.0
+0 upgraded, 1 newly installed, 0 to remove and 123 not upgraded.
+Need to get 13.4 kB of archives.
+After this operation, 64.5 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic-updates/universe arm64 python3-gst-1.0 arm64 1.14.5-0ubuntu1~18.04.1 [13.4 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 13.4 kB in 1s (16.6 kB/s)
+Selecting previously unselected package python3-gst-1.0.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49272 files and directories currently installed.)
+Preparing to unpack .../python3-gst-1.0_1.14.5-0ubuntu1~18.04.1_arm64.deb ...
+Unpacking python3-gst-1.0 (1.14.5-0ubuntu1~18.04.1) ...
+Setting up python3-gst-1.0 (1.14.5-0ubuntu1~18.04.1) ...
+Processing triggers for libc-bin (2.27-3ubuntu1.4) ...
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcapture.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-tls.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libv4l2_nvcuvidvideocodec.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-rmapi-tegra.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcuvidv4l2.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glsi.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvisp_utils.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glcore.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glvkspirv.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvpva.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.418.00 is empty, not checked.
+Removing intermediate container c185356397e9
+ ---> 02cd8c3df784
+Step 23/46 : RUN echo -e "\e[48;5;172m Install traitlets \e[0m"
+ ---> Running in d05452603cd3
+-e [48;5;172m Install traitlets [0m
+Removing intermediate container d05452603cd3
+ ---> 8658400e511c
+Step 24/46 : ENV REPO_DIR=/opt/
+ ---> Running in 38058ee5c7df
+Removing intermediate container 38058ee5c7df
+ ---> 020589cb6f96
+Step 25/46 : RUN cd ${REPO_DIR} && git clone -b 4.3.3 https://github.com/ipython/traitlets.git && cd traitlets && pip3 install -e .
+ ---> Running in 8c280f383f23
+[91mCloning into 'traitlets'...
+[0m[91mNote: checking out 'b9ae09c2084c3f5afefbacdaf692683c4ee0ae95'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+[0mObtaining file:///opt/traitlets
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting ipython_genutils
+  Downloading ipython_genutils-0.2.0-py2.py3-none-any.whl (26 kB)
+Requirement already satisfied: six in /usr/local/lib/python3.6/dist-packages (from traitlets==4.3.3) (1.16.0)
+Collecting decorator
+  Downloading decorator-5.1.1-py3-none-any.whl (9.1 kB)
+Installing collected packages: ipython-genutils, decorator, traitlets
+  Running setup.py develop for traitlets
+Successfully installed decorator-5.1.1 ipython-genutils-0.2.0 traitlets-4.3.3
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 8c280f383f23
+ ---> fd7d79b50a05
+Step 26/46 : RUN echo -e "\e[48;5;172m Install Jupyter Lab \e[0m"
+ ---> Running in 80a759c7879b
+-e [48;5;172m Install Jupyter Lab [0m
+Removing intermediate container 80a759c7879b
+ ---> 854c318b0b6f
+Step 27/46 : RUN apt-get update
+ ---> Running in 4a1cb11476fb
+Hit:1 http://ports.ubuntu.com/ubuntu-ports bionic InRelease
+Hit:2 https://apt.kitware.com/ubuntu bionic InRelease
+Hit:3 http://ports.ubuntu.com/ubuntu-ports bionic-updates InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports bionic-backports InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports bionic-security InRelease
+Reading package lists...
+Removing intermediate container 4a1cb11476fb
+ ---> a4502056c7d0
+Step 28/46 : RUN apt-get install -y curl
+ ---> Running in 785d4883515d
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libcurl4
+The following NEW packages will be installed:
+  curl libcurl4
+0 upgraded, 2 newly installed, 0 to remove and 123 not upgraded.
+Need to get 337 kB of archives.
+After this operation, 969 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 libcurl4 arm64 7.58.0-2ubuntu3.24 [185 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 curl arm64 7.58.0-2ubuntu3.24 [152 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 337 kB in 3s (114 kB/s)
+Selecting previously unselected package libcurl4:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49278 files and directories currently installed.)
+Preparing to unpack .../libcurl4_7.58.0-2ubuntu3.24_arm64.deb ...
+Unpacking libcurl4:arm64 (7.58.0-2ubuntu3.24) ...
+Selecting previously unselected package curl.
+Preparing to unpack .../curl_7.58.0-2ubuntu3.24_arm64.deb ...
+Unpacking curl (7.58.0-2ubuntu3.24) ...
+Setting up libcurl4:arm64 (7.58.0-2ubuntu3.24) ...
+Setting up curl (7.58.0-2ubuntu3.24) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Processing triggers for libc-bin (2.27-3ubuntu1.4) ...
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcapture.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-tls.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libv4l2_nvcuvidvideocodec.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-rmapi-tegra.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcuvidv4l2.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glsi.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvisp_utils.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glcore.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glvkspirv.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvpva.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.418.00 is empty, not checked.
+Removing intermediate container 785d4883515d
+ ---> 9123643ce2f7
+Step 29/46 : RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+ ---> Running in f9773b4c7f40
+
+================================================================================
+================================================================================
+
+                              DEPRECATION WARNING                            
+
+     Node.js 16.x is no longer actively supported!
+
+  You will not receive security or critical stability updates for this version.
+
+  You should migrate to a supported version of Node.js as soon as possible.
+  Use the installation script that corresponds to the version of Node.js you
+  wish to install. e.g.
+  
+   * https://deb.nodesource.com/setup_16.x — Node.js 16 "Gallium" (deprecated)
+   * https://deb.nodesource.com/setup_18.x — Node.js 18 "Hydrogen" (Maintenance)
+   * https://deb.nodesource.com/setup_19.x — Node.js 19 "Nineteen" (deprecated)
+   * https://deb.nodesource.com/setup_20.x — Node.js 20 LTS "Iron" (recommended)
+   * https://deb.nodesource.com/setup_21.x — Node.js 21 "Iron" (current)
+   
+
+
+  Please see https://github.com/nodejs/Release for details about which
+  version may be appropriate for you.
+
+  The NodeSource Node.js distributions repository contains
+  information both about supported versions of Node.js and supported Linux
+  distributions. To learn more about usage, see the repository:
+   https://github.com/nodesource/distributions
+
+================================================================================
+================================================================================
+
+Continuing in 10 seconds ...
+
+[38;5;79m2024-09-04 01:02:31 - Installing pre-requisites[0m
+Hit:1 http://ports.ubuntu.com/ubuntu-ports bionic InRelease
+Hit:2 https://apt.kitware.com/ubuntu bionic InRelease
+Hit:3 http://ports.ubuntu.com/ubuntu-ports bionic-updates InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports bionic-backports InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports bionic-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+curl is already the newest version (7.58.0-2ubuntu3.24).
+The following additional packages will be installed:
+  dirmngr gnupg-l10n gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server
+  gpgconf gpgsm gpgv
+Suggested packages:
+  dbus-user-session libpam-systemd pinentry-gnome3 tor parcimonie xloadimage
+  scdaemon
+The following packages will be upgraded:
+  apt-transport-https ca-certificates dirmngr gnupg gnupg-l10n gnupg-utils gpg
+  gpg-agent gpg-wks-client gpg-wks-server gpgconf gpgsm gpgv
+13 upgraded, 0 newly installed, 0 to remove and 110 not upgraded.
+Need to get 2029 kB of archives.
+After this operation, 10.2 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpg-wks-client arm64 2.2.4-1ubuntu1.6 [76.6 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 dirmngr arm64 2.2.4-1ubuntu1.6 [276 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpg arm64 2.2.4-1ubuntu1.6 [401 kB]
+Get:4 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gnupg-utils arm64 2.2.4-1ubuntu1.6 [108 kB]
+Get:5 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gnupg-l10n all 2.2.4-1ubuntu1.6 [50.1 kB]
+Get:6 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpg-agent arm64 2.2.4-1ubuntu1.6 [189 kB]
+Get:7 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpgsm arm64 2.2.4-1ubuntu1.6 [181 kB]
+Get:8 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpgconf arm64 2.2.4-1ubuntu1.6 [107 kB]
+Get:9 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gnupg arm64 2.2.4-1ubuntu1.6 [249 kB]
+Get:10 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpg-wks-server arm64 2.2.4-1ubuntu1.6 [71.6 kB]
+Get:11 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 gpgv arm64 2.2.4-1ubuntu1.6 [167 kB]
+Get:12 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 ca-certificates all 20230311ubuntu0.18.04.1 [151 kB]
+Get:13 http://ports.ubuntu.com/ubuntu-ports bionic-updates/universe arm64 apt-transport-https all 1.6.17 [1692 B]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 2029 kB in 6s (353 kB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49291 files and directories currently installed.)
+Preparing to unpack .../00-gpg-wks-client_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpg-wks-client (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../01-dirmngr_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking dirmngr (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../02-gpg_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpg (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../03-gnupg-utils_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gnupg-utils (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../04-gnupg-l10n_2.2.4-1ubuntu1.6_all.deb ...
+Unpacking gnupg-l10n (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../05-gpg-agent_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpg-agent (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../06-gpgsm_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpgsm (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../07-gpgconf_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpgconf (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../08-gnupg_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gnupg (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../09-gpg-wks-server_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpg-wks-server (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Preparing to unpack .../10-gpgv_2.2.4-1ubuntu1.6_arm64.deb ...
+Unpacking gpgv (2.2.4-1ubuntu1.6) over (2.2.4-1ubuntu1.4) ...
+Setting up gpgv (2.2.4-1ubuntu1.6) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49291 files and directories currently installed.)
+Preparing to unpack .../ca-certificates_20230311ubuntu0.18.04.1_all.deb ...
+Unpacking ca-certificates (20230311ubuntu0.18.04.1) over (20210119~18.04.2) ...
+Preparing to unpack .../apt-transport-https_1.6.17_all.deb ...
+Unpacking apt-transport-https (1.6.17) over (1.6.14) ...
+Setting up apt-transport-https (1.6.17) ...
+Setting up gpgconf (2.2.4-1ubuntu1.6) ...
+Setting up gpg-agent (2.2.4-1ubuntu1.6) ...
+Setting up gnupg-l10n (2.2.4-1ubuntu1.6) ...
+Setting up gpgsm (2.2.4-1ubuntu1.6) ...
+Setting up gnupg-utils (2.2.4-1ubuntu1.6) ...
+Setting up ca-certificates (20230311ubuntu0.18.04.1) ...
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+26 added, 17 removed; done.
+Setting up dirmngr (2.2.4-1ubuntu1.6) ...
+Setting up gpg (2.2.4-1ubuntu1.6) ...
+Setting up gpg-wks-server (2.2.4-1ubuntu1.6) ...
+Setting up gpg-wks-client (2.2.4-1ubuntu1.6) ...
+Setting up gnupg (2.2.4-1ubuntu1.6) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Processing triggers for ca-certificates (20230311ubuntu0.18.04.1) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+Get:1 https://deb.nodesource.com/node_16.x nodistro InRelease [12.1 kB]
+Get:2 https://deb.nodesource.com/node_16.x nodistro/main arm64 Packages [7255 B]
+Hit:3 http://ports.ubuntu.com/ubuntu-ports bionic InRelease
+Hit:4 https://apt.kitware.com/ubuntu bionic InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports bionic-updates InRelease
+Hit:6 http://ports.ubuntu.com/ubuntu-ports bionic-backports InRelease
+Hit:7 http://ports.ubuntu.com/ubuntu-ports bionic-security InRelease
+Fetched 19.4 kB in 2s (8188 B/s)
+Reading package lists...
+[1;32m2024-09-04 01:03:08 - Repository configured successfully. To install Node.js, run: apt-get install nodejs -y[0m
+Removing intermediate container f9773b4c7f40
+ ---> a93d7c373102
+Step 30/46 : RUN apt-get install -y nodejs libffi-dev
+ ---> Running in 15af23f64b60
+Reading package lists...
+Building dependency tree...
+Reading state information...
+libffi-dev is already the newest version (3.2.1-8).
+The following NEW packages will be installed:
+  nodejs
+0 upgraded, 1 newly installed, 0 to remove and 110 not upgraded.
+Need to get 27.2 MB of archives.
+After this operation, 128 MB of additional disk space will be used.
+Get:1 https://deb.nodesource.com/node_16.x nodistro/main arm64 nodejs arm64 16.20.2-1nodesource1 [27.2 MB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 27.2 MB in 1s (21.1 MB/s)
+Selecting previously unselected package nodejs.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 49300 files and directories currently installed.)
+Preparing to unpack .../nodejs_16.20.2-1nodesource1_arm64.deb ...
+Unpacking nodejs (16.20.2-1nodesource1) ...
+Setting up nodejs (16.20.2-1nodesource1) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Removing intermediate container 15af23f64b60
+ ---> bf997cdde892
+Step 31/46 : RUN pip3 install jupyter jupyterlab jupyter_packaging
+ ---> Running in 539eaec34df3
+Collecting jupyter
+  Downloading jupyter-1.1.1-py2.py3-none-any.whl (2.7 kB)
+Collecting jupyterlab
+  Downloading jupyterlab-3.2.9-py3-none-any.whl (8.5 MB)
+Collecting jupyter_packaging
+  Downloading jupyter_packaging-0.10.6-py2.py3-none-any.whl (14 kB)
+Collecting jupyter-console
+  Downloading jupyter_console-6.4.3-py3-none-any.whl (22 kB)
+Collecting notebook
+  Downloading notebook-6.4.10-py3-none-any.whl (9.9 MB)
+Collecting ipywidgets
+  Downloading ipywidgets-7.8.4-py2.py3-none-any.whl (124 kB)
+Collecting nbconvert
+  Downloading nbconvert-6.0.7-py3-none-any.whl (552 kB)
+Collecting ipykernel
+  Downloading ipykernel-5.5.6-py3-none-any.whl (121 kB)
+Collecting jupyterlab-server~=2.3
+  Downloading jupyterlab_server-2.10.3-py3-none-any.whl (61 kB)
+Requirement already satisfied: packaging in /usr/local/lib/python3.6/dist-packages (from jupyterlab) (21.3)
+Collecting nbclassic~=0.2
+  Downloading nbclassic-0.3.5-py3-none-any.whl (25 kB)
+Collecting jupyter-server~=1.4
+  Downloading jupyter_server-1.13.1-py3-none-any.whl (396 kB)
+Collecting jupyter-core
+  Downloading jupyter_core-4.9.2-py3-none-any.whl (86 kB)
+Collecting jinja2>=2.1
+  Downloading Jinja2-3.0.3-py3-none-any.whl (133 kB)
+Collecting tornado>=6.1.0
+  Downloading tornado-6.1-cp36-cp36m-manylinux2014_aarch64.whl (428 kB)
+Collecting ipython
+  Downloading ipython-7.16.3-py3-none-any.whl (783 kB)
+Requirement already satisfied: wheel in /usr/local/lib/python3.6/dist-packages (from jupyter_packaging) (0.37.1)
+Collecting tomlkit
+  Downloading tomlkit-0.11.6-py3-none-any.whl (35 kB)
+Collecting deprecation
+  Downloading deprecation-2.1.0-py2.py3-none-any.whl (11 kB)
+Requirement already satisfied: setuptools>=46.4.0 in /usr/local/lib/python3.6/dist-packages (from jupyter_packaging) (59.6.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.6/dist-packages (from jinja2>=2.1->jupyterlab) (2.0.1)
+Requirement already satisfied: ipython-genutils in /usr/local/lib/python3.6/dist-packages (from jupyter-server~=1.4->jupyterlab) (0.2.0)
+Collecting jupyter-client>=6.1.1
+  Downloading jupyter_client-7.1.2-py3-none-any.whl (130 kB)
+Collecting websocket-client
+  Downloading websocket_client-1.3.1-py3-none-any.whl (54 kB)
+Collecting prometheus-client
+  Downloading prometheus_client-0.17.1-py3-none-any.whl (60 kB)
+Requirement already satisfied: traitlets>=4.2.1 in /opt/traitlets (from jupyter-server~=1.4->jupyterlab) (4.3.3)
+Collecting nbformat
+  Downloading nbformat-5.1.3-py3-none-any.whl (178 kB)
+Collecting terminado>=0.8.3
+  Downloading terminado-0.12.1-py3-none-any.whl (15 kB)
+Collecting anyio<4,>=3.1.0
+  Downloading anyio-3.6.2-py3-none-any.whl (80 kB)
+Collecting argon2-cffi
+  Downloading argon2_cffi-21.3.0-py3-none-any.whl (14 kB)
+Collecting pyzmq>=17
+  Downloading pyzmq-25.1.2-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (878 kB)
+Collecting Send2Trash
+  Downloading Send2Trash-1.8.3-py3-none-any.whl (18 kB)
+Collecting entrypoints>=0.2.2
+  Downloading entrypoints-0.4-py3-none-any.whl (5.3 kB)
+Collecting requests
+  Downloading requests-2.27.1-py2.py3-none-any.whl (63 kB)
+Collecting jsonschema>=3.0.1
+  Downloading jsonschema-3.2.0-py2.py3-none-any.whl (56 kB)
+Collecting babel
+  Downloading Babel-2.11.0-py3-none-any.whl (9.5 MB)
+Collecting json5
+  Downloading json5-0.9.16-py2.py3-none-any.whl (19 kB)
+Collecting nest-asyncio>=1.5
+  Downloading nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+Collecting mistune<2,>=0.8.1
+  Downloading mistune-0.8.4-py2.py3-none-any.whl (16 kB)
+Collecting bleach
+  Downloading bleach-4.1.0-py2.py3-none-any.whl (157 kB)
+Collecting nbclient<0.6.0,>=0.5.0
+  Downloading nbclient-0.5.9-py3-none-any.whl (69 kB)
+Collecting jupyterlab-pygments
+  Downloading jupyterlab_pygments-0.1.2-py2.py3-none-any.whl (4.6 kB)
+Collecting defusedxml
+  Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Collecting testpath
+  Downloading testpath-0.6.0-py3-none-any.whl (83 kB)
+Collecting pandocfilters>=1.4.1
+  Downloading pandocfilters-1.5.1-py2.py3-none-any.whl (8.7 kB)
+Collecting pygments>=2.4.1
+  Downloading Pygments-2.14.0-py3-none-any.whl (1.1 MB)
+Collecting pickleshare
+  Downloading pickleshare-0.7.5-py2.py3-none-any.whl (6.9 kB)
+Requirement already satisfied: decorator in /usr/local/lib/python3.6/dist-packages (from ipython->jupyterlab) (5.1.1)
+Collecting pexpect
+  Downloading pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+Collecting backcall
+  Downloading backcall-0.2.0-py2.py3-none-any.whl (11 kB)
+Collecting jedi<=0.17.2,>=0.10
+  Downloading jedi-0.17.2-py2.py3-none-any.whl (1.4 MB)
+Collecting prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0
+  Downloading prompt_toolkit-3.0.36-py3-none-any.whl (386 kB)
+Collecting jupyterlab-widgets<3,>=1.0.0
+  Downloading jupyterlab_widgets-1.1.10-py3-none-any.whl (238 kB)
+Collecting comm>=0.1.3
+  Downloading comm-0.1.4-py3-none-any.whl (6.6 kB)
+Collecting widgetsnbextension~=3.6.9
+  Downloading widgetsnbextension-3.6.9-py2.py3-none-any.whl (1.5 MB)
+Requirement already satisfied: pyparsing!=3.0.5,>=2.0.2 in /usr/local/lib/python3.6/dist-packages (from packaging->jupyterlab) (3.0.7)
+Collecting idna>=2.8
+  Downloading idna-3.8-py3-none-any.whl (66 kB)
+Requirement already satisfied: typing-extensions in /usr/local/lib/python3.6/dist-packages (from anyio<4,>=3.1.0->jupyter-server~=1.4->jupyterlab) (4.0.1)
+Requirement already satisfied: dataclasses in /usr/local/lib/python3.6/dist-packages (from anyio<4,>=3.1.0->jupyter-server~=1.4->jupyterlab) (0.8)
+Collecting contextvars
+  Downloading contextvars-2.4.tar.gz (9.6 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting sniffio>=1.1
+  Downloading sniffio-1.2.0-py3-none-any.whl (10 kB)
+Collecting parso<0.8.0,>=0.7.0
+  Downloading parso-0.7.1-py2.py3-none-any.whl (109 kB)
+Requirement already satisfied: six>=1.11.0 in /usr/local/lib/python3.6/dist-packages (from jsonschema>=3.0.1->jupyterlab-server~=2.3->jupyterlab) (1.16.0)
+Collecting pyrsistent>=0.14.0
+  Downloading pyrsistent-0.18.0.tar.gz (104 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting attrs>=17.4.0
+  Downloading attrs-22.2.0-py3-none-any.whl (60 kB)
+Requirement already satisfied: importlib-metadata in /usr/local/lib/python3.6/dist-packages (from jsonschema>=3.0.1->jupyterlab-server~=2.3->jupyterlab) (4.8.3)
+Requirement already satisfied: python-dateutil>=2.1 in /usr/local/lib/python3.6/dist-packages (from jupyter-client>=6.1.1->jupyter-server~=1.4->jupyterlab) (2.9.0.post0)
+Collecting async-generator
+  Downloading async_generator-1.10-py3-none-any.whl (18 kB)
+Collecting wcwidth
+  Downloading wcwidth-0.2.13-py2.py3-none-any.whl (34 kB)
+Collecting ptyprocess
+  Downloading ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+Collecting argon2-cffi-bindings
+  Downloading argon2_cffi_bindings-21.2.0-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (80 kB)
+Collecting pytz>=2015.7
+  Downloading pytz-2024.1-py2.py3-none-any.whl (505 kB)
+Collecting webencodings
+  Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Collecting charset-normalizer~=2.0.0
+  Downloading charset_normalizer-2.0.12-py3-none-any.whl (39 kB)
+Collecting urllib3<1.27,>=1.21.1
+  Downloading urllib3-1.26.20-py2.py3-none-any.whl (144 kB)
+Collecting certifi>=2017.4.17
+  Using cached certifi-2024.8.30-py3-none-any.whl (167 kB)
+Collecting immutables>=0.9
+  Downloading immutables-0.19-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (114 kB)
+Requirement already satisfied: cffi>=1.0.1 in /usr/local/lib/python3.6/dist-packages (from argon2-cffi-bindings->argon2-cffi->jupyter-server~=1.4->jupyterlab) (1.15.0)
+Requirement already satisfied: zipp>=0.5 in /usr/local/lib/python3.6/dist-packages (from importlib-metadata->jsonschema>=3.0.1->jupyterlab-server~=2.3->jupyterlab) (3.6.0)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.6/dist-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi->jupyter-server~=1.4->jupyterlab) (2.21)
+Building wheels for collected packages: pyrsistent, contextvars
+  Building wheel for pyrsistent (pyproject.toml): started
+  Building wheel for pyrsistent (pyproject.toml): finished with status 'done'
+  Created wheel for pyrsistent: filename=pyrsistent-0.18.0-cp36-cp36m-linux_aarch64.whl size=97808 sha256=3761b365801ce01d739cd7781cecd1e07c971efdb6f8a278687cdba496ea61b3
+  Stored in directory: /root/.cache/pip/wheels/cb/62/d2/c88499b092c1f225db7e55dbbcd8dcd45543194e46e54c370a
+  Building wheel for contextvars (setup.py): started
+  Building wheel for contextvars (setup.py): finished with status 'done'
+  Created wheel for contextvars: filename=contextvars-2.4-py3-none-any.whl size=7681 sha256=1255077f0b62ee2fe03b5f3b80ac68a31764eb780591ba2561da5354624bbe84
+  Stored in directory: /root/.cache/pip/wheels/41/11/53/911724983aa48deb94792432e14e518447212dd6c5477d49d3
+Successfully built pyrsistent contextvars
+Installing collected packages: pyrsistent, attrs, wcwidth, tornado, pyzmq, ptyprocess, parso, nest-asyncio, jupyter-core, jsonschema, immutables, entrypoints, webencodings, pygments, prompt-toolkit, pickleshare, pexpect, nbformat, jupyter-client, jedi, contextvars, backcall, async-generator, testpath, sniffio, pandocfilters, nbclient, mistune, jupyterlab-pygments, jinja2, ipython, idna, defusedxml, bleach, argon2-cffi-bindings, websocket-client, urllib3, terminado, Send2Trash, pytz, prometheus-client, nbconvert, ipykernel, charset-normalizer, certifi, argon2-cffi, anyio, requests, notebook, jupyter-server, json5, babel, widgetsnbextension, nbclassic, jupyterlab-widgets, jupyterlab-server, comm, tomlkit, jupyterlab, jupyter-console, ipywidgets, deprecation, jupyter-packaging, jupyter
+Successfully installed Send2Trash-1.8.3 anyio-3.6.2 argon2-cffi-21.3.0 argon2-cffi-bindings-21.2.0 async-generator-1.10 attrs-22.2.0 babel-2.11.0 backcall-0.2.0 bleach-4.1.0 certifi-2024.8.30 charset-normalizer-2.0.12 comm-0.1.4 contextvars-2.4 defusedxml-0.7.1 deprecation-2.1.0 entrypoints-0.4 idna-3.8 immutables-0.19 ipykernel-5.5.6 ipython-7.16.3 ipywidgets-7.8.4 jedi-0.17.2 jinja2-3.0.3 json5-0.9.16 jsonschema-3.2.0 jupyter-1.1.1 jupyter-client-7.1.2 jupyter-console-6.4.3 jupyter-core-4.9.2 jupyter-packaging-0.10.6 jupyter-server-1.13.1 jupyterlab-3.2.9 jupyterlab-pygments-0.1.2 jupyterlab-server-2.10.3 jupyterlab-widgets-1.1.10 mistune-0.8.4 nbclassic-0.3.5 nbclient-0.5.9 nbconvert-6.0.7 nbformat-5.1.3 nest-asyncio-1.6.0 notebook-6.4.10 pandocfilters-1.5.1 parso-0.7.1 pexpect-4.9.0 pickleshare-0.7.5 prometheus-client-0.17.1 prompt-toolkit-3.0.36 ptyprocess-0.7.0 pygments-2.14.0 pyrsistent-0.18.0 pytz-2024.1 pyzmq-25.1.2 requests-2.27.1 sniffio-1.2.0 terminado-0.12.1 testpath-0.6.0 tomlkit-0.11.6 tornado-6.1 urllib3-1.26.20 wcwidth-0.2.13 webencodings-0.5.1 websocket-client-1.3.1 widgetsnbextension-3.6.9
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 539eaec34df3
+ ---> 2c4b9025a2b1
+Step 32/46 : RUN echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
+ ---> Running in 81b0b9a4faf5
+[42m Install jupyter_clickable_image_widget [0m
+Removing intermediate container 81b0b9a4faf5
+ ---> 28c73212240d
+Step 33/46 : RUN cd &&     apt-get install -y libssl1.0-dev &&     git clone https://github.com/jaybdub/jupyter_clickable_image_widget &&     cd jupyter_clickable_image_widget &&     git checkout tags/v0.1 &&     pip3 install -e . &&     jupyter labextension install js &&     jupyter lab build
+ ---> Running in 4df9a6b8324c
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libssl1.0.0
+The following NEW packages will be installed:
+  libssl1.0-dev libssl1.0.0
+0 upgraded, 2 newly installed, 0 to remove and 110 not upgraded.
+Need to get 1756 kB of archives.
+After this operation, 9047 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 libssl1.0.0 arm64 1.0.2n-1ubuntu5.13 [725 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 libssl1.0-dev arm64 1.0.2n-1ubuntu5.13 [1031 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 1756 kB in 4s (400 kB/s)
+Selecting previously unselected package libssl1.0.0:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 52503 files and directories currently installed.)
+Preparing to unpack .../libssl1.0.0_1.0.2n-1ubuntu5.13_arm64.deb ...
+Unpacking libssl1.0.0:arm64 (1.0.2n-1ubuntu5.13) ...
+Selecting previously unselected package libssl1.0-dev:arm64.
+Preparing to unpack .../libssl1.0-dev_1.0.2n-1ubuntu5.13_arm64.deb ...
+Unpacking libssl1.0-dev:arm64 (1.0.2n-1ubuntu5.13) ...
+Setting up libssl1.0.0:arm64 (1.0.2n-1ubuntu5.13) ...
+Setting up libssl1.0-dev:arm64 (1.0.2n-1ubuntu5.13) ...
+Processing triggers for libc-bin (2.27-3ubuntu1.4) ...
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcapture.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-tls.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libv4l2_nvcuvidvideocodec.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-rmapi-tegra.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvcuvidv4l2.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glsi.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvisp_utils.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glcore.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-glvkspirv.so.418.00 is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvpva.so is empty, not checked.
+/sbin/ldconfig.real: File /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.418.00 is empty, not checked.
+[91mCloning into 'jupyter_clickable_image_widget'...
+[0m[91mNote: checking out 'tags/v0.1'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+HEAD is now at c637f70 Merge pull request #5 from tokk-nv/dev-jlab2-support
+[0mObtaining file:///root/jupyter_clickable_image_widget
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: ipywidgets>=7.0.0 in /usr/local/lib/python3.6/dist-packages (from jupyter-clickable-image-widget==0.1.0a0) (7.8.4)
+Requirement already satisfied: traitlets>=4.3.1 in /opt/traitlets (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.3.3)
+Requirement already satisfied: ipython-genutils~=0.2.0 in /usr/local/lib/python3.6/dist-packages (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.2.0)
+Requirement already satisfied: comm>=0.1.3 in /usr/local/lib/python3.6/dist-packages (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.1.4)
+Requirement already satisfied: jupyterlab-widgets<3,>=1.0.0 in /usr/local/lib/python3.6/dist-packages (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.1.10)
+Requirement already satisfied: ipython>=4.0.0 in /usr/local/lib/python3.6/dist-packages (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (7.16.3)
+Requirement already satisfied: widgetsnbextension~=3.6.9 in /usr/local/lib/python3.6/dist-packages (from ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.6.9)
+Requirement already satisfied: pexpect in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.9.0)
+Requirement already satisfied: backcall in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.2.0)
+Requirement already satisfied: pygments in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (2.14.0)
+Requirement already satisfied: jedi<=0.17.2,>=0.10 in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.17.2)
+Requirement already satisfied: pickleshare in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.7.5)
+Requirement already satisfied: decorator in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (5.1.1)
+Requirement already satisfied: setuptools>=18.5 in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (59.6.0)
+Requirement already satisfied: prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 in /usr/local/lib/python3.6/dist-packages (from ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.0.36)
+Requirement already satisfied: six in /usr/local/lib/python3.6/dist-packages (from traitlets>=4.3.1->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.16.0)
+Requirement already satisfied: notebook>=4.4.1 in /usr/local/lib/python3.6/dist-packages (from widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (6.4.10)
+Requirement already satisfied: parso<0.8.0,>=0.7.0 in /usr/local/lib/python3.6/dist-packages (from jedi<=0.17.2,>=0.10->ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.7.1)
+Requirement already satisfied: nbformat in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (5.1.3)
+Requirement already satisfied: tornado>=6.1 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (6.1)
+Requirement already satisfied: prometheus-client in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.17.1)
+Requirement already satisfied: nest-asyncio>=1.5 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.6.0)
+Requirement already satisfied: pyzmq>=17 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (25.1.2)
+Requirement already satisfied: ipykernel in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (5.5.6)
+Requirement already satisfied: jinja2 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.0.3)
+Requirement already satisfied: argon2-cffi in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (21.3.0)
+Requirement already satisfied: jupyter-client>=5.3.4 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (7.1.2)
+Requirement already satisfied: nbconvert>=5 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (6.0.7)
+Requirement already satisfied: terminado>=0.8.3 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.12.1)
+Requirement already satisfied: jupyter-core>=4.6.1 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.9.2)
+Requirement already satisfied: Send2Trash>=1.8.0 in /usr/local/lib/python3.6/dist-packages (from notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.8.3)
+Requirement already satisfied: wcwidth in /usr/local/lib/python3.6/dist-packages (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.2.13)
+Requirement already satisfied: ptyprocess>=0.5 in /usr/local/lib/python3.6/dist-packages (from pexpect->ipython>=4.0.0->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.7.0)
+Requirement already satisfied: python-dateutil>=2.1 in /usr/local/lib/python3.6/dist-packages (from jupyter-client>=5.3.4->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (2.9.0.post0)
+Requirement already satisfied: entrypoints in /usr/local/lib/python3.6/dist-packages (from jupyter-client>=5.3.4->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.4)
+Requirement already satisfied: nbclient<0.6.0,>=0.5.0 in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.5.9)
+Requirement already satisfied: pandocfilters>=1.4.1 in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.5.1)
+Requirement already satisfied: testpath in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.6.0)
+Requirement already satisfied: jupyterlab-pygments in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.1.2)
+Requirement already satisfied: mistune<2,>=0.8.1 in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.8.4)
+Requirement already satisfied: bleach in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.1.0)
+Requirement already satisfied: defusedxml in /usr/local/lib/python3.6/dist-packages (from nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.7.1)
+Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.6/dist-packages (from jinja2->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (2.0.1)
+Requirement already satisfied: jsonschema!=2.5.0,>=2.4 in /usr/local/lib/python3.6/dist-packages (from nbformat->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.2.0)
+Requirement already satisfied: dataclasses in /usr/local/lib/python3.6/dist-packages (from argon2-cffi->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.8)
+Requirement already satisfied: typing-extensions in /usr/local/lib/python3.6/dist-packages (from argon2-cffi->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.0.1)
+Requirement already satisfied: argon2-cffi-bindings in /usr/local/lib/python3.6/dist-packages (from argon2-cffi->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (21.2.0)
+Requirement already satisfied: importlib-metadata in /usr/local/lib/python3.6/dist-packages (from jsonschema!=2.5.0,>=2.4->nbformat->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (4.8.3)
+Requirement already satisfied: attrs>=17.4.0 in /usr/local/lib/python3.6/dist-packages (from jsonschema!=2.5.0,>=2.4->nbformat->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (22.2.0)
+Requirement already satisfied: pyrsistent>=0.14.0 in /usr/local/lib/python3.6/dist-packages (from jsonschema!=2.5.0,>=2.4->nbformat->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.18.0)
+Requirement already satisfied: async-generator in /usr/local/lib/python3.6/dist-packages (from nbclient<0.6.0,>=0.5.0->nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.10)
+Requirement already satisfied: cffi>=1.0.1 in /usr/local/lib/python3.6/dist-packages (from argon2-cffi-bindings->argon2-cffi->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (1.15.0)
+Requirement already satisfied: webencodings in /usr/local/lib/python3.6/dist-packages (from bleach->nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (0.5.1)
+Requirement already satisfied: packaging in /usr/local/lib/python3.6/dist-packages (from bleach->nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (21.3)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.6/dist-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (2.21)
+Requirement already satisfied: zipp>=0.5 in /usr/local/lib/python3.6/dist-packages (from importlib-metadata->jsonschema!=2.5.0,>=2.4->nbformat->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.6.0)
+Requirement already satisfied: pyparsing!=3.0.5,>=2.0.2 in /usr/local/lib/python3.6/dist-packages (from packaging->bleach->nbconvert>=5->notebook>=4.4.1->widgetsnbextension~=3.6.9->ipywidgets>=7.0.0->jupyter-clickable-image-widget==0.1.0a0) (3.0.7)
+Installing collected packages: jupyter-clickable-image-widget
+  Running setup.py develop for jupyter-clickable-image-widget
+Successfully installed jupyter-clickable-image-widget-0.1.0a0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m-\|/-\|/-\|/-\|/[91mBuilding jupyterlab assets (development)
+[0m-\|/-\|/-\|/-\-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\-\|/-\|/-\|/-\|/-\|/-\|/--\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/--\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|[91m[LabBuildApp] JupyterLab 3.2.9
+[0m[91m[LabBuildApp] Building in /usr/local/share/jupyter/lab
+[0m[91m[LabBuildApp] Building jupyterlab assets (development)
+[0m-\|/-\|/-\|/-\-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/--\|/-\|/-\|/-\|/-\|/-\|/--\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/Removing intermediate container 4df9a6b8324c
+ ---> 7abcec098520
+Step 34/46 : RUN apt-get update && apt-get install -y supervisor unzip
+ ---> Running in 90903cb9d756
+Hit:1 https://deb.nodesource.com/node_16.x nodistro InRelease
+Hit:2 http://ports.ubuntu.com/ubuntu-ports bionic InRelease
+Hit:3 https://apt.kitware.com/ubuntu bionic InRelease
+Hit:4 http://ports.ubuntu.com/ubuntu-ports bionic-updates InRelease
+Hit:5 http://ports.ubuntu.com/ubuntu-ports bionic-backports InRelease
+Hit:6 http://ports.ubuntu.com/ubuntu-ports bionic-security InRelease
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+unzip is already the newest version (6.0-21ubuntu1.2).
+The following additional packages will be installed:
+  python-meld3 python-pkg-resources
+Suggested packages:
+  python-setuptools supervisor-doc
+The following NEW packages will be installed:
+  python-meld3 python-pkg-resources supervisor
+0 upgraded, 3 newly installed, 0 to remove and 110 not upgraded.
+Need to get 415 kB of archives.
+After this operation, 2138 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic-updates/main arm64 python-pkg-resources all 39.0.1-2ubuntu0.1 [128 kB]
+Get:2 http://ports.ubuntu.com/ubuntu-ports bionic/universe arm64 python-meld3 all 1.0.2-2 [30.9 kB]
+Get:3 http://ports.ubuntu.com/ubuntu-ports bionic/universe arm64 supervisor all 3.3.1-1.1 [256 kB]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 415 kB in 3s (161 kB/s)
+Selecting previously unselected package python-pkg-resources.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 52610 files and directories currently installed.)
+Preparing to unpack .../python-pkg-resources_39.0.1-2ubuntu0.1_all.deb ...
+Unpacking python-pkg-resources (39.0.1-2ubuntu0.1) ...
+Selecting previously unselected package python-meld3.
+Preparing to unpack .../python-meld3_1.0.2-2_all.deb ...
+Unpacking python-meld3 (1.0.2-2) ...
+Selecting previously unselected package supervisor.
+Preparing to unpack .../supervisor_3.3.1-1.1_all.deb ...
+Unpacking supervisor (3.3.1-1.1) ...
+Setting up python-meld3 (1.0.2-2) ...
+Setting up python-pkg-resources (39.0.1-2ubuntu0.1) ...
+Setting up supervisor (3.3.1-1.1) ...
+invoke-rc.d: could not determine current runlevel
+invoke-rc.d: policy-rc.d denied execution of start.
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+Removing intermediate container 90903cb9d756
+ ---> 002f20b60f79
+Step 35/46 : RUN apt install -y python3-smbus && pip3 install pyzmq
+ ---> Running in 17eb6c9c8a32
+[91m
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+[0mReading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  python3-smbus
+0 upgraded, 1 newly installed, 0 to remove and 110 not upgraded.
+Need to get 6832 B of archives.
+After this operation, 32.8 kB of additional disk space will be used.
+Get:1 http://ports.ubuntu.com/ubuntu-ports bionic/universe arm64 python3-smbus arm64 4.0-2 [6832 B]
+[91mdebconf: delaying package configuration, since apt-utils is not installed
+[0mFetched 6832 B in 1s (7872 B/s)
+Selecting previously unselected package python3-smbus:arm64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 52771 files and directories currently installed.)
+Preparing to unpack .../python3-smbus_4.0-2_arm64.deb ...
+Unpacking python3-smbus:arm64 (4.0-2) ...
+Setting up python3-smbus:arm64 (4.0-2) ...
+Requirement already satisfied: pyzmq in /usr/local/lib/python3.6/dist-packages (25.1.2)
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 17eb6c9c8a32
+ ---> 8506ab5a2fee
+Step 36/46 : ENV TORCH2TRT_REPO_DIR=/opt/
+ ---> Running in 9409fe911ef5
+Removing intermediate container 9409fe911ef5
+ ---> 7ed7336a2a43
+Step 37/46 : RUN cd ${TORCH2TRT_REPO_DIR} &&     git clone https://github.com/NVIDIA-AI-IOT/torch2trt &&     cd torch2trt &&     python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
+ ---> Running in dbed2277a0e7
+[91mCloning into 'torch2trt'...
+[0mrunning bdist_wheel
+running build
+running build_py
+creating build
+creating build/lib
+creating build/lib/torch2trt
+copying torch2trt/dataset_calibrator.py -> build/lib/torch2trt
+copying torch2trt/test.py -> build/lib/torch2trt
+copying torch2trt/utils.py -> build/lib/torch2trt
+copying torch2trt/flattener.py -> build/lib/torch2trt
+copying torch2trt/dataset.py -> build/lib/torch2trt
+copying torch2trt/__init__.py -> build/lib/torch2trt
+copying torch2trt/misc_utils.py -> build/lib/torch2trt
+copying torch2trt/version_utils.py -> build/lib/torch2trt
+copying torch2trt/trt_module.py -> build/lib/torch2trt
+copying torch2trt/flatten_module.py -> build/lib/torch2trt
+copying torch2trt/torch2trt.py -> build/lib/torch2trt
+creating build/lib/tests
+copying tests/__init__.py -> build/lib/tests
+creating build/lib/torch2trt/converters
+copying torch2trt/converters/native_converters.py -> build/lib/torch2trt/converters
+copying torch2trt/converters/__init__.py -> build/lib/torch2trt/converters
+copying torch2trt/converters/unimplemented_converters.py -> build/lib/torch2trt/converters
+copying torch2trt/converters/plugin_converters.py -> build/lib/torch2trt/converters
+creating build/lib/torch2trt/contrib
+copying torch2trt/contrib/__init__.py -> build/lib/torch2trt/contrib
+creating build/lib/torch2trt/contrib/qat
+copying torch2trt/contrib/qat/__init__.py -> build/lib/torch2trt/contrib/qat
+creating build/lib/torch2trt/contrib/qat/converters
+copying torch2trt/contrib/qat/converters/QuantRelu.py -> build/lib/torch2trt/contrib/qat/converters
+copying torch2trt/contrib/qat/converters/QuantConvBN.py -> build/lib/torch2trt/contrib/qat/converters
+copying torch2trt/contrib/qat/converters/__init__.py -> build/lib/torch2trt/contrib/qat/converters
+copying torch2trt/contrib/qat/converters/QuantConv.py -> build/lib/torch2trt/contrib/qat/converters
+creating build/lib/torch2trt/contrib/qat/layers
+copying torch2trt/contrib/qat/layers/quant_activation.py -> build/lib/torch2trt/contrib/qat/layers
+copying torch2trt/contrib/qat/layers/__init__.py -> build/lib/torch2trt/contrib/qat/layers
+copying torch2trt/contrib/qat/layers/quant_conv.py -> build/lib/torch2trt/contrib/qat/layers
+copying torch2trt/contrib/qat/layers/_utils.py -> build/lib/torch2trt/contrib/qat/layers
+creating build/lib/tests/feature_tests
+copying tests/feature_tests/test_contiguous.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_dataset.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_tensor_shape.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_tensor_shape_div_batch.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_dataset_calibrator.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_flatten_module.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_flatten_dynamic.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_version_utils.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/__init__.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_tensor_ne.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_interpolate_dynamic.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_dynamic_shape.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_flattener.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_save_load.py -> build/lib/tests/feature_tests
+copying tests/feature_tests/test_legacy_max_batch_size.py -> build/lib/tests/feature_tests
+creating build/lib/tests/converter_tests
+copying tests/converter_tests/test_getitem.py -> build/lib/tests/converter_tests
+copying tests/converter_tests/test_converters.py -> build/lib/tests/converter_tests
+copying tests/converter_tests/__init__.py -> build/lib/tests/converter_tests
+creating build/lib/tests/model_tests
+copying tests/model_tests/__init__.py -> build/lib/tests/model_tests
+creating build/lib/tests/model_tests/timm
+copying tests/model_tests/timm/__init__.py -> build/lib/tests/model_tests/timm
+copying tests/model_tests/timm/test_maxvit.py -> build/lib/tests/model_tests/timm
+creating build/lib/tests/model_tests/torchvision
+copying tests/model_tests/torchvision/__init__.py -> build/lib/tests/model_tests/torchvision
+copying tests/model_tests/torchvision/test_segmentation_models.py -> build/lib/tests/model_tests/torchvision
+copying tests/model_tests/torchvision/test_classification_models.py -> build/lib/tests/model_tests/torchvision
+installing to build/bdist.linux-aarch64/wheel
+running install
+running install_lib
+creating build/bdist.linux-aarch64
+creating build/bdist.linux-aarch64/wheel
+creating build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/dataset_calibrator.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/test.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/utils.py -> build/bdist.linux-aarch64/wheel/torch2trt
+creating build/bdist.linux-aarch64/wheel/torch2trt/converters
+copying build/lib/torch2trt/converters/native_converters.py -> build/bdist.linux-aarch64/wheel/torch2trt/converters
+copying build/lib/torch2trt/converters/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt/converters
+copying build/lib/torch2trt/converters/unimplemented_converters.py -> build/bdist.linux-aarch64/wheel/torch2trt/converters
+copying build/lib/torch2trt/converters/plugin_converters.py -> build/bdist.linux-aarch64/wheel/torch2trt/converters
+copying build/lib/torch2trt/flattener.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/dataset.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/misc_utils.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/version_utils.py -> build/bdist.linux-aarch64/wheel/torch2trt
+creating build/bdist.linux-aarch64/wheel/torch2trt/contrib
+copying build/lib/torch2trt/contrib/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib
+creating build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat
+creating build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/converters
+copying build/lib/torch2trt/contrib/qat/converters/QuantRelu.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/converters
+copying build/lib/torch2trt/contrib/qat/converters/QuantConvBN.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/converters
+copying build/lib/torch2trt/contrib/qat/converters/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/converters
+copying build/lib/torch2trt/contrib/qat/converters/QuantConv.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/converters
+copying build/lib/torch2trt/contrib/qat/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat
+creating build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/layers
+copying build/lib/torch2trt/contrib/qat/layers/quant_activation.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/layers
+copying build/lib/torch2trt/contrib/qat/layers/__init__.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/layers
+copying build/lib/torch2trt/contrib/qat/layers/quant_conv.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/layers
+copying build/lib/torch2trt/contrib/qat/layers/_utils.py -> build/bdist.linux-aarch64/wheel/torch2trt/contrib/qat/layers
+copying build/lib/torch2trt/trt_module.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/flatten_module.py -> build/bdist.linux-aarch64/wheel/torch2trt
+copying build/lib/torch2trt/torch2trt.py -> build/bdist.linux-aarch64/wheel/torch2trt
+creating build/bdist.linux-aarch64/wheel/tests
+creating build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_contiguous.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_dataset.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_tensor_shape.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_tensor_shape_div_batch.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_dataset_calibrator.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_flatten_module.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_flatten_dynamic.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_version_utils.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/__init__.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_tensor_ne.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_interpolate_dynamic.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_dynamic_shape.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_flattener.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_save_load.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/feature_tests/test_legacy_max_batch_size.py -> build/bdist.linux-aarch64/wheel/tests/feature_tests
+copying build/lib/tests/__init__.py -> build/bdist.linux-aarch64/wheel/tests
+creating build/bdist.linux-aarch64/wheel/tests/converter_tests
+copying build/lib/tests/converter_tests/test_getitem.py -> build/bdist.linux-aarch64/wheel/tests/converter_tests
+copying build/lib/tests/converter_tests/test_converters.py -> build/bdist.linux-aarch64/wheel/tests/converter_tests
+copying build/lib/tests/converter_tests/__init__.py -> build/bdist.linux-aarch64/wheel/tests/converter_tests
+creating build/bdist.linux-aarch64/wheel/tests/model_tests
+copying build/lib/tests/model_tests/__init__.py -> build/bdist.linux-aarch64/wheel/tests/model_tests
+creating build/bdist.linux-aarch64/wheel/tests/model_tests/timm
+copying build/lib/tests/model_tests/timm/__init__.py -> build/bdist.linux-aarch64/wheel/tests/model_tests/timm
+copying build/lib/tests/model_tests/timm/test_maxvit.py -> build/bdist.linux-aarch64/wheel/tests/model_tests/timm
+creating build/bdist.linux-aarch64/wheel/tests/model_tests/torchvision
+copying build/lib/tests/model_tests/torchvision/__init__.py -> build/bdist.linux-aarch64/wheel/tests/model_tests/torchvision
+copying build/lib/tests/model_tests/torchvision/test_segmentation_models.py -> build/bdist.linux-aarch64/wheel/tests/model_tests/torchvision
+copying build/lib/tests/model_tests/torchvision/test_classification_models.py -> build/bdist.linux-aarch64/wheel/tests/model_tests/torchvision
+running install_egg_info
+running egg_info
+creating torch2trt.egg-info
+writing torch2trt.egg-info/PKG-INFO
+writing dependency_links to torch2trt.egg-info/dependency_links.txt
+writing top-level names to torch2trt.egg-info/top_level.txt
+writing manifest file 'torch2trt.egg-info/SOURCES.txt'
+reading manifest file 'torch2trt.egg-info/SOURCES.txt'
+adding license file 'LICENSE.md'
+writing manifest file 'torch2trt.egg-info/SOURCES.txt'
+Copying torch2trt.egg-info to build/bdist.linux-aarch64/wheel/torch2trt-0.5.0-py3.6.egg-info
+running install_scripts
+adding license file "LICENSE.md" (matched pattern "LICEN[CS]E*")
+creating build/bdist.linux-aarch64/wheel/torch2trt-0.5.0.dist-info/WHEEL
+creating 'dist/torch2trt-0.5.0-py3-none-any.whl' and adding 'build/bdist.linux-aarch64/wheel' to it
+adding 'tests/__init__.py'
+adding 'tests/converter_tests/__init__.py'
+adding 'tests/converter_tests/test_converters.py'
+adding 'tests/converter_tests/test_getitem.py'
+adding 'tests/feature_tests/__init__.py'
+adding 'tests/feature_tests/test_contiguous.py'
+adding 'tests/feature_tests/test_dataset.py'
+adding 'tests/feature_tests/test_dataset_calibrator.py'
+adding 'tests/feature_tests/test_dynamic_shape.py'
+adding 'tests/feature_tests/test_flatten_dynamic.py'
+adding 'tests/feature_tests/test_flatten_module.py'
+adding 'tests/feature_tests/test_flattener.py'
+adding 'tests/feature_tests/test_interpolate_dynamic.py'
+adding 'tests/feature_tests/test_legacy_max_batch_size.py'
+adding 'tests/feature_tests/test_save_load.py'
+adding 'tests/feature_tests/test_tensor_ne.py'
+adding 'tests/feature_tests/test_tensor_shape.py'
+adding 'tests/feature_tests/test_tensor_shape_div_batch.py'
+adding 'tests/feature_tests/test_version_utils.py'
+adding 'tests/model_tests/__init__.py'
+adding 'tests/model_tests/timm/__init__.py'
+adding 'tests/model_tests/timm/test_maxvit.py'
+adding 'tests/model_tests/torchvision/__init__.py'
+adding 'tests/model_tests/torchvision/test_classification_models.py'
+adding 'tests/model_tests/torchvision/test_segmentation_models.py'
+adding 'torch2trt/__init__.py'
+adding 'torch2trt/dataset.py'
+adding 'torch2trt/dataset_calibrator.py'
+adding 'torch2trt/flatten_module.py'
+adding 'torch2trt/flattener.py'
+adding 'torch2trt/misc_utils.py'
+adding 'torch2trt/test.py'
+adding 'torch2trt/torch2trt.py'
+adding 'torch2trt/trt_module.py'
+adding 'torch2trt/utils.py'
+adding 'torch2trt/version_utils.py'
+adding 'torch2trt/contrib/__init__.py'
+adding 'torch2trt/contrib/qat/__init__.py'
+adding 'torch2trt/contrib/qat/converters/QuantConv.py'
+adding 'torch2trt/contrib/qat/converters/QuantConvBN.py'
+adding 'torch2trt/contrib/qat/converters/QuantRelu.py'
+adding 'torch2trt/contrib/qat/converters/__init__.py'
+adding 'torch2trt/contrib/qat/layers/__init__.py'
+adding 'torch2trt/contrib/qat/layers/_utils.py'
+adding 'torch2trt/contrib/qat/layers/quant_activation.py'
+adding 'torch2trt/contrib/qat/layers/quant_conv.py'
+adding 'torch2trt/converters/__init__.py'
+adding 'torch2trt/converters/native_converters.py'
+adding 'torch2trt/converters/plugin_converters.py'
+adding 'torch2trt/converters/unimplemented_converters.py'
+adding 'torch2trt-0.5.0.dist-info/LICENSE.md'
+adding 'torch2trt-0.5.0.dist-info/METADATA'
+adding 'torch2trt-0.5.0.dist-info/WHEEL'
+adding 'torch2trt-0.5.0.dist-info/top_level.txt'
+adding 'torch2trt-0.5.0.dist-info/RECORD'
+removing build/bdist.linux-aarch64/wheel
+[91m/usr/local/lib/python3.6/dist-packages/setuptools/command/install.py:37: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  setuptools.SetuptoolsDeprecationWarning,
+[0mProcessing ./torch2trt-0.5.0-py3-none-any.whl
+Installing collected packages: torch2trt
+Successfully installed torch2trt-0.5.0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container dbed2277a0e7
+ ---> 81a8021f5b01
+Step 38/46 : ENV QWIIC_DIR=/opt/Qwiic_Py
+ ---> Running in 23fa0e92e5e2
+Removing intermediate container 23fa0e92e5e2
+ ---> b4f13ea46665
+Step 39/46 : ENV QWIIC_I2C_DIR=/opt/Qwiic_Py/qwiic_i2c
+ ---> Running in 3dc9063280c7
+Removing intermediate container 3dc9063280c7
+ ---> 1ace053340a6
+Step 40/46 : RUN cd /opt && git clone --recurse-submodules https://github.com/sparkfun/Qwiic_Py.git
+ ---> Running in a15a512caafe
+[91mCloning into 'Qwiic_Py'...
+[0m[91mSubmodule 'qwiic/drivers/pi_servo_hat' (https://github.com/sparkfun/PiServoHat_Py) registered for path 'qwiic/drivers/pi_servo_hat'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_adxl313' (https://github.com/sparkfun/Qwiic_ADXL313_Py) registered for path 'qwiic/drivers/qwiic_adxl313'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_alphanumeric' (https://github.com/sparkfun/Qwiic_Alphanumeric_Py) registered for path 'qwiic/drivers/qwiic_alphanumeric'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_as6212' (https://github.com/sparkfun/Qwiic_AS6212_Py) registered for path 'qwiic/drivers/qwiic_as6212'
+[0m[91mSubmodule 'drivers/qwiic_bme280' (https://github.com/sparkfun/Qwiic_BME280_Py.git) registered for path 'qwiic/drivers/qwiic_bme280'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_button' (https://github.com/sparkfun/Qwiic_Button_Py.git) registered for path 'qwiic/drivers/qwiic_button'
+[0m[91mSubmodule 'drivers/qwiic_ccs811' (https://github.com/sparkfun/Qwiic_CCS811_Py.git) registered for path 'qwiic/drivers/qwiic_ccs811'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_dual_encoder_reader' (https://github.com/sparkfun/Qwiic_Dual_Encoder_Reader_Py.git) registered for path 'qwiic/drivers/qwiic_dual_encoder_reader'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_eeprom' (https://github.com/sparkfun/Qwiic_EEPROM_Py) registered for path 'qwiic/drivers/qwiic_eeprom'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_gpio' (https://github.com/sparkfun/Qwiic_GPIO_Py.git) registered for path 'qwiic/drivers/qwiic_gpio'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_icm20948' (https://github.com/sparkfun/Qwiic_9DoF_IMU_ICM20948_Py.git) registered for path 'qwiic/drivers/qwiic_icm20948'
+[0m[91mSubmodule 'drivers/qwiic_joystick' (https://github.com/sparkfun/Qwiic_Joystick_Py.git) registered for path 'qwiic/drivers/qwiic_joystick'
+[0m[91mSubmodule 'drivers/qwiic_keypad' (https://github.com/sparkfun/Qwiic_Keypad_Py.git) registered for path 'qwiic/drivers/qwiic_keypad'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_kx13x' (https://github.com/sparkfun/Qwiic_KX13X_Py) registered for path 'qwiic/drivers/qwiic_kx13x'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_large_oled' (https://github.com/sparkfun/Qwiic_Large_OLED_Py) registered for path 'qwiic/drivers/qwiic_large_oled'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_led_stick' (https://github.com/sparkfun/Qwiic_LED_Stick_Py) registered for path 'qwiic/drivers/qwiic_led_stick'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_max3010x' (https://github.com/sparkfun/Qwiic_MAX3010x_Py.git) registered for path 'qwiic/drivers/qwiic_max3010x'
+[0m[91mSubmodule 'drivers/qwiic_mico_oled' (https://github.com/sparkfun/Qwiic_Micro_OLED_Py.git) registered for path 'qwiic/drivers/qwiic_micro_oled'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_oled_base' (https://github.com/sparkfun/Qwiic_OLED_Base_Py.git) registered for path 'qwiic/drivers/qwiic_oled_base'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_oled_display' (https://github.com/sparkfun/Qwiic_OLED_Display_Py.git) registered for path 'qwiic/drivers/qwiic_oled_display'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_otos' (https://github.com/sparkfun/Qwiic_OTOS_Py) registered for path 'qwiic/drivers/qwiic_otos'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_pca9685' (https://github.com/sparkfun/Qwiic_PCA9685_Py) registered for path 'qwiic/drivers/qwiic_pca9685'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_pir' (https://github.com/sparkfun/Qwiic_PIR_Py) registered for path 'qwiic/drivers/qwiic_pir'
+[0m[91mSubmodule 'drivers/qwiic_proximity' (https://github.com/sparkfun/Qwiic_Proximity_Py.git) registered for path 'qwiic/drivers/qwiic_proximity'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_relay' (https://github.com/sparkfun/Qwiic_Relay_Py.git) registered for path 'qwiic/drivers/qwiic_relay'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_rfid' (https://github.com/sparkfun/Qwiic_RFID_Py) registered for path 'qwiic/drivers/qwiic_rfid'
+[0m[91mSubmodule 'drivers/qwiic_scmd' (https://github.com/sparkfun/Qwiic_SCMD_Py.git) registered for path 'qwiic/drivers/qwiic_scmd'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_serlcd' (https://github.com/sparkfun/Qwiic_SerLCD_Py) registered for path 'qwiic/drivers/qwiic_serlcd'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_sgp40' (https://github.com/sparkfun/Qwiic_SGP40_Py) registered for path 'qwiic/drivers/qwiic_sgp40'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_soil_moisture_sensor' (https://github.com/sparkfun/Qwiic_Soil_Moisture_Sensor_Py) registered for path 'qwiic/drivers/qwiic_soil_moisture_sensor'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_tca9548a' (https://github.com/sparkfun/Qwiic_TCA9548A_Py.git) registered for path 'qwiic/drivers/qwiic_tca9548a'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_titan_gps' (https://github.com/sparkfun/Qwiic_Titan_Gps_Py) registered for path 'qwiic/drivers/qwiic_titan_gps'
+[0m[91mSubmodule 'drivers/qwiic_twist' (https://github.com/sparkfun/Qwiic_Twist_Py.git) registered for path 'qwiic/drivers/qwiic_twist'
+[0m[91mSubmodule 'qwiic/drivers/qwiic_vl53l1x' (https://github.com/sparkfun/Qwiic_VL53L1X_Py) registered for path 'qwiic/drivers/qwiic_vl53l1x'
+[0m[91mSubmodule 'qwiic/drivers/top_phat_button' (https://github.com/sparkfun/Top_pHAT_Button_Py) registered for path 'qwiic/drivers/top_phat_button'
+[0m[91mSubmodule 'qwiic/drivers/ublox_gps' (https://github.com/sparkfun/qwiic_ublox_gps_py) registered for path 'qwiic/drivers/ublox_gps'
+[0m[91mSubmodule 'qwiic_i2c' (https://github.com/sparkfun/Qwiic_I2C_Py.git) registered for path 'qwiic_i2c'
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/pi_servo_hat'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_adxl313'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_alphanumeric'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_as6212'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_bme280'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_button'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_ccs811'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_dual_encoder_reader'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_eeprom'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_gpio'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_icm20948'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_joystick'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_keypad'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_kx13x'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_large_oled'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_led_stick'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_max3010x'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_micro_oled'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_oled_base'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_oled_display'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_otos'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_pca9685'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_pir'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_proximity'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_relay'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_rfid'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_scmd'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_serlcd'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_sgp40'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_soil_moisture_sensor'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_tca9548a'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_titan_gps'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_twist'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/qwiic_vl53l1x'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/top_phat_button'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic/drivers/ublox_gps'...
+[0m[91mCloning into '/opt/Qwiic_Py/qwiic_i2c'...
+[0mSubmodule path 'qwiic/drivers/pi_servo_hat': checked out '1d4b4dbc4273a0f620425039f472ef6ac2f715f3'
+Submodule path 'qwiic/drivers/qwiic_adxl313': checked out 'c4c2cbddf5d4016ea598c17f47c4bdb06bf26dd9'
+Submodule path 'qwiic/drivers/qwiic_alphanumeric': checked out '028171ac5c37cc5080c927ffb6e2a7c69f279875'
+Submodule path 'qwiic/drivers/qwiic_as6212': checked out '6734e1bd91962611ae7be6313fceb5578b0f5d10'
+Submodule path 'qwiic/drivers/qwiic_bme280': checked out 'edb3f317792187c260843483010e1c6f76e72938'
+Submodule path 'qwiic/drivers/qwiic_button': checked out '7be0b4638f4b683045aac376a498734b4fa28544'
+Submodule path 'qwiic/drivers/qwiic_ccs811': checked out '927f7ab7356b5e53977adcee644527462cfd4280'
+Submodule path 'qwiic/drivers/qwiic_dual_encoder_reader': checked out 'f1521f06ddcc825e2ccb4f134f8b93128d98014d'
+Submodule path 'qwiic/drivers/qwiic_eeprom': checked out '477057c9cbc55b1e6a0cbf8b53423d7c7910c6ab'
+Submodule path 'qwiic/drivers/qwiic_gpio': checked out 'd4eecf2cbc7ed7ecca531ca2d894641af4b01be7'
+Submodule path 'qwiic/drivers/qwiic_icm20948': checked out 'b3202b06eb3ab88b0c57d814bdbf5aa3b6380747'
+Submodule path 'qwiic/drivers/qwiic_joystick': checked out '7cce263c1098a7b3f48c488e615a27dbe8ea2ea7'
+Submodule path 'qwiic/drivers/qwiic_keypad': checked out '0475037a55de6858e4dfc0789454fd8b978a8491'
+Submodule path 'qwiic/drivers/qwiic_kx13x': checked out '9ac19e8e3dee5d8522c166aebfaa1ed4e3cc13df'
+Submodule path 'qwiic/drivers/qwiic_large_oled': checked out '16a5666178d85c0948bd4b9aa94094d52a6282d1'
+Submodule path 'qwiic/drivers/qwiic_led_stick': checked out 'e36da42e917dc8190db6f37180dfb20e9e14be48'
+Submodule path 'qwiic/drivers/qwiic_max3010x': checked out 'aa4a056cff264ca9ee7474d845707d214213ed6b'
+Submodule path 'qwiic/drivers/qwiic_micro_oled': checked out '8a1bdf02bc7d313b6827e340bc375dfeeadad0ca'
+Submodule path 'qwiic/drivers/qwiic_oled_base': checked out 'd804695ce0091160b21b254349f73a41ce373182'
+Submodule path 'qwiic/drivers/qwiic_oled_display': checked out 'd8c8fa6c358ba2f17faf329dbd2444c930e61ca9'
+Submodule path 'qwiic/drivers/qwiic_otos': checked out 'd22d2fe86faa967d8723c0b59d50bbcb2f7f37a2'
+Submodule path 'qwiic/drivers/qwiic_pca9685': checked out '79f6ca2f37816cc23abc6c9bb0fd6083468652b6'
+Submodule path 'qwiic/drivers/qwiic_pir': checked out 'cadfb982b3576c19dd31db724c1378385f7d51ac'
+Submodule path 'qwiic/drivers/qwiic_proximity': checked out '7f73cc351d0abd3303d2a7588070df9d0e70d9a3'
+Submodule path 'qwiic/drivers/qwiic_relay': checked out '1da983b6d8b77158fb4d220bcc023d514b2f1156'
+Submodule path 'qwiic/drivers/qwiic_rfid': checked out '14daa3039b70f175605643fc66add69126d25978'
+Submodule path 'qwiic/drivers/qwiic_scmd': checked out 'b027668ce1c950b3ad53b190e24b2b10ee9321f7'
+Submodule path 'qwiic/drivers/qwiic_serlcd': checked out '5bc5b7b07d79104092958b5b844a390769ca3d4e'
+Submodule path 'qwiic/drivers/qwiic_sgp40': checked out '9d1d7426dd9349d3f72736d37f3fe792ec32473f'
+Submodule path 'qwiic/drivers/qwiic_soil_moisture_sensor': checked out '9cd7bb80234e2dff5022b07747b1721eccf5d9cc'
+Submodule path 'qwiic/drivers/qwiic_tca9548a': checked out '94dfaae2221f534167c5eace9fd977c7e896d839'
+Submodule path 'qwiic/drivers/qwiic_titan_gps': checked out '944b3e59fb167f374641b9b7661c86df3f8b6293'
+Submodule path 'qwiic/drivers/qwiic_twist': checked out '7d6d525755b50c8bd85500de04079e06a1507fec'
+Submodule path 'qwiic/drivers/qwiic_vl53l1x': checked out '5f53a9abcfa66d4d33fc67697966d6a4bda1304a'
+Submodule path 'qwiic/drivers/top_phat_button': checked out '513737f7a6459689c0957660232e8de2441f9ae9'
+Submodule path 'qwiic/drivers/ublox_gps': checked out '85ff1b758e195327c908165e221d82ebfb550340'
+Submodule path 'qwiic_i2c': checked out 'da90d08e8cff71866c6c5d2b5cd99a540bd147b0'
+Removing intermediate container a15a512caafe
+ ---> 3c95c9a80c98
+Step 41/46 : RUN cd ${QWIIC_DIR}/qwiic/drivers && rm -rf qwiic_as6212 qwiic_kx13x &&     cd ${QWIIC_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl &&     cd ${QWIIC_I2C_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl &&     cd /opt && rm -rf Qwiic_Py
+ ---> Running in 39fdc7dc92b6
+running bdist_wheel
+running build
+running build_py
+creating build
+creating build/lib
+creating build/lib/qwiic
+copying qwiic/__init__.py -> build/lib/qwiic
+creating build/lib/qwiic/drivers
+creating build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/setup.py -> build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/README.md -> build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/qwiic_led_stick.py -> build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/LICENSE -> build/lib/qwiic/drivers/qwiic_led_stick
+copying qwiic/drivers/qwiic_led_stick/setup.cfg -> build/lib/qwiic/drivers/qwiic_led_stick
+creating build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/setup.py -> build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/README.md -> build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/qwiic_proximity.py -> build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/LICENSE -> build/lib/qwiic/drivers/qwiic_proximity
+copying qwiic/drivers/qwiic_proximity/setup.cfg -> build/lib/qwiic/drivers/qwiic_proximity
+creating build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/setup.py -> build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/qwiic_pir.py -> build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/README.md -> build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/LICENSE -> build/lib/qwiic/drivers/qwiic_pir
+copying qwiic/drivers/qwiic_pir/setup.cfg -> build/lib/qwiic/drivers/qwiic_pir
+creating build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/qwiic_keypad.py -> build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/setup.py -> build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/README.md -> build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/LICENSE -> build/lib/qwiic/drivers/qwiic_keypad
+copying qwiic/drivers/qwiic_keypad/setup.cfg -> build/lib/qwiic/drivers/qwiic_keypad
+creating build/lib/qwiic/drivers/qwiic_pca9685
+copying qwiic/drivers/qwiic_pca9685/qwiic_pca9685.py -> build/lib/qwiic/drivers/qwiic_pca9685
+copying qwiic/drivers/qwiic_pca9685/setup.py -> build/lib/qwiic/drivers/qwiic_pca9685
+copying qwiic/drivers/qwiic_pca9685/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_pca9685
+copying qwiic/drivers/qwiic_pca9685/README.md -> build/lib/qwiic/drivers/qwiic_pca9685
+copying qwiic/drivers/qwiic_pca9685/LICENSE -> build/lib/qwiic/drivers/qwiic_pca9685
+creating build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/setup.py -> build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/README.md -> build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/qwiic_twist.py -> build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/LICENSE -> build/lib/qwiic/drivers/qwiic_twist
+copying qwiic/drivers/qwiic_twist/setup.cfg -> build/lib/qwiic/drivers/qwiic_twist
+creating build/lib/qwiic/drivers/qwiic_tca9548a
+copying qwiic/drivers/qwiic_tca9548a/setup.py -> build/lib/qwiic/drivers/qwiic_tca9548a
+copying qwiic/drivers/qwiic_tca9548a/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_tca9548a
+copying qwiic/drivers/qwiic_tca9548a/README.md -> build/lib/qwiic/drivers/qwiic_tca9548a
+copying qwiic/drivers/qwiic_tca9548a/LICENSE -> build/lib/qwiic/drivers/qwiic_tca9548a
+copying qwiic/drivers/qwiic_tca9548a/qwiic_TCA9548A.py -> build/lib/qwiic/drivers/qwiic_tca9548a
+creating build/lib/qwiic/drivers/qwiic_max3010x
+copying qwiic/drivers/qwiic_max3010x/setup.py -> build/lib/qwiic/drivers/qwiic_max3010x
+copying qwiic/drivers/qwiic_max3010x/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_max3010x
+copying qwiic/drivers/qwiic_max3010x/README.md -> build/lib/qwiic/drivers/qwiic_max3010x
+copying qwiic/drivers/qwiic_max3010x/LICENSE -> build/lib/qwiic/drivers/qwiic_max3010x
+copying qwiic/drivers/qwiic_max3010x/setup.cfg -> build/lib/qwiic/drivers/qwiic_max3010x
+creating build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/setup.py -> build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/DESCRIPTION.rst -> build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/README.md -> build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/test_script.py -> build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/LICENSE -> build/lib/qwiic/drivers/ublox_gps
+copying qwiic/drivers/ublox_gps/setup.cfg -> build/lib/qwiic/drivers/ublox_gps
+creating build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/DOCUMENTATION.md -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/setup.py -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/README.md -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/qwiic_otos.py -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/LICENSE -> build/lib/qwiic/drivers/qwiic_otos
+copying qwiic/drivers/qwiic_otos/setup.cfg -> build/lib/qwiic/drivers/qwiic_otos
+creating build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/qwiic_adxl313.py -> build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/setup.py -> build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/README.md -> build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/LICENSE -> build/lib/qwiic/drivers/qwiic_adxl313
+copying qwiic/drivers/qwiic_adxl313/setup.cfg -> build/lib/qwiic/drivers/qwiic_adxl313
+creating build/lib/qwiic/drivers/pi_servo_hat
+copying qwiic/drivers/pi_servo_hat/setup.py -> build/lib/qwiic/drivers/pi_servo_hat
+copying qwiic/drivers/pi_servo_hat/DESCRIPTION.rst -> build/lib/qwiic/drivers/pi_servo_hat
+copying qwiic/drivers/pi_servo_hat/pi_servo_hat.py -> build/lib/qwiic/drivers/pi_servo_hat
+copying qwiic/drivers/pi_servo_hat/README.md -> build/lib/qwiic/drivers/pi_servo_hat
+copying qwiic/drivers/pi_servo_hat/LICENSE -> build/lib/qwiic/drivers/pi_servo_hat
+creating build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/qwiic_relay.py -> build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/setup.py -> build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/README.md -> build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/LICENSE -> build/lib/qwiic/drivers/qwiic_relay
+copying qwiic/drivers/qwiic_relay/setup.cfg -> build/lib/qwiic/drivers/qwiic_relay
+creating build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/qwiic_scmd.py -> build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/setup.py -> build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/README.md -> build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/LICENSE -> build/lib/qwiic/drivers/qwiic_scmd
+copying qwiic/drivers/qwiic_scmd/setup.cfg -> build/lib/qwiic/drivers/qwiic_scmd
+creating build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/setup.py -> build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/README.md -> build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/LICENSE -> build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/qwiic_joystick.py -> build/lib/qwiic/drivers/qwiic_joystick
+copying qwiic/drivers/qwiic_joystick/setup.cfg -> build/lib/qwiic/drivers/qwiic_joystick
+creating build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/setup.py -> build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/MANIFEST.in -> build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/README.md -> build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/LICENSE -> build/lib/qwiic/drivers/qwiic_oled_base
+copying qwiic/drivers/qwiic_oled_base/setup.cfg -> build/lib/qwiic/drivers/qwiic_oled_base
+creating build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/setup.py -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/README.md -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/LICENSE -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/qwiic_soil_moisture_sensor.py -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+copying qwiic/drivers/qwiic_soil_moisture_sensor/setup.cfg -> build/lib/qwiic/drivers/qwiic_soil_moisture_sensor
+creating build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/qwiic_sgp40.py -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/setup.py -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/DFRobot_SGP40_VOCAlgorithm.py -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/README.md -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/LICENSE -> build/lib/qwiic/drivers/qwiic_sgp40
+copying qwiic/drivers/qwiic_sgp40/setup.cfg -> build/lib/qwiic/drivers/qwiic_sgp40
+creating build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/setup.py -> build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/qwiic_alphanumeric.py -> build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/README.md -> build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/LICENSE -> build/lib/qwiic/drivers/qwiic_alphanumeric
+copying qwiic/drivers/qwiic_alphanumeric/setup.cfg -> build/lib/qwiic/drivers/qwiic_alphanumeric
+creating build/lib/qwiic/drivers/qwiic_titan_gps
+copying qwiic/drivers/qwiic_titan_gps/setup.py -> build/lib/qwiic/drivers/qwiic_titan_gps
+copying qwiic/drivers/qwiic_titan_gps/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_titan_gps
+copying qwiic/drivers/qwiic_titan_gps/README.md -> build/lib/qwiic/drivers/qwiic_titan_gps
+copying qwiic/drivers/qwiic_titan_gps/qwiic_titan_gps.py -> build/lib/qwiic/drivers/qwiic_titan_gps
+copying qwiic/drivers/qwiic_titan_gps/setup.cfg -> build/lib/qwiic/drivers/qwiic_titan_gps
+creating build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/setup.py -> build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/qwiic_gpio.py -> build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/README.md -> build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/LICENSE -> build/lib/qwiic/drivers/qwiic_gpio
+copying qwiic/drivers/qwiic_gpio/setup.cfg -> build/lib/qwiic/drivers/qwiic_gpio
+creating build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/setup.py -> build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/MANIFEST.in -> build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/README.md -> build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/LICENSE -> build/lib/qwiic/drivers/qwiic_micro_oled
+copying qwiic/drivers/qwiic_micro_oled/setup.cfg -> build/lib/qwiic/drivers/qwiic_micro_oled
+creating build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/setup.py -> build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/qwiic_bme280.py -> build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/README.md -> build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/LICENSE -> build/lib/qwiic/drivers/qwiic_bme280
+copying qwiic/drivers/qwiic_bme280/setup.cfg -> build/lib/qwiic/drivers/qwiic_bme280
+creating build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/qwiic_oled_display.py -> build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/setup.py -> build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/README.md -> build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/LICENSE -> build/lib/qwiic/drivers/qwiic_oled_display
+copying qwiic/drivers/qwiic_oled_display/setup.cfg -> build/lib/qwiic/drivers/qwiic_oled_display
+creating build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/qwiic_ccs811.py -> build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/setup.py -> build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/README.md -> build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/LICENSE -> build/lib/qwiic/drivers/qwiic_ccs811
+copying qwiic/drivers/qwiic_ccs811/setup.cfg -> build/lib/qwiic/drivers/qwiic_ccs811
+creating build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/setup.py -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/README.md -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/qwiic_dual_encoder_reader.py -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/LICENSE -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+copying qwiic/drivers/qwiic_dual_encoder_reader/setup.cfg -> build/lib/qwiic/drivers/qwiic_dual_encoder_reader
+creating build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/setup.py -> build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/qwiic_rfid.py -> build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/README.md -> build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/LICENSE -> build/lib/qwiic/drivers/qwiic_rfid
+copying qwiic/drivers/qwiic_rfid/setup.cfg -> build/lib/qwiic/drivers/qwiic_rfid
+creating build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/qwiic_large_oled.py -> build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/setup.py -> build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/README.md -> build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/LICENSE -> build/lib/qwiic/drivers/qwiic_large_oled
+copying qwiic/drivers/qwiic_large_oled/setup.cfg -> build/lib/qwiic/drivers/qwiic_large_oled
+creating build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/setup.py -> build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/README.md -> build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/qwiic_button.py -> build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/LICENSE -> build/lib/qwiic/drivers/qwiic_button
+copying qwiic/drivers/qwiic_button/setup.cfg -> build/lib/qwiic/drivers/qwiic_button
+creating build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/setup.py -> build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/README.md -> build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/qwiic_eeprom.py -> build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/LICENSE -> build/lib/qwiic/drivers/qwiic_eeprom
+copying qwiic/drivers/qwiic_eeprom/setup.cfg -> build/lib/qwiic/drivers/qwiic_eeprom
+creating build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/setup.py -> build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/README.md -> build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/LICENSE -> build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/qwiic_serlcd.py -> build/lib/qwiic/drivers/qwiic_serlcd
+copying qwiic/drivers/qwiic_serlcd/setup.cfg -> build/lib/qwiic/drivers/qwiic_serlcd
+creating build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/setup.py -> build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/DESCRIPTION.rst -> build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/README.md -> build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/top_phat_button.py -> build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/LICENSE -> build/lib/qwiic/drivers/top_phat_button
+copying qwiic/drivers/top_phat_button/setup.cfg -> build/lib/qwiic/drivers/top_phat_button
+creating build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/setup.py -> build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/qwiic_icm20948.py -> build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/README.md -> build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/LICENSE -> build/lib/qwiic/drivers/qwiic_icm20948
+copying qwiic/drivers/qwiic_icm20948/setup.cfg -> build/lib/qwiic/drivers/qwiic_icm20948
+creating build/lib/qwiic/drivers/qwiic_vl53l1x
+copying qwiic/drivers/qwiic_vl53l1x/setup.py -> build/lib/qwiic/drivers/qwiic_vl53l1x
+copying qwiic/drivers/qwiic_vl53l1x/DESCRIPTION.rst -> build/lib/qwiic/drivers/qwiic_vl53l1x
+copying qwiic/drivers/qwiic_vl53l1x/README.md -> build/lib/qwiic/drivers/qwiic_vl53l1x
+copying qwiic/drivers/qwiic_vl53l1x/qwiic_VL53L1X.py -> build/lib/qwiic/drivers/qwiic_vl53l1x
+copying qwiic/drivers/qwiic_vl53l1x/LICENSE -> build/lib/qwiic/drivers/qwiic_vl53l1x
+installing to build/bdist.linux-aarch64/wheel
+running install
+running install_lib
+creating build/bdist.linux-aarch64
+creating build/bdist.linux-aarch64/wheel
+creating build/bdist.linux-aarch64/wheel/qwiic
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/qwiic_led_stick.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+copying build/lib/qwiic/drivers/qwiic_led_stick/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_led_stick
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/qwiic_proximity.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+copying build/lib/qwiic/drivers/qwiic_proximity/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_proximity
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/qwiic_pir.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+copying build/lib/qwiic/drivers/qwiic_pir/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pir
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/qwiic_keypad.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+copying build/lib/qwiic/drivers/qwiic_keypad/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_keypad
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+copying build/lib/qwiic/drivers/qwiic_pca9685/qwiic_pca9685.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+copying build/lib/qwiic/drivers/qwiic_pca9685/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+copying build/lib/qwiic/drivers/qwiic_pca9685/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+copying build/lib/qwiic/drivers/qwiic_pca9685/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+copying build/lib/qwiic/drivers/qwiic_pca9685/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_pca9685
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/qwiic_twist.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+copying build/lib/qwiic/drivers/qwiic_twist/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_twist
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+copying build/lib/qwiic/drivers/qwiic_tca9548a/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+copying build/lib/qwiic/drivers/qwiic_tca9548a/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+copying build/lib/qwiic/drivers/qwiic_tca9548a/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+copying build/lib/qwiic/drivers/qwiic_tca9548a/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+copying build/lib/qwiic/drivers/qwiic_tca9548a/qwiic_TCA9548A.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_tca9548a
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+copying build/lib/qwiic/drivers/qwiic_max3010x/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+copying build/lib/qwiic/drivers/qwiic_max3010x/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+copying build/lib/qwiic/drivers/qwiic_max3010x/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+copying build/lib/qwiic/drivers/qwiic_max3010x/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+copying build/lib/qwiic/drivers/qwiic_max3010x/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_max3010x
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/test_script.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+copying build/lib/qwiic/drivers/ublox_gps/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/ublox_gps
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/DOCUMENTATION.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/qwiic_otos.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+copying build/lib/qwiic/drivers/qwiic_otos/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_otos
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/qwiic_adxl313.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+copying build/lib/qwiic/drivers/qwiic_adxl313/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_adxl313
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+copying build/lib/qwiic/drivers/pi_servo_hat/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+copying build/lib/qwiic/drivers/pi_servo_hat/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+copying build/lib/qwiic/drivers/pi_servo_hat/pi_servo_hat.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+copying build/lib/qwiic/drivers/pi_servo_hat/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+copying build/lib/qwiic/drivers/pi_servo_hat/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/pi_servo_hat
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/qwiic_relay.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+copying build/lib/qwiic/drivers/qwiic_relay/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_relay
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/qwiic_scmd.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+copying build/lib/qwiic/drivers/qwiic_scmd/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_scmd
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/qwiic_joystick.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+copying build/lib/qwiic/drivers/qwiic_joystick/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_joystick
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/MANIFEST.in -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+copying build/lib/qwiic/drivers/qwiic_oled_base/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_base
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/qwiic_soil_moisture_sensor.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+copying build/lib/qwiic/drivers/qwiic_soil_moisture_sensor/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_soil_moisture_sensor
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/qwiic_sgp40.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/DFRobot_SGP40_VOCAlgorithm.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+copying build/lib/qwiic/drivers/qwiic_sgp40/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_sgp40
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/qwiic_alphanumeric.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+copying build/lib/qwiic/drivers/qwiic_alphanumeric/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_alphanumeric
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+copying build/lib/qwiic/drivers/qwiic_titan_gps/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+copying build/lib/qwiic/drivers/qwiic_titan_gps/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+copying build/lib/qwiic/drivers/qwiic_titan_gps/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+copying build/lib/qwiic/drivers/qwiic_titan_gps/qwiic_titan_gps.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+copying build/lib/qwiic/drivers/qwiic_titan_gps/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_titan_gps
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/qwiic_gpio.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+copying build/lib/qwiic/drivers/qwiic_gpio/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_gpio
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/MANIFEST.in -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+copying build/lib/qwiic/drivers/qwiic_micro_oled/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_micro_oled
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/qwiic_bme280.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+copying build/lib/qwiic/drivers/qwiic_bme280/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_bme280
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/qwiic_oled_display.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+copying build/lib/qwiic/drivers/qwiic_oled_display/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_oled_display
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/qwiic_ccs811.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+copying build/lib/qwiic/drivers/qwiic_ccs811/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_ccs811
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/qwiic_dual_encoder_reader.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+copying build/lib/qwiic/drivers/qwiic_dual_encoder_reader/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_dual_encoder_reader
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/qwiic_rfid.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+copying build/lib/qwiic/drivers/qwiic_rfid/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_rfid
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/qwiic_large_oled.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+copying build/lib/qwiic/drivers/qwiic_large_oled/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_large_oled
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/qwiic_button.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+copying build/lib/qwiic/drivers/qwiic_button/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_button
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/qwiic_eeprom.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+copying build/lib/qwiic/drivers/qwiic_eeprom/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_eeprom
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/qwiic_serlcd.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+copying build/lib/qwiic/drivers/qwiic_serlcd/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_serlcd
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/top_phat_button.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+copying build/lib/qwiic/drivers/top_phat_button/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/top_phat_button
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/qwiic_icm20948.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+copying build/lib/qwiic/drivers/qwiic_icm20948/setup.cfg -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_icm20948
+creating build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/drivers/qwiic_vl53l1x/setup.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/drivers/qwiic_vl53l1x/DESCRIPTION.rst -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/drivers/qwiic_vl53l1x/README.md -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/drivers/qwiic_vl53l1x/qwiic_VL53L1X.py -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/drivers/qwiic_vl53l1x/LICENSE -> build/bdist.linux-aarch64/wheel/qwiic/drivers/qwiic_vl53l1x
+copying build/lib/qwiic/__init__.py -> build/bdist.linux-aarch64/wheel/qwiic
+running install_egg_info
+running egg_info
+creating sparkfun_qwiic.egg-info
+writing sparkfun_qwiic.egg-info/PKG-INFO
+writing dependency_links to sparkfun_qwiic.egg-info/dependency_links.txt
+writing requirements to sparkfun_qwiic.egg-info/requires.txt
+writing top-level names to sparkfun_qwiic.egg-info/top_level.txt
+writing manifest file 'sparkfun_qwiic.egg-info/SOURCES.txt'
+reading manifest file 'sparkfun_qwiic.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'sparkfun_qwiic.egg-info/SOURCES.txt'
+Copying sparkfun_qwiic.egg-info to build/bdist.linux-aarch64/wheel/sparkfun_qwiic-1.1.10-py3.6.egg-info
+running install_scripts
+adding license file "LICENSE" (matched pattern "LICEN[CS]E*")
+creating build/bdist.linux-aarch64/wheel/sparkfun_qwiic-1.1.10.dist-info/WHEEL
+creating 'dist/sparkfun_qwiic-1.1.10-py2.py3-none-any.whl' and adding 'build/bdist.linux-aarch64/wheel' to it
+adding 'qwiic/__init__.py'
+adding 'qwiic/drivers/pi_servo_hat/DESCRIPTION.rst'
+adding 'qwiic/drivers/pi_servo_hat/LICENSE'
+adding 'qwiic/drivers/pi_servo_hat/README.md'
+adding 'qwiic/drivers/pi_servo_hat/pi_servo_hat.py'
+adding 'qwiic/drivers/pi_servo_hat/setup.py'
+adding 'qwiic/drivers/qwiic_adxl313/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_adxl313/LICENSE'
+adding 'qwiic/drivers/qwiic_adxl313/README.md'
+adding 'qwiic/drivers/qwiic_adxl313/qwiic_adxl313.py'
+adding 'qwiic/drivers/qwiic_adxl313/setup.cfg'
+adding 'qwiic/drivers/qwiic_adxl313/setup.py'
+adding 'qwiic/drivers/qwiic_alphanumeric/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_alphanumeric/LICENSE'
+adding 'qwiic/drivers/qwiic_alphanumeric/README.md'
+adding 'qwiic/drivers/qwiic_alphanumeric/qwiic_alphanumeric.py'
+adding 'qwiic/drivers/qwiic_alphanumeric/setup.cfg'
+adding 'qwiic/drivers/qwiic_alphanumeric/setup.py'
+adding 'qwiic/drivers/qwiic_bme280/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_bme280/LICENSE'
+adding 'qwiic/drivers/qwiic_bme280/README.md'
+adding 'qwiic/drivers/qwiic_bme280/qwiic_bme280.py'
+adding 'qwiic/drivers/qwiic_bme280/setup.cfg'
+adding 'qwiic/drivers/qwiic_bme280/setup.py'
+adding 'qwiic/drivers/qwiic_button/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_button/LICENSE'
+adding 'qwiic/drivers/qwiic_button/README.md'
+adding 'qwiic/drivers/qwiic_button/qwiic_button.py'
+adding 'qwiic/drivers/qwiic_button/setup.cfg'
+adding 'qwiic/drivers/qwiic_button/setup.py'
+adding 'qwiic/drivers/qwiic_ccs811/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_ccs811/LICENSE'
+adding 'qwiic/drivers/qwiic_ccs811/README.md'
+adding 'qwiic/drivers/qwiic_ccs811/qwiic_ccs811.py'
+adding 'qwiic/drivers/qwiic_ccs811/setup.cfg'
+adding 'qwiic/drivers/qwiic_ccs811/setup.py'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/LICENSE'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/README.md'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/qwiic_dual_encoder_reader.py'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/setup.cfg'
+adding 'qwiic/drivers/qwiic_dual_encoder_reader/setup.py'
+adding 'qwiic/drivers/qwiic_eeprom/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_eeprom/LICENSE'
+adding 'qwiic/drivers/qwiic_eeprom/README.md'
+adding 'qwiic/drivers/qwiic_eeprom/qwiic_eeprom.py'
+adding 'qwiic/drivers/qwiic_eeprom/setup.cfg'
+adding 'qwiic/drivers/qwiic_eeprom/setup.py'
+adding 'qwiic/drivers/qwiic_gpio/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_gpio/LICENSE'
+adding 'qwiic/drivers/qwiic_gpio/README.md'
+adding 'qwiic/drivers/qwiic_gpio/qwiic_gpio.py'
+adding 'qwiic/drivers/qwiic_gpio/setup.cfg'
+adding 'qwiic/drivers/qwiic_gpio/setup.py'
+adding 'qwiic/drivers/qwiic_icm20948/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_icm20948/LICENSE'
+adding 'qwiic/drivers/qwiic_icm20948/README.md'
+adding 'qwiic/drivers/qwiic_icm20948/qwiic_icm20948.py'
+adding 'qwiic/drivers/qwiic_icm20948/setup.cfg'
+adding 'qwiic/drivers/qwiic_icm20948/setup.py'
+adding 'qwiic/drivers/qwiic_joystick/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_joystick/LICENSE'
+adding 'qwiic/drivers/qwiic_joystick/README.md'
+adding 'qwiic/drivers/qwiic_joystick/qwiic_joystick.py'
+adding 'qwiic/drivers/qwiic_joystick/setup.cfg'
+adding 'qwiic/drivers/qwiic_joystick/setup.py'
+adding 'qwiic/drivers/qwiic_keypad/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_keypad/LICENSE'
+adding 'qwiic/drivers/qwiic_keypad/README.md'
+adding 'qwiic/drivers/qwiic_keypad/qwiic_keypad.py'
+adding 'qwiic/drivers/qwiic_keypad/setup.cfg'
+adding 'qwiic/drivers/qwiic_keypad/setup.py'
+adding 'qwiic/drivers/qwiic_large_oled/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_large_oled/LICENSE'
+adding 'qwiic/drivers/qwiic_large_oled/README.md'
+adding 'qwiic/drivers/qwiic_large_oled/qwiic_large_oled.py'
+adding 'qwiic/drivers/qwiic_large_oled/setup.cfg'
+adding 'qwiic/drivers/qwiic_large_oled/setup.py'
+adding 'qwiic/drivers/qwiic_led_stick/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_led_stick/LICENSE'
+adding 'qwiic/drivers/qwiic_led_stick/README.md'
+adding 'qwiic/drivers/qwiic_led_stick/qwiic_led_stick.py'
+adding 'qwiic/drivers/qwiic_led_stick/setup.cfg'
+adding 'qwiic/drivers/qwiic_led_stick/setup.py'
+adding 'qwiic/drivers/qwiic_max3010x/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_max3010x/LICENSE'
+adding 'qwiic/drivers/qwiic_max3010x/README.md'
+adding 'qwiic/drivers/qwiic_max3010x/setup.cfg'
+adding 'qwiic/drivers/qwiic_max3010x/setup.py'
+adding 'qwiic/drivers/qwiic_micro_oled/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_micro_oled/LICENSE'
+adding 'qwiic/drivers/qwiic_micro_oled/MANIFEST.in'
+adding 'qwiic/drivers/qwiic_micro_oled/README.md'
+adding 'qwiic/drivers/qwiic_micro_oled/setup.cfg'
+adding 'qwiic/drivers/qwiic_micro_oled/setup.py'
+adding 'qwiic/drivers/qwiic_oled_base/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_oled_base/LICENSE'
+adding 'qwiic/drivers/qwiic_oled_base/MANIFEST.in'
+adding 'qwiic/drivers/qwiic_oled_base/README.md'
+adding 'qwiic/drivers/qwiic_oled_base/setup.cfg'
+adding 'qwiic/drivers/qwiic_oled_base/setup.py'
+adding 'qwiic/drivers/qwiic_oled_display/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_oled_display/LICENSE'
+adding 'qwiic/drivers/qwiic_oled_display/README.md'
+adding 'qwiic/drivers/qwiic_oled_display/qwiic_oled_display.py'
+adding 'qwiic/drivers/qwiic_oled_display/setup.cfg'
+adding 'qwiic/drivers/qwiic_oled_display/setup.py'
+adding 'qwiic/drivers/qwiic_otos/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_otos/DOCUMENTATION.md'
+adding 'qwiic/drivers/qwiic_otos/LICENSE'
+adding 'qwiic/drivers/qwiic_otos/README.md'
+adding 'qwiic/drivers/qwiic_otos/qwiic_otos.py'
+adding 'qwiic/drivers/qwiic_otos/setup.cfg'
+adding 'qwiic/drivers/qwiic_otos/setup.py'
+adding 'qwiic/drivers/qwiic_pca9685/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_pca9685/LICENSE'
+adding 'qwiic/drivers/qwiic_pca9685/README.md'
+adding 'qwiic/drivers/qwiic_pca9685/qwiic_pca9685.py'
+adding 'qwiic/drivers/qwiic_pca9685/setup.py'
+adding 'qwiic/drivers/qwiic_pir/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_pir/LICENSE'
+adding 'qwiic/drivers/qwiic_pir/README.md'
+adding 'qwiic/drivers/qwiic_pir/qwiic_pir.py'
+adding 'qwiic/drivers/qwiic_pir/setup.cfg'
+adding 'qwiic/drivers/qwiic_pir/setup.py'
+adding 'qwiic/drivers/qwiic_proximity/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_proximity/LICENSE'
+adding 'qwiic/drivers/qwiic_proximity/README.md'
+adding 'qwiic/drivers/qwiic_proximity/qwiic_proximity.py'
+adding 'qwiic/drivers/qwiic_proximity/setup.cfg'
+adding 'qwiic/drivers/qwiic_proximity/setup.py'
+adding 'qwiic/drivers/qwiic_relay/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_relay/LICENSE'
+adding 'qwiic/drivers/qwiic_relay/README.md'
+adding 'qwiic/drivers/qwiic_relay/qwiic_relay.py'
+adding 'qwiic/drivers/qwiic_relay/setup.cfg'
+adding 'qwiic/drivers/qwiic_relay/setup.py'
+adding 'qwiic/drivers/qwiic_rfid/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_rfid/LICENSE'
+adding 'qwiic/drivers/qwiic_rfid/README.md'
+adding 'qwiic/drivers/qwiic_rfid/qwiic_rfid.py'
+adding 'qwiic/drivers/qwiic_rfid/setup.cfg'
+adding 'qwiic/drivers/qwiic_rfid/setup.py'
+adding 'qwiic/drivers/qwiic_scmd/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_scmd/LICENSE'
+adding 'qwiic/drivers/qwiic_scmd/README.md'
+adding 'qwiic/drivers/qwiic_scmd/qwiic_scmd.py'
+adding 'qwiic/drivers/qwiic_scmd/setup.cfg'
+adding 'qwiic/drivers/qwiic_scmd/setup.py'
+adding 'qwiic/drivers/qwiic_serlcd/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_serlcd/LICENSE'
+adding 'qwiic/drivers/qwiic_serlcd/README.md'
+adding 'qwiic/drivers/qwiic_serlcd/qwiic_serlcd.py'
+adding 'qwiic/drivers/qwiic_serlcd/setup.cfg'
+adding 'qwiic/drivers/qwiic_serlcd/setup.py'
+adding 'qwiic/drivers/qwiic_sgp40/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_sgp40/DFRobot_SGP40_VOCAlgorithm.py'
+adding 'qwiic/drivers/qwiic_sgp40/LICENSE'
+adding 'qwiic/drivers/qwiic_sgp40/README.md'
+adding 'qwiic/drivers/qwiic_sgp40/qwiic_sgp40.py'
+adding 'qwiic/drivers/qwiic_sgp40/setup.cfg'
+adding 'qwiic/drivers/qwiic_sgp40/setup.py'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/LICENSE'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/README.md'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/qwiic_soil_moisture_sensor.py'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/setup.cfg'
+adding 'qwiic/drivers/qwiic_soil_moisture_sensor/setup.py'
+adding 'qwiic/drivers/qwiic_tca9548a/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_tca9548a/LICENSE'
+adding 'qwiic/drivers/qwiic_tca9548a/README.md'
+adding 'qwiic/drivers/qwiic_tca9548a/qwiic_TCA9548A.py'
+adding 'qwiic/drivers/qwiic_tca9548a/setup.py'
+adding 'qwiic/drivers/qwiic_titan_gps/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_titan_gps/README.md'
+adding 'qwiic/drivers/qwiic_titan_gps/qwiic_titan_gps.py'
+adding 'qwiic/drivers/qwiic_titan_gps/setup.cfg'
+adding 'qwiic/drivers/qwiic_titan_gps/setup.py'
+adding 'qwiic/drivers/qwiic_twist/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_twist/LICENSE'
+adding 'qwiic/drivers/qwiic_twist/README.md'
+adding 'qwiic/drivers/qwiic_twist/qwiic_twist.py'
+adding 'qwiic/drivers/qwiic_twist/setup.cfg'
+adding 'qwiic/drivers/qwiic_twist/setup.py'
+adding 'qwiic/drivers/qwiic_vl53l1x/DESCRIPTION.rst'
+adding 'qwiic/drivers/qwiic_vl53l1x/LICENSE'
+adding 'qwiic/drivers/qwiic_vl53l1x/README.md'
+adding 'qwiic/drivers/qwiic_vl53l1x/qwiic_VL53L1X.py'
+adding 'qwiic/drivers/qwiic_vl53l1x/setup.py'
+adding 'qwiic/drivers/top_phat_button/DESCRIPTION.rst'
+adding 'qwiic/drivers/top_phat_button/LICENSE'
+adding 'qwiic/drivers/top_phat_button/README.md'
+adding 'qwiic/drivers/top_phat_button/setup.cfg'
+adding 'qwiic/drivers/top_phat_button/setup.py'
+adding 'qwiic/drivers/top_phat_button/top_phat_button.py'
+adding 'qwiic/drivers/ublox_gps/DESCRIPTION.rst'
+adding 'qwiic/drivers/ublox_gps/LICENSE'
+adding 'qwiic/drivers/ublox_gps/README.md'
+adding 'qwiic/drivers/ublox_gps/setup.cfg'
+adding 'qwiic/drivers/ublox_gps/setup.py'
+adding 'qwiic/drivers/ublox_gps/test_script.py'
+adding 'sparkfun_qwiic-1.1.10.dist-info/LICENSE'
+adding 'sparkfun_qwiic-1.1.10.dist-info/METADATA'
+adding 'sparkfun_qwiic-1.1.10.dist-info/WHEEL'
+adding 'sparkfun_qwiic-1.1.10.dist-info/top_level.txt'
+adding 'sparkfun_qwiic-1.1.10.dist-info/RECORD'
+removing build/bdist.linux-aarch64/wheel
+[91m/usr/local/lib/python3.6/dist-packages/setuptools/command/install.py:37: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  setuptools.SetuptoolsDeprecationWarning,
+[0mProcessing ./sparkfun_qwiic-1.1.10-py2.py3-none-any.whl
+Collecting sparkfun-qwiic-joystick
+  Downloading sparkfun_qwiic_joystick-0.9.0-py2.py3-none-any.whl (5.2 kB)
+Collecting sparkfun-qwiic-otos
+  Downloading sparkfun_qwiic_otos-0.0.1-py2.py3-none-any.whl (9.1 kB)
+Collecting sparkfun-qwiic-ccs811
+  Downloading sparkfun_qwiic_ccs811-0.9.4-py2.py3-none-any.whl (8.4 kB)
+Collecting sparkfun-top-phat-button
+  Downloading sparkfun_top_phat_button-0.0.2-py2.py3-none-any.whl (5.8 kB)
+Collecting sparkfun-qwiic-serlcd
+  Downloading sparkfun_qwiic_serlcd-0.0.1-py2.py3-none-any.whl (8.7 kB)
+Collecting sparkfun-qwiic-i2c
+  Downloading sparkfun_qwiic_i2c-1.0.0-py2.py3-none-any.whl (15 kB)
+Collecting sparkfun-qwiic-dual-encoder-reader
+  Downloading sparkfun_qwiic_dual_encoder_reader-0.0.2-py2.py3-none-any.whl (6.3 kB)
+Collecting sparkfun-qwiic-max3010x
+  Downloading sparkfun_qwiic_max3010x-0.0.2-py2.py3-none-any.whl (16 kB)
+Collecting sparkfun-qwiic-button
+  Downloading sparkfun_qwiic_button-2.0.1-py2.py3-none-any.whl (8.2 kB)
+Collecting sparkfun-qwiic-twist
+  Downloading sparkfun_qwiic_twist-0.9.0-py2.py3-none-any.whl (6.6 kB)
+Collecting sparkfun-qwiic-pca9685
+  Downloading sparkfun_qwiic_pca9685-0.9.1-py2.py3-none-any.whl (13 kB)
+Collecting sparkfun-qwiic-sgp40
+  Downloading sparkfun_qwiic_sgp40-0.0.4-py2.py3-none-any.whl (11 kB)
+Collecting sparkfun-qwiic-soil-moisture-sensor
+  Downloading sparkfun_qwiic_soil_moisture_sensor-0.0.2-py2.py3-none-any.whl (4.6 kB)
+Collecting sparkfun-qwiic-tca9548a
+  Downloading sparkfun_qwiic_tca9548a-0.9.0-py2.py3-none-any.whl (5.4 kB)
+Collecting sparkfun-qwiic-scmd
+  Downloading sparkfun_qwiic_scmd-0.9.1-py2.py3-none-any.whl (7.9 kB)
+Collecting sparkfun-qwiic-led-stick
+  Downloading sparkfun_qwiic_led_stick-0.0.1-py2.py3-none-any.whl (6.0 kB)
+Collecting sparkfun-qwiic-vl53l1x
+  Downloading sparkfun_qwiic_vl53l1x-1.0.1-py2.py3-none-any.whl (17 kB)
+Collecting sparkfun-qwiic-proximity
+  Downloading sparkfun_qwiic_proximity-0.9.0-py2.py3-none-any.whl (8.7 kB)
+Collecting sparkfun-qwiic-bme280
+  Downloading sparkfun_qwiic_bme280-0.9.0-py2.py3-none-any.whl (9.3 kB)
+Collecting sparkfun-ublox-gps
+  Downloading sparkfun_ublox_gps-1.1.5-py2.py3-none-any.whl (24 kB)
+Collecting sparkfun-qwiic-gpio
+  Downloading sparkfun_qwiic_gpio-0.0.2-py2.py3-none-any.whl (5.3 kB)
+Collecting sparkfun-qwiic-titan-gps
+  Downloading sparkfun_qwiic_titan_gps-0.1.1-py2.py3-none-any.whl (5.6 kB)
+Collecting sparkfun-qwiic-rfid
+  Downloading sparkfun_qwiic_rfid-2.0.0-py2.py3-none-any.whl (6.6 kB)
+Collecting sparkfun-qwiic-large-oled
+  Downloading sparkfun_qwiic_large_oled-0.0.1-py2.py3-none-any.whl (4.2 kB)
+Collecting sparkfun-qwiic-pir
+  Downloading sparkfun_qwiic_pir-0.0.4-py2.py3-none-any.whl (7.2 kB)
+Collecting sparkfun-qwiic-icm20948
+  Downloading sparkfun_qwiic_icm20948-0.0.1-py2.py3-none-any.whl (10 kB)
+Collecting sparkfun-qwiic-keypad
+  Downloading sparkfun_qwiic_keypad-0.9.0-py2.py3-none-any.whl (5.2 kB)
+Collecting sparkfun-qwiic-eeprom
+  Downloading sparkfun_qwiic_eeprom-0.0.1-py2.py3-none-any.whl (7.6 kB)
+Collecting sparkfun-qwiic-oled-base
+  Downloading sparkfun_qwiic_oled_base-0.0.2-py2.py3-none-any.whl (22 kB)
+Collecting sparkfun-qwiic-relay
+  Downloading sparkfun_qwiic_relay-0.0.2-py2.py3-none-any.whl (5.7 kB)
+Collecting sparkfun-qwiic-oled-display
+  Downloading sparkfun_qwiic_oled_display-0.0.2-py2.py3-none-any.whl (4.3 kB)
+Collecting sparkfun-qwiic-alphanumeric
+  Downloading sparkfun_qwiic_alphanumeric-0.0.1-py2.py3-none-any.whl (10 kB)
+Collecting sparkfun-pi-servo-hat
+  Downloading sparkfun_pi_servo_hat-0.9.1-py2.py3-none-any.whl (7.6 kB)
+Collecting sparkfun-qwiic-adxl313
+  Downloading sparkfun_qwiic_adxl313-0.0.7-py2.py3-none-any.whl (9.1 kB)
+Collecting sparkfun-qwiic-micro-oled
+  Downloading sparkfun_qwiic_micro_oled-0.10.0-py2.py3-none-any.whl (4.2 kB)
+Collecting smbus2
+  Downloading smbus2-0.4.3-py2.py3-none-any.whl (11 kB)
+Collecting pynmea2
+  Downloading pynmea2-1.19.0-py3-none-any.whl (30 kB)
+Installing collected packages: smbus2, sparkfun-qwiic-i2c, sparkfun-qwiic-pca9685, sparkfun-qwiic-oled-base, pynmea2, sparkfun-ublox-gps, sparkfun-top-phat-button, sparkfun-qwiic-vl53l1x, sparkfun-qwiic-twist, sparkfun-qwiic-titan-gps, sparkfun-qwiic-tca9548a, sparkfun-qwiic-soil-moisture-sensor, sparkfun-qwiic-sgp40, sparkfun-qwiic-serlcd, sparkfun-qwiic-scmd, sparkfun-qwiic-rfid, sparkfun-qwiic-relay, sparkfun-qwiic-proximity, sparkfun-qwiic-pir, sparkfun-qwiic-otos, sparkfun-qwiic-oled-display, sparkfun-qwiic-micro-oled, sparkfun-qwiic-max3010x, sparkfun-qwiic-led-stick, sparkfun-qwiic-large-oled, sparkfun-qwiic-keypad, sparkfun-qwiic-joystick, sparkfun-qwiic-icm20948, sparkfun-qwiic-gpio, sparkfun-qwiic-eeprom, sparkfun-qwiic-dual-encoder-reader, sparkfun-qwiic-ccs811, sparkfun-qwiic-button, sparkfun-qwiic-bme280, sparkfun-qwiic-alphanumeric, sparkfun-qwiic-adxl313, sparkfun-pi-servo-hat, sparkfun-qwiic
+Successfully installed pynmea2-1.19.0 smbus2-0.4.3 sparkfun-pi-servo-hat-0.9.1 sparkfun-qwiic-1.1.10 sparkfun-qwiic-adxl313-0.0.7 sparkfun-qwiic-alphanumeric-0.0.1 sparkfun-qwiic-bme280-0.9.0 sparkfun-qwiic-button-2.0.1 sparkfun-qwiic-ccs811-0.9.4 sparkfun-qwiic-dual-encoder-reader-0.0.2 sparkfun-qwiic-eeprom-0.0.1 sparkfun-qwiic-gpio-0.0.2 sparkfun-qwiic-i2c-1.0.0 sparkfun-qwiic-icm20948-0.0.1 sparkfun-qwiic-joystick-0.9.0 sparkfun-qwiic-keypad-0.9.0 sparkfun-qwiic-large-oled-0.0.1 sparkfun-qwiic-led-stick-0.0.1 sparkfun-qwiic-max3010x-0.0.2 sparkfun-qwiic-micro-oled-0.10.0 sparkfun-qwiic-oled-base-0.0.2 sparkfun-qwiic-oled-display-0.0.2 sparkfun-qwiic-otos-0.0.1 sparkfun-qwiic-pca9685-0.9.1 sparkfun-qwiic-pir-0.0.4 sparkfun-qwiic-proximity-0.9.0 sparkfun-qwiic-relay-0.0.2 sparkfun-qwiic-rfid-2.0.0 sparkfun-qwiic-scmd-0.9.1 sparkfun-qwiic-serlcd-0.0.1 sparkfun-qwiic-sgp40-0.0.4 sparkfun-qwiic-soil-moisture-sensor-0.0.2 sparkfun-qwiic-tca9548a-0.9.0 sparkfun-qwiic-titan-gps-0.1.1 sparkfun-qwiic-twist-0.9.0 sparkfun-qwiic-vl53l1x-1.0.1 sparkfun-top-phat-button-0.0.2 sparkfun-ublox-gps-1.1.5
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mrunning bdist_wheel
+running build
+running build_py
+creating build
+creating build/lib
+creating build/lib/qwiic_i2c
+copying qwiic_i2c/linux_i2c.py -> build/lib/qwiic_i2c
+copying qwiic_i2c/__init__.py -> build/lib/qwiic_i2c
+copying qwiic_i2c/i2c_driver.py -> build/lib/qwiic_i2c
+copying qwiic_i2c/circuitpy_i2c.py -> build/lib/qwiic_i2c
+installing to build/bdist.linux-aarch64/wheel
+running install
+running install_lib
+creating build/bdist.linux-aarch64
+creating build/bdist.linux-aarch64/wheel
+creating build/bdist.linux-aarch64/wheel/qwiic_i2c
+copying build/lib/qwiic_i2c/linux_i2c.py -> build/bdist.linux-aarch64/wheel/qwiic_i2c
+copying build/lib/qwiic_i2c/__init__.py -> build/bdist.linux-aarch64/wheel/qwiic_i2c
+copying build/lib/qwiic_i2c/i2c_driver.py -> build/bdist.linux-aarch64/wheel/qwiic_i2c
+copying build/lib/qwiic_i2c/circuitpy_i2c.py -> build/bdist.linux-aarch64/wheel/qwiic_i2c
+running install_egg_info
+running egg_info
+creating sparkfun_qwiic_i2c.egg-info
+writing sparkfun_qwiic_i2c.egg-info/PKG-INFO
+writing dependency_links to sparkfun_qwiic_i2c.egg-info/dependency_links.txt
+writing requirements to sparkfun_qwiic_i2c.egg-info/requires.txt
+writing top-level names to sparkfun_qwiic_i2c.egg-info/top_level.txt
+writing manifest file 'sparkfun_qwiic_i2c.egg-info/SOURCES.txt'
+reading manifest file 'sparkfun_qwiic_i2c.egg-info/SOURCES.txt'
+adding license file 'LICENSE'
+writing manifest file 'sparkfun_qwiic_i2c.egg-info/SOURCES.txt'
+Copying sparkfun_qwiic_i2c.egg-info to build/bdist.linux-aarch64/wheel/sparkfun_qwiic_i2c-0.9.10-py3.6.egg-info
+running install_scripts
+adding license file "LICENSE" (matched pattern "LICEN[CS]E*")
+creating build/bdist.linux-aarch64/wheel/sparkfun_qwiic_i2c-0.9.10.dist-info/WHEEL
+creating 'dist/sparkfun_qwiic_i2c-0.9.10-py2.py3-none-any.whl' and adding 'build/bdist.linux-aarch64/wheel' to it
+adding 'qwiic_i2c/__init__.py'
+adding 'qwiic_i2c/circuitpy_i2c.py'
+adding 'qwiic_i2c/i2c_driver.py'
+adding 'qwiic_i2c/linux_i2c.py'
+adding 'sparkfun_qwiic_i2c-0.9.10.dist-info/LICENSE'
+adding 'sparkfun_qwiic_i2c-0.9.10.dist-info/METADATA'
+adding 'sparkfun_qwiic_i2c-0.9.10.dist-info/WHEEL'
+adding 'sparkfun_qwiic_i2c-0.9.10.dist-info/top_level.txt'
+adding 'sparkfun_qwiic_i2c-0.9.10.dist-info/RECORD'
+removing build/bdist.linux-aarch64/wheel
+[91m/usr/local/lib/python3.6/dist-packages/setuptools/command/install.py:37: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  setuptools.SetuptoolsDeprecationWarning,
+[0mProcessing ./sparkfun_qwiic_i2c-0.9.10-py2.py3-none-any.whl
+Requirement already satisfied: smbus2 in /usr/local/lib/python3.6/dist-packages (from sparkfun-qwiic-i2c==0.9.10) (0.4.3)
+Installing collected packages: sparkfun-qwiic-i2c
+  Attempting uninstall: sparkfun-qwiic-i2c
+    Found existing installation: sparkfun-qwiic-i2c 1.0.0
+    Uninstalling sparkfun-qwiic-i2c-1.0.0:
+      Successfully uninstalled sparkfun-qwiic-i2c-1.0.0
+Successfully installed sparkfun-qwiic-i2c-0.9.10
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 39fdc7dc92b6
+ ---> 43ff8e357fdb
+Step 42/46 : RUN python3 -m pip install pyserial pandas jetson-stats
+ ---> Running in 1c6c84129a64
+Collecting pyserial
+  Downloading pyserial-3.5-py2.py3-none-any.whl (90 kB)
+Collecting pandas
+  Downloading pandas-1.1.5-cp36-cp36m-manylinux2014_aarch64.whl (9.5 MB)
+Collecting jetson-stats
+  Downloading jetson-stats-4.2.9.tar.gz (116 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: pytz>=2017.2 in /usr/local/lib/python3.6/dist-packages (from pandas) (2024.1)
+Requirement already satisfied: python-dateutil>=2.7.3 in /usr/local/lib/python3.6/dist-packages (from pandas) (2.9.0.post0)
+Requirement already satisfied: numpy>=1.15.4 in /usr/local/lib/python3.6/dist-packages (from pandas) (1.18.5)
+Requirement already satisfied: smbus2 in /usr/local/lib/python3.6/dist-packages (from jetson-stats) (0.4.3)
+Requirement already satisfied: distro in /usr/local/lib/python3.6/dist-packages (from jetson-stats) (1.6.0)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.6/dist-packages (from python-dateutil>=2.7.3->pandas) (1.16.0)
+Building wheels for collected packages: jetson-stats
+  Building wheel for jetson-stats (setup.py): started
+  Building wheel for jetson-stats (setup.py): finished with status 'done'
+  Created wheel for jetson-stats: filename=jetson_stats-4.2.9-py3-none-any.whl size=155250 sha256=3b3f90a8b75a3cb77fbabe6fcd61484e5f38d8b9746f2b96e2f2ee2483bd3ed4
+  Stored in directory: /root/.cache/pip/wheels/70/40/50/783c85bf62dc26f0525367b84a5889024f06bcdf4e807620d4
+Successfully built jetson-stats
+Installing collected packages: pyserial, pandas, jetson-stats
+Successfully installed jetson-stats-4.2.9 pandas-1.1.5 pyserial-3.5
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 1c6c84129a64
+ ---> a900fa66474c
+Step 43/46 : RUN python3 -m pip install pillow --force-reinstall
+ ---> Running in 3a60e0e70c86
+Collecting pillow
+  Downloading Pillow-8.4.0-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl (3.0 MB)
+Installing collected packages: pillow
+  Attempting uninstall: pillow
+    Found existing installation: Pillow 9.0.1
+    Uninstalling Pillow-9.0.1:
+      Successfully uninstalled Pillow-9.0.1
+Successfully installed pillow-8.4.0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 3a60e0e70c86
+ ---> 41212529fbd7
+Step 44/46 : ENV JETBOT_REPO_DIR=/opt/jetbot
+ ---> Running in 3e0342870522
+Removing intermediate container 3e0342870522
+ ---> 0ee937808f8e
+Step 45/46 : COPY ./Cuterbot_Demo ${JETBOT_REPO_DIR}
+ ---> 40a56ed5e3a1
+Step 46/46 : RUN cd ${JETBOT_REPO_DIR} && python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
+ ---> Running in 8f7eec031f25
+-- The C compiler identification is GNU 7.5.0
+-- The CXX compiler identification is GNU 7.5.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Found CUDA: /usr/local/cuda (found version "10.2") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /opt/jetbot
+[ 50%] Building CXX object jetbot/ssd_tensorrt/CMakeFiles/ssd_tensorrt.dir/FlattenConcat.cpp.o
+[100%] Linking CXX shared library libssd_tensorrt.so
+[100%] Built target ssd_tensorrt
+running bdist_wheel
+running build
+running build_py
+creating build
+creating build/lib
+creating build/lib/jetbot
+copying jetbot/motor.py -> build/lib/jetbot
+copying jetbot/heartbeat.py -> build/lib/jetbot
+copying jetbot/tensorrt_model_o.py -> build/lib/jetbot
+copying jetbot/jpeg_encoder.py -> build/lib/jetbot
+copying jetbot/tensorrt_model.py -> build/lib/jetbot
+copying jetbot/road_cruiser.py -> build/lib/jetbot
+copying jetbot/object_follower_v0.py -> build/lib/jetbot
+copying jetbot/__init__.py -> build/lib/jetbot
+copying jetbot/fleet_manager_trt.py -> build/lib/jetbot
+copying jetbot/local_controller.py -> build/lib/jetbot
+copying jetbot/fleet_manager_trt_v1.py -> build/lib/jetbot
+copying jetbot/fleet_manager_trt_v0.py -> build/lib/jetbot
+copying jetbot/object_follower.py -> build/lib/jetbot
+copying jetbot/road_cruiser_trt.py -> build/lib/jetbot
+copying jetbot/fleet_manager.py -> build/lib/jetbot
+copying jetbot/image.py -> build/lib/jetbot
+copying jetbot/object_detection.py -> build/lib/jetbot
+copying jetbot/road_cruiser_v0.py -> build/lib/jetbot
+copying jetbot/robot.py -> build/lib/jetbot
+creating build/lib/jetbot/yolo_tensorrt
+copying jetbot/yolo_tensorrt/yolo_with_plugins.py -> build/lib/jetbot/yolo_tensorrt
+copying jetbot/yolo_tensorrt/yolo_classes.py -> build/lib/jetbot/yolo_tensorrt
+copying jetbot/yolo_tensorrt/__init__.py -> build/lib/jetbot/yolo_tensorrt
+creating build/lib/jetbot/ssd_tensorrt
+copying jetbot/ssd_tensorrt/ssd_tensorrt_o.py -> build/lib/jetbot/ssd_tensorrt
+copying jetbot/ssd_tensorrt/ssd_tensorrt.py -> build/lib/jetbot/ssd_tensorrt
+copying jetbot/ssd_tensorrt/__init__.py -> build/lib/jetbot/ssd_tensorrt
+creating build/lib/jetbot/apps
+copying jetbot/apps/jetbot_states.py -> build/lib/jetbot/apps
+copying jetbot/apps/wander.py -> build/lib/jetbot/apps
+copying jetbot/apps/stats_1.py -> build/lib/jetbot/apps
+copying jetbot/apps/__init__.py -> build/lib/jetbot/apps
+copying jetbot/apps/ina3221_jetbot.py -> build/lib/jetbot/apps
+copying jetbot/apps/ina3221.py -> build/lib/jetbot/apps
+copying jetbot/apps/stats_o.py -> build/lib/jetbot/apps
+copying jetbot/apps/stats.py -> build/lib/jetbot/apps
+copying jetbot/apps/ina219.py -> build/lib/jetbot/apps
+creating build/lib/jetbot/utils
+copying jetbot/utils/create_jupyter_service.py -> build/lib/jetbot/utils
+copying jetbot/utils/utils.py -> build/lib/jetbot/utils
+copying jetbot/utils/yolo_classes.py -> build/lib/jetbot/utils
+copying jetbot/utils/training_profile.py -> build/lib/jetbot/utils
+copying jetbot/utils/__init__.py -> build/lib/jetbot/utils
+copying jetbot/utils/ssd_classes.py -> build/lib/jetbot/utils
+copying jetbot/utils/plot_perf.py -> build/lib/jetbot/utils
+copying jetbot/utils/create_stats_service.py -> build/lib/jetbot/utils
+copying jetbot/utils/model_selection.py -> build/lib/jetbot/utils
+creating build/lib/jetbot/camera
+copying jetbot/camera/opencv_gst_camera_old.py -> build/lib/jetbot/camera
+copying jetbot/camera/opencv_gst_camera.py -> build/lib/jetbot/camera
+copying jetbot/camera/opencv_gst_camera_o.py -> build/lib/jetbot/camera
+copying jetbot/camera/zmq_camera.py -> build/lib/jetbot/camera
+copying jetbot/camera/camera_base.py -> build/lib/jetbot/camera
+copying jetbot/camera/__init__.py -> build/lib/jetbot/camera
+copying jetbot/camera/opencv_gst_camera_1.py -> build/lib/jetbot/camera
+copying jetbot/ssd_tensorrt/libssd_tensorrt.so -> build/lib/jetbot/ssd_tensorrt
+copying jetbot/yolo_tensorrt/libyolo_layer.so -> build/lib/jetbot/yolo_tensorrt
+installing to build/bdist.linux-aarch64/wheel
+running install
+running install_lib
+creating build/bdist.linux-aarch64
+creating build/bdist.linux-aarch64/wheel
+creating build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/motor.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/heartbeat.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/tensorrt_model_o.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/jpeg_encoder.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/tensorrt_model.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/road_cruiser.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/object_follower_v0.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/fleet_manager_trt.py -> build/bdist.linux-aarch64/wheel/jetbot
+creating build/bdist.linux-aarch64/wheel/jetbot/yolo_tensorrt
+copying build/lib/jetbot/yolo_tensorrt/yolo_with_plugins.py -> build/bdist.linux-aarch64/wheel/jetbot/yolo_tensorrt
+copying build/lib/jetbot/yolo_tensorrt/yolo_classes.py -> build/bdist.linux-aarch64/wheel/jetbot/yolo_tensorrt
+copying build/lib/jetbot/yolo_tensorrt/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot/yolo_tensorrt
+copying build/lib/jetbot/yolo_tensorrt/libyolo_layer.so -> build/bdist.linux-aarch64/wheel/jetbot/yolo_tensorrt
+creating build/bdist.linux-aarch64/wheel/jetbot/ssd_tensorrt
+copying build/lib/jetbot/ssd_tensorrt/libssd_tensorrt.so -> build/bdist.linux-aarch64/wheel/jetbot/ssd_tensorrt
+copying build/lib/jetbot/ssd_tensorrt/ssd_tensorrt_o.py -> build/bdist.linux-aarch64/wheel/jetbot/ssd_tensorrt
+copying build/lib/jetbot/ssd_tensorrt/ssd_tensorrt.py -> build/bdist.linux-aarch64/wheel/jetbot/ssd_tensorrt
+copying build/lib/jetbot/ssd_tensorrt/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot/ssd_tensorrt
+copying build/lib/jetbot/local_controller.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/fleet_manager_trt_v1.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/fleet_manager_trt_v0.py -> build/bdist.linux-aarch64/wheel/jetbot
+creating build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/jetbot_states.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/wander.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/stats_1.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/ina3221_jetbot.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/ina3221.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/stats_o.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/stats.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/apps/ina219.py -> build/bdist.linux-aarch64/wheel/jetbot/apps
+copying build/lib/jetbot/object_follower.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/road_cruiser_trt.py -> build/bdist.linux-aarch64/wheel/jetbot
+creating build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/create_jupyter_service.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/utils.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/yolo_classes.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/training_profile.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/ssd_classes.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/plot_perf.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/create_stats_service.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/utils/model_selection.py -> build/bdist.linux-aarch64/wheel/jetbot/utils
+copying build/lib/jetbot/fleet_manager.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/image.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/object_detection.py -> build/bdist.linux-aarch64/wheel/jetbot
+creating build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/opencv_gst_camera_old.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/opencv_gst_camera.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/opencv_gst_camera_o.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/zmq_camera.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/camera_base.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/__init__.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/camera/opencv_gst_camera_1.py -> build/bdist.linux-aarch64/wheel/jetbot/camera
+copying build/lib/jetbot/road_cruiser_v0.py -> build/bdist.linux-aarch64/wheel/jetbot
+copying build/lib/jetbot/robot.py -> build/bdist.linux-aarch64/wheel/jetbot
+running install_egg_info
+running egg_info
+creating jetbot.egg-info
+writing jetbot.egg-info/PKG-INFO
+writing dependency_links to jetbot.egg-info/dependency_links.txt
+writing requirements to jetbot.egg-info/requires.txt
+writing top-level names to jetbot.egg-info/top_level.txt
+writing manifest file 'jetbot.egg-info/SOURCES.txt'
+reading manifest file 'jetbot.egg-info/SOURCES.txt'
+writing manifest file 'jetbot.egg-info/SOURCES.txt'
+Copying jetbot.egg-info to build/bdist.linux-aarch64/wheel/jetbot-1.0.0-py3.6.egg-info
+running install_scripts
+creating build/bdist.linux-aarch64/wheel/jetbot-1.0.0.dist-info/WHEEL
+creating 'dist/jetbot-1.0.0-py3-none-any.whl' and adding 'build/bdist.linux-aarch64/wheel' to it
+adding 'jetbot/__init__.py'
+adding 'jetbot/fleet_manager.py'
+adding 'jetbot/fleet_manager_trt.py'
+adding 'jetbot/fleet_manager_trt_v0.py'
+adding 'jetbot/fleet_manager_trt_v1.py'
+adding 'jetbot/heartbeat.py'
+adding 'jetbot/image.py'
+adding 'jetbot/jpeg_encoder.py'
+adding 'jetbot/local_controller.py'
+adding 'jetbot/motor.py'
+adding 'jetbot/object_detection.py'
+adding 'jetbot/object_follower.py'
+adding 'jetbot/object_follower_v0.py'
+adding 'jetbot/road_cruiser.py'
+adding 'jetbot/road_cruiser_trt.py'
+adding 'jetbot/road_cruiser_v0.py'
+adding 'jetbot/robot.py'
+adding 'jetbot/tensorrt_model.py'
+adding 'jetbot/tensorrt_model_o.py'
+adding 'jetbot/apps/__init__.py'
+adding 'jetbot/apps/ina219.py'
+adding 'jetbot/apps/ina3221.py'
+adding 'jetbot/apps/ina3221_jetbot.py'
+adding 'jetbot/apps/jetbot_states.py'
+adding 'jetbot/apps/stats.py'
+adding 'jetbot/apps/stats_1.py'
+adding 'jetbot/apps/stats_o.py'
+adding 'jetbot/apps/wander.py'
+adding 'jetbot/camera/__init__.py'
+adding 'jetbot/camera/camera_base.py'
+adding 'jetbot/camera/opencv_gst_camera.py'
+adding 'jetbot/camera/opencv_gst_camera_1.py'
+adding 'jetbot/camera/opencv_gst_camera_o.py'
+adding 'jetbot/camera/opencv_gst_camera_old.py'
+adding 'jetbot/camera/zmq_camera.py'
+adding 'jetbot/ssd_tensorrt/__init__.py'
+adding 'jetbot/ssd_tensorrt/libssd_tensorrt.so'
+adding 'jetbot/ssd_tensorrt/ssd_tensorrt.py'
+adding 'jetbot/ssd_tensorrt/ssd_tensorrt_o.py'
+adding 'jetbot/utils/__init__.py'
+adding 'jetbot/utils/create_jupyter_service.py'
+adding 'jetbot/utils/create_stats_service.py'
+adding 'jetbot/utils/model_selection.py'
+adding 'jetbot/utils/plot_perf.py'
+adding 'jetbot/utils/ssd_classes.py'
+adding 'jetbot/utils/training_profile.py'
+adding 'jetbot/utils/utils.py'
+adding 'jetbot/utils/yolo_classes.py'
+adding 'jetbot/yolo_tensorrt/__init__.py'
+adding 'jetbot/yolo_tensorrt/libyolo_layer.so'
+adding 'jetbot/yolo_tensorrt/yolo_classes.py'
+adding 'jetbot/yolo_tensorrt/yolo_with_plugins.py'
+adding 'jetbot-1.0.0.dist-info/METADATA'
+adding 'jetbot-1.0.0.dist-info/WHEEL'
+adding 'jetbot-1.0.0.dist-info/top_level.txt'
+adding 'jetbot-1.0.0.dist-info/RECORD'
+removing build/bdist.linux-aarch64/wheel
+[91m/usr/local/lib/python3.6/dist-packages/setuptools/command/install.py:37: SetuptoolsDeprecationWarning: setup.py install is deprecated. Use build and pip and other standards-based tools.
+  setuptools.SetuptoolsDeprecationWarning,
+[0mProcessing ./jetbot-1.0.0-py3-none-any.whl
+Collecting Adafruit-SSD1306
+  Downloading Adafruit_SSD1306-1.6.2.tar.gz (5.2 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting Adafruit-MotorHat
+  Downloading Adafruit_MotorHAT-1.4.0-py3-none-any.whl (6.0 kB)
+Collecting Adafruit-GPIO>=0.7
+  Downloading Adafruit_GPIO-1.0.3.tar.gz (24 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting adafruit-pureio
+  Downloading Adafruit_PureIO-1.1.11-py3-none-any.whl (10 kB)
+Collecting spidev
+  Downloading spidev-3.6.tar.gz (11 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'error'
+[91m  ERROR: Command errored out with exit status 1:
+   command: /usr/bin/python3 /usr/local/lib/python3.6/dist-packages/pip install --ignore-installed --no-user --prefix /tmp/pip-build-env-wmra1odh/overlay --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- 'setuptools>=61.0'
+       cwd: None
+  Complete output (2 lines):
+  ERROR: Could not find a version that satisfies the requirement setuptools>=61.0 (from versions: 0.6b1, 0.6b2, 0.6b3, 0.6b4, 0.6rc1, 0.6rc2, 0.6rc3, 0.6rc4, 0.6rc5, 0.6rc6, 0.6rc7, 0.6rc8, 0.6rc9, 0.6rc10, 0.6rc11, 0.7.2, 0.7.3, 0.7.4, 0.7.5, 0.7.6, 0.7.7, 0.7.8, 0.8, 0.9, 0.9.1, 0.9.2, 0.9.3, 0.9.4, 0.9.5, 0.9.6, 0.9.7, 0.9.8, 1.0, 1.1, 1.1.1, 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.1.6, 1.1.7, 1.2, 1.3, 1.3.1, 1.3.2, 1.4, 1.4.1, 1.4.2, 2.0, 2.0.1, 2.0.2, 2.1, 2.1.1, 2.1.2, 2.2, 3.0, 3.0.1, 3.0.2, 3.1, 3.2, 3.3, 3.4, 3.4.1, 3.4.2, 3.4.3, 3.4.4, 3.5, 3.5.1, 3.5.2, 3.6, 3.7, 3.7.1, 3.8, 3.8.1, 4.0, 4.0.1, 5.0, 5.0.1, 5.0.2, 5.1, 5.2, 5.3, 5.4, 5.4.1, 5.4.2, 5.5, 5.5.1, 5.6, 5.7, 5.8, 6.0.1, 6.0.2, 6.1, 7.0, 8.0, 8.0.1, 8.0.2, 8.0.3, 8.0.4, 8.1, 8.2, 8.2.1, 8.3, 9.0, 9.0.1, 9.1, 10.0, 10.0.1, 10.1, 10.2, 10.2.1, 11.0, 11.1, 11.2, 11.3, 11.3.1, 12.0, 12.0.1, 12.0.2, 12.0.3, 12.0.4, 12.0.5, 12.1, 12.2, 12.3, 12.4, 13.0.1, 13.0.2, 14.0, 14.1, 14.1.1, 14.2, 14.3, 14.3.1, 15.0, 15.1, 15.2, 16.0, 17.0, 17.1, 17.1.1, 18.0, 18.0.1, 18.1, 18.2, 18.3, 18.3.1, 18.3.2, 18.4, 18.5, 18.6, 18.6.1, 18.7, 18.7.1, 18.8, 18.8.1, 19.0, 19.1, 19.1.1, 19.2, 19.3, 19.4, 19.4.1, 19.5, 19.6, 19.6.1, 19.6.2, 19.7, 20.0, 20.1, 20.1.1, 20.2.2, 20.3, 20.3.1, 20.4, 20.6.6, 20.6.7, 20.6.8, 20.7.0, 20.8.0, 20.8.1, 20.9.0, 20.10.1, 21.0.0, 21.1.0, 21.2.0, 21.2.1, 21.2.2, 22.0.0, 22.0.1, 22.0.2, 22.0.4, 22.0.5, 23.0.0, 23.1.0, 23.2.0, 23.2.1, 24.0.0, 24.0.1, 24.0.2, 24.0.3, 24.1.0, 24.1.1, 24.2.0, 24.2.1, 24.3.0, 24.3.1, 25.0.0, 25.0.1, 25.0.2, 25.1.0, 25.1.1, 25.1.2, 25.1.3, 25.1.4, 25.1.5, 25.1.6, 25.2.0, 25.3.0, 25.4.0, 26.0.0, 26.1.0, 26.1.1, 27.0.0, 27.1.0, 27.1.2, 27.2.0, 27.3.0, 27.3.1, 28.0.0, 28.1.0, 28.2.0, 28.3.0, 28.4.0, 28.5.0, 28.6.0, 28.6.1, 28.7.0, 28.7.1, 28.8.0, 28.8.1, 29.0.0, 29.0.1, 30.0.0, 30.1.0, 30.2.0, 30.2.1, 30.3.0, 30.4.0, 31.0.0, 31.0.1, 32.0.0, 32.1.0, 32.1.1, 32.1.2, 32.1.3, 32.2.0, 32.3.0, 32.3.1, 33.1.0, 33.1.1, 34.0.0, 34.0.1, 34.0.2, 34.0.3, 34.1.0, 34.1.1, 34.2.0, 34.3.0, 34.3.1, 34.3.2, 34.3.3, 34.4.0, 34.4.1, 35.0.0, 35.0.1, 35.0.2, 36.0.1, 36.1.0, 36.1.1, 36.2.0, 36.2.1, 36.2.2, 36.2.3, 36.2.4, 36.2.5, 36.2.6, 36.2.7, 36.3.0, 36.4.0, 36.5.0, 36.6.0, 36.6.1, 36.7.0, 36.7.1, 36.7.2, 36.8.0, 37.0.0, 38.0.0, 38.1.0, 38.2.0, 38.2.1, 38.2.3, 38.2.4, 38.2.5, 38.3.0, 38.4.0, 38.4.1, 38.5.0, 38.5.1, 38.5.2, 38.6.0, 38.6.1, 38.7.0, 39.0.0, 39.0.1, 39.1.0, 39.2.0, 40.0.0, 40.1.0, 40.1.1, 40.2.0, 40.3.0, 40.4.0, 40.4.1, 40.4.2, 40.4.3, 40.5.0, 40.6.0, 40.6.1, 40.6.2, 40.6.3, 40.7.0, 40.7.1, 40.7.2, 40.7.3, 40.8.0, 40.9.0, 41.0.0, 41.0.1, 41.1.0, 41.2.0, 41.3.0, 41.4.0, 41.5.0, 41.5.1, 41.6.0, 42.0.0, 42.0.1, 42.0.2, 43.0.0, 44.0.0, 44.1.0, 44.1.1, 45.0.0, 45.1.0, 45.2.0, 45.3.0, 46.0.0, 46.1.0, 46.1.1, 46.1.2, 46.1.3, 46.2.0, 46.3.0, 46.3.1, 46.4.0, 47.0.0, 47.1.0, 47.1.1, 47.2.0, 47.3.0, 47.3.1, 47.3.2, 48.0.0, 49.0.0, 49.0.1, 49.1.0, 49.1.1, 49.1.2, 49.1.3, 49.2.0, 49.2.1, 49.3.0, 49.3.1, 49.3.2, 49.4.0, 49.5.0, 49.6.0, 50.0.0, 50.0.1, 50.0.2, 50.0.3, 50.1.0, 50.2.0, 50.3.0, 50.3.1, 50.3.2, 51.0.0, 51.1.0, 51.1.0.post20201221, 51.1.1, 51.1.2, 51.2.0, 51.3.0, 51.3.1, 51.3.2, 51.3.3, 52.0.0, 53.0.0, 53.1.0, 54.0.0, 54.1.0, 54.1.1, 54.1.2, 54.1.3, 54.2.0, 56.0.0, 56.1.0, 56.2.0, 57.0.0, 57.1.0, 57.2.0, 57.3.0, 57.4.0, 57.5.0, 58.0.0, 58.0.1, 58.0.2, 58.0.3, 58.0.4, 58.1.0, 58.2.0, 58.3.0, 58.4.0, 58.5.0, 58.5.1, 58.5.2, 58.5.3, 59.0.1, 59.1.0, 59.1.1, 59.2.0, 59.3.0, 59.4.0, 59.5.0, 59.6.0)
+  ERROR: No matching distribution found for setuptools>=61.0
+  ----------------------------------------
+[0m[91mWARNING: Discarding https://files.pythonhosted.org/packages/c7/d9/401c0a7be089e02826cf2c201f489876b601f15be100fe391ef9c2faed83/spidev-3.6.tar.gz#sha256=14dbc37594a4aaef85403ab617985d3c3ef464d62bc9b769ef552db53701115b (from https://pypi.org/simple/spidev/). Command errored out with exit status 1: /usr/bin/python3 /usr/local/lib/python3.6/dist-packages/pip install --ignore-installed --no-user --prefix /tmp/pip-build-env-wmra1odh/overlay --no-warn-script-location --no-binary :none: --only-binary :none: -i https://pypi.org/simple -- 'setuptools>=61.0' Check the logs for full command output.
+[0m  Downloading spidev-3.5.tar.gz (10 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: Adafruit-SSD1306, Adafruit-GPIO, spidev
+  Building wheel for Adafruit-SSD1306 (setup.py): started
+  Building wheel for Adafruit-SSD1306 (setup.py): finished with status 'done'
+  Created wheel for Adafruit-SSD1306: filename=Adafruit_SSD1306-1.6.2-py3-none-any.whl size=5864 sha256=98a2fc6108cd6f1a7d4a641079bc52d9c34da8091f8144fcac631dcd23e230c7
+  Stored in directory: /root/.cache/pip/wheels/ce/fa/11/027156c4137b38f795efb890103573c9d09738de3d1edb858e
+  Building wheel for Adafruit-GPIO (setup.py): started
+  Building wheel for Adafruit-GPIO (setup.py): finished with status 'done'
+  Created wheel for Adafruit-GPIO: filename=Adafruit_GPIO-1.0.3-py3-none-any.whl size=38137 sha256=6c6c6adfeb8a2b02d6fa213c27b515e9b24fb1e07d55bedcaf984b3e6930f86f
+  Stored in directory: /root/.cache/pip/wheels/5a/66/ae/4667d4ed4f912b84aa965b390bd8854444a4dd110fc0d01999
+  Building wheel for spidev (setup.py): started
+  Building wheel for spidev (setup.py): finished with status 'done'
+  Created wheel for spidev: filename=spidev-3.5-cp36-cp36m-linux_aarch64.whl size=39635 sha256=759c5fcf8f0039a8a522aff58fe46fac572a3bb18da22f9dab0449914520de06
+  Stored in directory: /root/.cache/pip/wheels/09/ca/de/ba252f9f72cea10837dac30c0c374f0fc3a784e55c87d02175
+Successfully built Adafruit-SSD1306 Adafruit-GPIO spidev
+Installing collected packages: spidev, adafruit-pureio, Adafruit-GPIO, Adafruit-SSD1306, Adafruit-MotorHat, jetbot
+Successfully installed Adafruit-GPIO-1.0.3 Adafruit-MotorHat-1.4.0 Adafruit-SSD1306-1.6.2 adafruit-pureio-1.1.11 jetbot-1.0.0 spidev-3.5
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0mRemoving intermediate container 8f7eec031f25
+ ---> bcfb3cf4fcaa
+[Warning] One or more build-args [HOME] were not consumed
+Successfully built bcfb3cf4fcaa
+Successfully tagged cutertbot/jetbot:base-1.0.0-32.7.5
