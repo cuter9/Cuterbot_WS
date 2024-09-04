@@ -9,7 +9,7 @@ echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://ap
 sudo apt-get update
 export HOME=/home/cuterbot
 
-if [ ! -d "${HOME}/repo"]; then
+if [ ! -d "${HOME}/repo" ]; then
   gdown --no-cookies --folder https://drive.google.com/drive/folders/1d1KtLKNBpOoTWb-Z1_pAaMtCIzfE6LyC -O ${HOME}/repo
   pushd ${HOME}/repo && unzip Video_Codec_SDK_12.1.14.zip && mv Video_Codec_SDK_12.1.14 Video_Codec_SDK
   pushd ./Video_Codec_SDK
