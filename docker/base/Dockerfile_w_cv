@@ -65,6 +65,7 @@ RUN python3 -m pip install --pre --extra-index-url https://developer.download.nv
 # ==============
 # INSTALL OPENCV
 # ==============
+RUN echo -e "\e[48;5;172m Install opencv \e[0m"
 ENV OPENCV_DIR=/opt/repo
 COPY ./repo ${OPENCV_DIR}
 RUN cd ${OPENCV_DIR} && bash *.sh && pip3 install *.whl && cd .. && rm -r ./repo

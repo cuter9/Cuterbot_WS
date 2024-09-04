@@ -66,6 +66,7 @@ RUN python3 -m pip install --pre --extra-index-url https://developer.download.nv
 # ==============
 # INSTALL OPENCV
 # ==============
+RUN echo -e "\e[48;5;172m Install opencv \e[0m"
 COPY jetson-ota-public.asc /etc/apt/trusted.gpg.d/jetson-ota-public.asc
 RUN echo "deb https://repo.download.nvidia.com/jetson/common r32.7 main" > /etc/apt/sources.list.d/nvidia-l4t-apt-source.list && \
     apt-get update && \
