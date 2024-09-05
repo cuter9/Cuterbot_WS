@@ -80,8 +80,7 @@ class OpenCvGstCamera(CameraBase):
 
         except:
             self.stop()
-            raise RuntimeError(
-                'Could not initialize camera.  Please see error trace.')
+            raise RuntimeError('Could not initialize camera.  Please see error trace.')
 
         atexit.register(self.stop)
 

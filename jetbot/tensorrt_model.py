@@ -232,19 +232,19 @@ class TRTModel(object):
             self.input_names = self._trt_input_names()
         else:
             self.input_names = input_names
+        # map input bindings
+        self.inputs_torch = [None] * len(self.input_names)
 
+        # create output buffers
         if output_names is None:
             self.output_names = self._trt_output_names()
         else:
             self.output_names = output_names
-
         self.final_shapes = final_shapes
+        self.output_buffers = [None] * len(self.output_names)
+        self.create_output_buffers()
 
         self.bindings = [None] * (len(self.input_names) + len(self.output_names))
-        # map input bindings
-        self.inputs_torch = [None] * len(self.input_names)
-        self.output_buffers = self.create_output_buffers()
-
 
         # destroy at exit
         # this is depreciated
@@ -263,7 +263,7 @@ class TRTModel(object):
         return [self.engine.get_binding_name(i) for i in self._output_binding_indices()]
 
     def create_output_buffers(self):
-        outputs = [None] * len(self.output_names)
+        # outputs = [None] * len(self.output_names)
         for i, output_name in enumerate(self.output_names):
             idx = self.engine.get_binding_index(output_name)
             dtype = torch_dtype_from_trt(self.engine.get_binding_dtype(idx))
@@ -278,9 +278,9 @@ class TRTModel(object):
 
             # print("output shape : " , shape)
             device = torch_device_from_trt(self.engine.get_location(idx))
-            output = torch.empty(size=shape, dtype=dtype, device=device)
-            outputs[i] = output
-        return outputs
+            self.output_buffers[i] = torch.empty(size=shape, dtype=dtype, device=device)
+            # outputs[i] = output
+        return
 
     def execute(self, *inputs):
         # batch_size = inputs[0].shape[0]
@@ -317,11 +317,11 @@ class TRTModel(object):
         else:
             self.context.execute_v2(self.bindings)
 
-        outputs = [buffer.cpu().numpy() for buffer in self.output_buffers]
+        # outputs = [buffer.cpu().numpy() for buffer in self.output_buffers]
 
         # self.stream.synchronize()
-
-        return outputs
+        return [buffer.cpu().numpy() for buffer in self.output_buffers]
+        # return outputs
 
     def __call__(self, *inputs):
         return self.execute(*inputs)
