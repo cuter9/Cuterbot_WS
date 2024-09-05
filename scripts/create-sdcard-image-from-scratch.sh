@@ -134,6 +134,18 @@ cd
 sudo -H python3 -m pip install jupyter_bokeh
 sudo -H jupyter lab build
 
+# install qwcii package
+cd ~/Downloads
+git clone --recurse-submodules https://github.com/sparkfun/Qwiic_Py.git
+cd ~/Downloads/Qwiic_Py
+rm -rf ./qwiic/drivers/qwiic_as6212 ./qwiic/drivers/qwiic_as6212qwiic_kx13x
+
+python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
+
+cd ../qwiic_i2c
+python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
+cd ~/Downloads && rm -rf ./Qwiic_Py
+
 # install jetbot python module
 echo -e "\e[42m Install jetbot python module \e[0m"
 cd
