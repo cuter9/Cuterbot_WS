@@ -243,7 +243,7 @@ class TRTModel(object):
         self.bindings = [None] * (len(self.input_names) + len(self.output_names))
         # map input bindings
         self.inputs_torch = [None] * len(self.input_names)
-        self.output_buffers = self.create_output_buffers(self.batch_size)
+        self.output_buffers = self.create_output_buffers()
 
 
         # destroy at exit
@@ -262,17 +262,17 @@ class TRTModel(object):
     def _trt_output_names(self):
         return [self.engine.get_binding_name(i) for i in self._output_binding_indices()]
 
-    def create_output_buffers(self, batch_size):
+    def create_output_buffers(self):
         outputs = [None] * len(self.output_names)
         for i, output_name in enumerate(self.output_names):
             idx = self.engine.get_binding_index(output_name)
             dtype = torch_dtype_from_trt(self.engine.get_binding_dtype(idx))
             if self.final_shapes is not None:
-                shape = (batch_size,) + self.final_shapes[i]
+                shape = (self.batch_size,) + self.final_shapes[i]
             else:
                 # print("output binding shape : ",  idx, self.engine.get_binding_shape(idx))
                 if self.engine.has_implicit_batch_dimension:
-                    shape = (batch_size,) + tuple(self.engine.get_binding_shape(idx))
+                    shape = (self.batch_size,) + tuple(self.engine.get_binding_shape(idx))
                 else:
                     shape = tuple(self.engine.get_binding_shape(idx))
 
