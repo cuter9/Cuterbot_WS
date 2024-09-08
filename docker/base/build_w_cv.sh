@@ -7,6 +7,10 @@ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | 
 echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
 sudo apt-get update
+sudo apt-get update
+sudo apt-get install python3-pip -y
+sudo pip3 install pip -U
+
 export HOME=/home/cuterbot
 
 # do below before install latest opencv v3.9.0:

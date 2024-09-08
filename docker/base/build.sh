@@ -7,7 +7,7 @@ wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | 
 echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ bionic main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
 
 sudo apt-get update
-sudo apt-get python3-pip -y
+sudo apt-get install python3-pip -y
 sudo pip3 install pip -U
 
 docker build \
