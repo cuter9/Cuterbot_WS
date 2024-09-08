@@ -8,6 +8,7 @@ echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://ap
 
 sudo apt-get update
 sudo apt-get python3-pip -y
+sudo pip3 install pip -U
 
 docker build \
     --build-arg BASE_IMAGE="$JETBOT_BASE_IMAGE" \
