@@ -3,6 +3,8 @@ import torch
 import tensorrt as trt
 import os
 import ctypes
+
+
 # import atexit
 
 
@@ -220,21 +222,29 @@ class TRTModel(object):
         if self.engine.has_implicit_batch_dimension:
             print("engine is built from uff model")
             self.input_shape = tuple(self.engine.get_binding_shape(self.engine[0])[1:])
+            self.batch_size = 1
         else:
             print("engine is built from onnx model")
             self.input_shape = tuple(self.engine.get_binding_shape(self.engine[0])[2:])
+            self.batch_size = self.engine.get_binding_shape(self.engine[0])[0]
 
         if input_names is None:
             self.input_names = self._trt_input_names()
         else:
             self.input_names = input_names
+        # map input bindings
+        self.inputs_torch = [None] * len(self.input_names)
 
+        # create output buffers
         if output_names is None:
             self.output_names = self._trt_output_names()
         else:
             self.output_names = output_names
-
         self.final_shapes = final_shapes
+        self.output_buffers = [None] * len(self.output_names)
+        self.create_output_buffers()
+
+        self.bindings = [None] * (len(self.input_names) + len(self.output_names))
 
         # destroy at exit
         # this is depreciated
@@ -252,50 +262,50 @@ class TRTModel(object):
     def _trt_output_names(self):
         return [self.engine.get_binding_name(i) for i in self._output_binding_indices()]
 
-    def create_output_buffers(self, batch_size):
-        outputs = [None] * len(self.output_names)
+    def create_output_buffers(self):
+        # outputs = [None] * len(self.output_names)
         for i, output_name in enumerate(self.output_names):
             idx = self.engine.get_binding_index(output_name)
             dtype = torch_dtype_from_trt(self.engine.get_binding_dtype(idx))
             if self.final_shapes is not None:
-                shape = (batch_size,) + self.final_shapes[i]
+                shape = (self.batch_size,) + self.final_shapes[i]
             else:
                 # print("output binding shape : ",  idx, self.engine.get_binding_shape(idx))
                 if self.engine.has_implicit_batch_dimension:
-                    shape = (batch_size,) + tuple(self.engine.get_binding_shape(idx))
+                    shape = (self.batch_size,) + tuple(self.engine.get_binding_shape(idx))
                 else:
                     shape = tuple(self.engine.get_binding_shape(idx))
 
             # print("output shape : " , shape)
             device = torch_device_from_trt(self.engine.get_location(idx))
-            output = torch.empty(size=shape, dtype=dtype, device=device)
-            outputs[i] = output
-        return outputs
+            self.output_buffers[i] = torch.empty(size=shape, dtype=dtype, device=device)
+            # outputs[i] = output
+        return
 
     def execute(self, *inputs):
-        batch_size = inputs[0].shape[0]
+        # batch_size = inputs[0].shape[0]
 
-        bindings = [None] * (len(self.input_names) + len(self.output_names))
+        # bindings = [None] * (len(self.input_names) + len(self.output_names))
 
         # map input bindings
-        inputs_torch = [None] * len(self.input_names)
+        # inputs_torch = [None] * len(self.input_names)
         for i, name in enumerate(self.input_names):
             idx = self.engine.get_binding_index(name)
 
             # convert to appropriate format
-            inputs_torch[i] = torch.from_numpy(inputs[i])
-            inputs_torch[i] = inputs_torch[i].to(torch_device_from_trt(self.engine.get_location(idx)),
-                                                 memory_format=torch.contiguous_format)
-            inputs_torch[i] = inputs_torch[i].type(torch_dtype_from_trt(self.engine.get_binding_dtype(idx)))
+            self.inputs_torch[i] = torch.from_numpy(inputs[i])
+            self.inputs_torch[i] = self.inputs_torch[i].to(torch_device_from_trt(self.engine.get_location(idx)),
+                                                      memory_format=torch.contiguous_format)
+            self.inputs_torch[i] = self.inputs_torch[i].type(torch_dtype_from_trt(self.engine.get_binding_dtype(idx)))
 
-            bindings[idx] = int(inputs_torch[i].data_ptr())
+            self.bindings[idx] = int(self.inputs_torch[i].data_ptr())
 
-        output_buffers = self.create_output_buffers(batch_size)
+        # output_buffers = self.create_output_buffers(self.batch_size)
 
         # map output bindings
         for i, name in enumerate(self.output_names):
             idx = self.engine.get_binding_index(name)
-            bindings[idx] = int(output_buffers[i].data_ptr())
+            self.bindings[idx] = int(self.output_buffers[i].data_ptr())
 
         # self.context.execute_async(batch_size, bindings, stream_handle = self.stream.cuda_stream)
         # self.context.execute_v2(batch_size, bindings)
@@ -303,15 +313,15 @@ class TRTModel(object):
         # self.stream.synchronize()
 
         if self.engine.has_implicit_batch_dimension:
-            self.context.execute(batch_size, bindings)
+            self.context.execute(self.batch_size, self.bindings)
         else:
-            self.context.execute_v2(bindings)
+            self.context.execute_v2(self.bindings)
 
-        outputs = [buffer.cpu().numpy() for buffer in output_buffers]
+        # outputs = [buffer.cpu().numpy() for buffer in self.output_buffers]
 
         # self.stream.synchronize()
-
-        return outputs
+        return [buffer.cpu().numpy() for buffer in self.output_buffers]
+        # return outputs
 
     def __call__(self, *inputs):
         return self.execute(*inputs)

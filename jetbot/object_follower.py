@@ -134,8 +134,9 @@ class ObjectFollower(ObjectDetector):
         self.closest_object = closest_detection
 
     def start_of(self, change):
+        self.capturer.unobserve_all()
         self.load_object_detector(change)
-        # self.capturer.unobserve_all()
+
         print("start running!")
         self.capturer.observe(self.execute_of, names='value')
 
