@@ -14,9 +14,9 @@ export HOME=/home/cuterbot
 # create symlink to the Video_Codec_SDK lib
 # after above the Video_Codec_SDK lib, the nvidia container toolkit will automatically map into container when building cuterbot
 # install the requirements for python-opencv
-if [ ! -d "${HOME}/repo" ]; then
-  gdown --no-cookies --folder https://drive.google.com/drive/folders/1d1KtLKNBpOoTWb-Z1_pAaMtCIzfE6LyC -O ${HOME}/repo
-  pushd ${HOME}/repo && unzip Video_Codec_SDK_12.1.14.zip && mv Video_Codec_SDK_12.1.14 Video_Codec_SDK
+if [ ! -d "${HOME}/Cuterbot_Demo/repo" ]; then
+  gdown --no-cookies --folder https://drive.google.com/drive/folders/1d1KtLKNBpOoTWb-Z1_pAaMtCIzfE6LyC -O ${HOME}/Cuterbot_Demo/repo
+  pushd ${HOME}/Cuterbot_Demo/repo && unzip Video_Codec_SDK_12.1.14.zip && mv Video_Codec_SDK_12.1.14 Video_Codec_SDK
   pushd ./Video_Codec_SDK
   sudo cp ./Interface/*.h /usr/local/cuda-10.2/targets/aarch64-linux/include/
   sudo cp ./Lib/linux/stubs/aarch64/*.so /usr/local/cuda-10.2/targets/aarch64-linux/lib/
@@ -40,4 +40,4 @@ docker build \
     --build-arg BASE_IMAGE="$JETBOT_BASE_IMAGE" \
     -t "$JETBOT_DOCKER_REMOTE"/jetbot:base-"$JETBOT_VERSION"-$L4T_VERSION \
     -f Dockerfile_w_cv \
-    $HOME 2>&1 | tee build_cuterbot_docker.log   # jetbot repo root as context
+    ../.. 2>&1 | tee build_cuterbot_docker.log   # jetbot repo root as context
