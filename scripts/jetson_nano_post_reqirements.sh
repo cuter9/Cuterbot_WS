@@ -1,11 +1,11 @@
 # Make swapfile
 cd
-sudo swapoff -a
-sudo fallocate -l 6G /var/swapfile
-sudo chmod 600 /var/swapfile
-sudo mkswap /var/swapfile
-sudo swapon /var/swapfile
-sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+# sudo swapoff -a
+# sudo fallocate -l 6G /var/swapfile
+# sudo chmod 600 /var/swapfile
+# sudo mkswap /var/swapfile
+# sudo swapon /var/swapfile
+# sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
 # sleep 5m
 
 # Install pip and some python dependencies
@@ -39,7 +39,7 @@ echo -e "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
 
 cd $HOME/Downloads
 sudo apt install -y libopenblas-base libopenmpi-dev
-
+sudo pip3 install wget
 # wget -N https://nvidia.box.com/shared/static/yr6sjswn25z7oankw8zy1roow9cy5ur1.whl -O torch-1.6.0rc2-cp36-cp36m-linux_aarch64.whl
 wget -N https://nvidia.box.com/shared/static/fjtbno0vpo676a25cgvuqc1wty0fkkg6.whl -O torch-1.10.0-cp36-cp36m-linux_aarch64.whl
 sudo -H python3 -m pip install torch-1.10.0-cp36-cp36m-linux_aarch64.whl 
