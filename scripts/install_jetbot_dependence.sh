@@ -22,3 +22,4 @@ python3 setup.py bdist_wheel && cd dist && sudo pip3 install *.whl
 # cd $HOME/Downloads && rm -rf Qwiic_Py
 sudo pip3 install Adafruit_MotorHat
 sudo pip3 install Adafruit-SSD1306
+sudo pip3 install pyserial
