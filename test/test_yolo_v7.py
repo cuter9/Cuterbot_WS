@@ -10,8 +10,8 @@ WINDOW_NAME = 'TrtSsdModelTest'
 from jetbot import ObjectDetector
 
 # follower_model = "/workspace/model_repo/object_detection/yolo_v7.engine"
-# follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7.engine"
-follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7-tiny.engine"
+follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7.engine"
+# follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7-tiny.engine"
 # follower_model = "/home/cuterbot/model_repo/object_detection/yolov4_416.engine"
 # follower_model = "/home/cuterbot/Data_Repo/Model_Conversion/SSD_mobilenet/ONNX_Model/Repo/ssd_mobilenet_v2_320x320_coco17_tpu-8_tf_v2.engine"
 
