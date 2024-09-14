@@ -18,7 +18,7 @@ follower_model = "/home/cuterbot/model_repo/object_detection/yolo_v7-tiny.engine
 # detector = ObjectDetector(follower_model, type_model='YOLO_v7', conf_th=0.3)
 detector = ObjectDetector()
 detector.engine_path = follower_model
-detector.conf_th = 0.6
+detector.conf_th = 0.5
 detector.type_model_od = "YOLO_v7"
 detector.load_od_engine()
 
