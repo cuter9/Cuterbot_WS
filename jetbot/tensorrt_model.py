@@ -295,7 +295,7 @@ class TRTModel(object):
             # convert to appropriate format
             self.inputs_torch[i] = torch.from_numpy(inputs[i])
             self.inputs_torch[i] = self.inputs_torch[i].to(torch_device_from_trt(self.engine.get_location(idx)),
-                                                      memory_format=torch.contiguous_format)
+                                                           memory_format=torch.contiguous_format)
             self.inputs_torch[i] = self.inputs_torch[i].type(torch_dtype_from_trt(self.engine.get_binding_dtype(idx)))
 
             self.bindings[idx] = int(self.inputs_torch[i].data_ptr())
