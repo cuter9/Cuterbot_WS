@@ -20,7 +20,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
     # ----- modify last layer for classification, and the model used in notebook should be modified too.
 
-    if pth_model_name == 'mobilenet_v3_large':  # MobileNet
+    if pth_model_name == 'mobilenet_v3_large' or pth_model_name == 'mobilenet_v3_small':  # MobileNet
         model_type = "MobileNet"
         model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
                                               2)  # for mobilenet_v3 model. must add the block expansion factor 4
