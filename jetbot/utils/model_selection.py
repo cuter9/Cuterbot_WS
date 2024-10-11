@@ -20,7 +20,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
     # ----- modify last layer for classification, and the model used in notebook should be modified too.
 
-    if pth_model_name == 'mobilenet_v3_large' or pth_model_name == 'mobilenet_v3_small':  # MobileNet V3
+    if 'mobilenet_v3' in pth_model_name: # 'mobilenet_v3_large' or  'mobilenet_v3_small'
         model_type = "MobileNet"
         model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
                                               2)  # for mobilenet_v3 model. must add the block expansion factor 4
@@ -66,8 +66,18 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     elif "densenet" in pth_model_name:  # densenet121, densenet161, densenet169, densenet201
         model_type = "DenseNet"
         model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
+
+    elif "shufflenet_v2" in pth_model_name:  # shufflenet_v2_x1_0 or shufflenet_v2_x0_5
+        model_type = "ShuffleNet"
+        model.fc = torch.nn.Linear(model.fc.in_features, 2)
+
+    elif "mnasnet" in pth_model_name:  # mnasnet1_0 or mnasnet0_5
+        model_type = "MnasNet"
+        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)
+
     else:
         model_type = None
+
     return model, model_type
 
 
