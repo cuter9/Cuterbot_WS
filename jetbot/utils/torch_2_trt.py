@@ -5,7 +5,6 @@ from torch_tensorrt.ts import convert_method_to_trt_engine as torch2engine
 import os
 from model_selection import load_tune_pth_model
 
-opt = dict()
 device = 'cpu'
 img_size = [224, 224]
 batch_size = 1
@@ -15,7 +14,6 @@ MODEL_REPO_DIR = "/home/cuterbot/model_repo/road_following"
 path_torch_model = os.path.join(MODEL_REPO_DIR, "best_steering_model_xy_" + model_name + ".pth")
 
 model, model_type = load_tune_pth_model(pth_model_name=model_name, pretrained=False)
-# model = model.cuda().eval().half()
 model.load_state_dict(torch.load(path_torch_model))
 
 img = torch.randn(batch_size, 3, *img_size)
