@@ -1,7 +1,7 @@
 import tensorrt as trt
 from torch2trt import torch2trt
 import os
-from model_selection import load_tune_pth_model
+from ..model_selection import load_tune_pth_model
 import torch
 
 model_name = "mobilenet_v3_small"
