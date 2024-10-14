@@ -14,25 +14,19 @@ else:
 # @tensorrt_converter('torch.nn.Hardtanh')
 def convert_hardtanh(ctx):
     # h-hardtanh(x) : y=x for -1<=x<=1; y=-1 for x<-1; y=1 for x>1
-    # input = ctx.method_args[0]
-    # low_bound = ctx.method_args[1]
-    # up_bound = ctx.method_args[2]
     input = get_arg(ctx, 'input', pos = 0, default = None)
     low_bound = get_arg(ctx, 'min_val', pos = 1, default = -1.0)
     up_bound = get_arg(ctx, 'max_val', pos = 2, default = 1.0)
     
     dtype_in = input.dtype
-    low_bound = torch.tensor(-1.0, dtype=dtype_in)
-    up_bound = torch.tensor(1.0, dtype=dtype_in)
+    low_bound = torch.tensor(low_bound, dtype=dtype_in)
+    up_bound = torch.tensor(up_bound, dtype=dtype_in)
 
     output = ctx.method_return
 
     input_a_trt, up_bound_trt, low_bound_trt = add_missing_trt_tensors(ctx.network, [input, up_bound, low_bound])
     input_a_trt, up_bound_trt, low_bound_trt = broadcast_trt_tensors(ctx.network, [input_a_trt, up_bound_trt, low_bound_trt], len(output.shape))
-    
-    # up_bound_trt, low_bound_trt = add_missing_trt_tensors(ctx.network, [up_bound, low_bound])
-    # up_bound_trt, low_bound_trt = broadcast_trt_tensors(ctx.network, [up_bound_trt, low_bound_trt], len(output.shape))
-    
+
     # min(1, x)
     layer = ctx.network.add_elementwise(input_a_trt, up_bound_trt, trt.ElementWiseOperation.MIN)
 
