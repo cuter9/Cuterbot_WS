@@ -130,10 +130,10 @@ class RoadCruiser(HasTraits):
         pid = self.angle * self.steering_gain_rc + (self.angle - self.angle_last) * self.steering_dgain_rc
         self.angle_last = self.angle
 
-        self.steering = pid + self.steering_bias_rc
+        self.steering_rc = pid + self.steering_bias_rc
 
-        self.robot.left_motor.value = max(min(self.speed_gain_rc + self.steering, 1.0), 0.0)
-        self.robot.right_motor.value = max(min(self.speed_gain_rc - self.steering, 1.0), 0.0)
+        self.robot.left_motor.value = max(min(self.speed_gain_rc + self.steering_rc, 1.0), 0.0)
+        self.robot.right_motor.value = max(min(self.speed_gain_rc - self.steering_rc, 1.0), 0.0)
 
         end_time = time.time()
         self.execution_time_rc.append(end_time - start_time)
