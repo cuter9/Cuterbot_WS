@@ -136,7 +136,7 @@ RUN apt install -y python3-smbus && pip3 install pyzmq
 
 ENV OPT=/opt
 RUN cd ${OPT} && git clone https://github.com/NVIDIA-AI-IOT/torch2trt
-COPY ./jetbot/utils/torch_model_conversion/native_converters.py ${OPT}/torch2trt/torch2trt/converters/
+# COPY ./jetbot/utils/torch_model_conversion/native_converters.py ${OPT}/torch2trt/torch2trt/converters/
 RUN cd ${OPT}/torch2trt && \
     python3 setup.py bdist_wheel && cd dist && pip3 install *.whl
 
