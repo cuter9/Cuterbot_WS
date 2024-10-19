@@ -16,7 +16,7 @@ os.environ['MODEL_REPO_DIR'] = MODEL_REPO_DIR
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     model_type = None
     # ----- modify the last layer for classification, and the model used in notebook should be modified too.
-    model = getattr(pth_models, pth_model_name)(pretrained=pretrained)  # for fine-tuning
+    model = getattr(pth_models, pth_model_name)(num_classes=2, pretrained=pretrained)  # for fine-tuning
 
     if 'mobilenet_v3' in pth_model_name: # 'mobilenet_v3_large' or  'mobilenet_v3_small'
         model_type = "MobileNet"
