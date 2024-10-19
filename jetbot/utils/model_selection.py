@@ -50,7 +50,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif pth_model_name == 'mobilenet_v2':
         model_type = "MobileNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights = getattr(pth_models, "MobileNet_V2_Weights").DEFAULT
@@ -65,7 +65,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif pth_model_name == 'vgg11':  # VGGNet
         model_type = "VggNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights = getattr(pth_models, "VGG11_Weights").DEFAULT
@@ -80,7 +80,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif 'resnet' in pth_model_name:  # ResNet
         model_type = "ResNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights_cls = pth_model_name.replace("resnet", "ResNet") + "_Weights"
@@ -97,7 +97,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif 'efficientnet' in pth_model_name:  # ResNet
         model_type = "EfficientNet"
-        if tv >= 13:
+        if tv >= 13:        # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights_cls = pth_model_name.replace("efficientnet_b", "EfficientNet_B") + "_Weights"
@@ -113,7 +113,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif pth_model_name == 'inception_v3':  # Inception_v3
         model_type = "InceptionNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights = getattr(pth_models, "Inception_V3_Weights").DEFAULT
@@ -130,7 +130,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif pth_model_name == 'googlenet':  # Inception_v3
         model_type = "GoogleNet"
-        if tv >= 13:
+        if tv >= 13: # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights = getattr(pth_models, "GoogLeNet_Weights").DEFAULT
@@ -150,7 +150,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif "densenet" in pth_model_name:  # densenet121, densenet161, densenet169, densenet201
         model_type = "DenseNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights_cls = pth_model_name.replace("densenet", "DenseNet") + "_Weights"
@@ -165,7 +165,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif "shufflenet_v2" in pth_model_name:  # shufflenet_v2_x1_0 or shufflenet_v2_x0_5
         model_type = "ShuffleNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights_cls = pth_model_name.replace("shufflenet_v2_x", "ShuffleNet_V2_X") + "_Weights"
@@ -180,7 +180,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif "mnasnet" in pth_model_name:  # mnasnet1_0 or mnasnet0_5
         model_type = "MnasNet"
-        if tv >= 13:
+        if tv >= 13:    # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             if pretrained:
                 weights_cls = pth_model_name.replace("mnasnet", "MNASNet") + "_Weights"
