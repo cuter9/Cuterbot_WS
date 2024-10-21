@@ -4,17 +4,19 @@ import PIL.Image
 
 import numpy as np
 import torch
+import torchvision
 import torchvision.transforms as transforms
 from traitlets import HasTraits, Float, Unicode
 
 from jetbot import Camera
 from jetbot import Robot
-from jetbot.utils.model_selection import load_tune_pth_model
+from jetbot.utils.model_selection import load_tune_pth_model, tv_classifier_preprocess
 
 
 class RoadCruiser(HasTraits):
     cruiser_model = Unicode(default_value='').tag(config=True)
     type_cruiser_model = Unicode(default_value='').tag(config=True)
+    cruiser_model_preprocess = Unicode(default_value='').tag(config=True)
     speed_rc = Float(default_value=0).tag(config=True)
     speed_gain_rc = Float(default_value=0.15).tag(config=True)
     steering_gain_rc = Float(default_value=0.08).tag(config=True)
@@ -30,6 +32,8 @@ class RoadCruiser(HasTraits):
 
         self.cruiser_model_type_pth = None
         self.cruiser_model_pth = None
+        self.preprocess = None
+        self.cruiser_model_preprocess_pth = None
 
         if init_sensor_rc:
             self.capturer = Camera()
@@ -52,12 +56,22 @@ class RoadCruiser(HasTraits):
 
         pth_model_name = self.cruiser_model.split('/')[-1].split('.')[0].split('_', 4)[-1].split('-')[0]
         print('pytorch model name: %s' % pth_model_name)
-        self.cruiser_model_pth, self.cruiser_model_type_pth = load_tune_pth_model(pth_model_name=pth_model_name, pretrained=False)
+        self.cruiser_model_pth, self.cruiser_model_type_pth, self.cruiser_model_preprocess_pth = load_tune_pth_model(
+            pth_model_name=pth_model_name,
+            pretrained=False)
 
         print('path of cruiser model: %s' % self.cruiser_model)
         print('use %s for inference.' % self.use_gpu)
         # self.cruiser_model.load_state_dict(torch.load('best_steering_model_xy_' + cruiser_model + '.pth'))
         self.cruiser_model_pth.load_state_dict(torch.load(self.cruiser_model))
+
+        # load preprocess for loaded cruiser model
+        if self.cruiser_model_preprocess_pth is None:  # load pre-stored preprocess module of the trained model
+            self.preprocess = tv_classifier_preprocess()
+            # use weights_only=True, ref: https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models
+            self.preprocess.load_state_dict(torch.load(self.cruiser_model_preprocess))
+        else:  # used the preprocess from load_tune_pth_model
+            self.preprocess = self.cruiser_model_preprocess_pth[0]
 
         if self.use_gpu == 'gpu':
             print("torch cuda version : ", torch.version.cuda)
@@ -65,11 +79,15 @@ class RoadCruiser(HasTraits):
             self.device = torch.device('cuda')
             self.cruiser_model_pth.to(self.device)
             self.cruiser_model_pth.eval().half()
+            self.preprocess.to(self.device)
+            self.preprocess.eval().half()
 
         elif self.use_gpu == 'cpu':
             self.device = torch.device('cpu')
             self.cruiser_model_pth.to(self.device)
             self.cruiser_model_pth.eval()
+            self.preprocess.to(self.device)
+            self.preprocess.eval()
 
         # self.cruiser_model = self.cruiser_model.float()
         # self.cruiser_model = self.cruiser_model.to(self.device, dtype=torch.float)
@@ -85,6 +103,51 @@ class RoadCruiser(HasTraits):
     # 4. Add a batch dimension
 
     def preprocess_rc(self, image):
+        # tv = int(torchvision.__version__.split(".")[1])  # torchvision version
+        image = PIL.Image.fromarray(image)
+
+        '''
+        if tv >= 13:
+            preprocess = self.cruiser_model_preprocess[0]
+        else:
+            # load preprocess for loaded cruiser model
+            preprocess = tv_classifier_preprocess()
+            preprocess.load_state_dict(torch.load(self.cruiser_model_preprocess))
+        '''
+
+        if self.use_gpu == 'gpu':
+            image = self.preprocess(image).to(self.device).half()
+        elif self.use_gpu == 'cpu':
+            image = self.preprocess(image).to(self.device)
+
+        '''           
+        mean = None
+        std = None
+        if self.use_gpu == 'gpu':
+            mean = torch.Tensor([0.485, 0.456, 0.406]).to(self.device).half()
+            std = torch.Tensor([0.229, 0.224, 0.225]).to(self.device).half()
+        elif self.use_gpu == 'cpu':
+            mean = torch.Tensor([0.485, 0.456, 0.406]).to(self.device)
+            std = torch.Tensor([0.229, 0.224, 0.225]).to(self.device)
+        # mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
+        # std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
+
+        # resize the cam captured image to (224, 224) for optimal resnet model inference
+        if self.type_cruiser_model == 'inception':
+            image = image.resize((299, 299))
+        else:
+            image = image.resize((224, 224))
+
+        if self.use_gpu == 'gpu':
+            image = transforms.functional.to_tensor(image).to(self.device).half()
+        elif self.use_gpu == 'cpu':
+            image = transforms.functional.to_tensor(image).to(self.device)
+
+        image.sub_(mean[:, None, None]).div_(std[:, None, None])
+        '''
+        return image[None, ...]
+
+    def preprocess_rc_1(self, image):
         mean = None
         std = None
         if self.use_gpu == 'gpu':

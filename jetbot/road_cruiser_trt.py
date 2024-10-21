@@ -10,10 +10,13 @@ from torch2trt import TRTModule
 from jetbot import Camera
 from jetbot import Robot
 
+from jetbot.utils.model_selection import tv_classifier_preprocess
+
 
 class RoadCruiserTRT(HasTraits):
     cruiser_model = Unicode(default_value='').tag(config=True)
     type_cruiser_model = Unicode(default_value='').tag(config=True)
+    cruiser_model_preprocess = Unicode(default_value='').tag(config=True)
     speed_rc = Float(default_value=0).tag(config=True)
     speed_gain_rc = Float(default_value=0.15).tag(config=True)
     steering_gain_rc = Float(default_value=0.08).tag(config=True)
@@ -27,6 +30,7 @@ class RoadCruiserTRT(HasTraits):
         super().__init__()
 
         self.trt_model_rc = TRTModule()
+        self.preprocess = None
 
         self.robot = None
         self.capturer = None
@@ -61,15 +65,27 @@ class RoadCruiserTRT(HasTraits):
 
         if "workspace" in self.cruiser_model:
             self.trt_model_rc.load_state_dict(torch.load(self.cruiser_model))
+            # load preprocess for loaded cruiser model
+            self.preprocess = tv_classifier_preprocess()
+            # use weights_only=True, ref: https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models
+            self.preprocess.load_state_dict(torch.load(self.cruiser_model_preprocess))
+            self.preprocess.to(self.device).eval().half()
+
         else:
             self.trt_model_rc.load_state_dict(torch.load('best_steering_model_xy_trt_' + self.cruiser_model + '.pth'))
+
         print("engine is built from pytorch model!")
+
     def preprocess_rc(self, image):
+        image = PIL.Image.fromarray(image)
+        image = self.preprocess(image).to(self.device).half()
+
+        '''
         mean = torch.Tensor([0.485, 0.456, 0.406]).cuda().half()
         std = torch.Tensor([0.229, 0.224, 0.225]).cuda().half()
         # mean = torch.Tensor([0.485, 0.456, 0.406]).cuda()
         # std = torch.Tensor([0.229, 0.224, 0.225]).cuda()
-        image = PIL.Image.fromarray(image)
+
         # resize the cam captured image to (224, 224) for optimal resnet model inference
         if self.type_cruiser_model == 'InceptionNet':
             image = image.resize((299, 299))
@@ -78,6 +94,7 @@ class RoadCruiserTRT(HasTraits):
         image = transforms.functional.to_tensor(image).to(self.device).half()
         # image = transforms.functional.to_tensor(image).to(self.device)
         image.sub_(mean[:, None, None]).div_(std[:, None, None])
+        '''
         return image[None, ...]
 
     def execute_rc(self, change):
