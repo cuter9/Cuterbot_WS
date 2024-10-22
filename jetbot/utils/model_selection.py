@@ -71,12 +71,19 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
             print("Attribute Error - %s \n" % err, ', Check weights class ( %s ) is correct or not!' % weights_cls)
 
         if pretrained:
-            model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
+            model = getattr(pth_models, pth_model_name)(weights=weights, aux_logits=True) \
+                if pth_model_name in ['googlenet', 'inception_v3'] \
+                else getattr(pth_models, pth_model_name)(weights=weights) # for fine-tuning
         else:
-            model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
+            model = getattr(pth_models, pth_model_name)(weights=None, aux_logits=True) \
+                if pth_model_name in ['googlenet', 'inception_v3'] \
+                else getattr(pth_models, pth_model_name)(weights=None) # for fine-tuning
+# for inferencing
 
     else:
-        model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+        model = getattr(pth_models, pth_model_name)(pretrained=pretrained, aux_logits=True) \
+            if pth_model_name in ['googlenet', 'inception_v3'] \
+            else getattr(pth_models, pth_model_name)(pretrained=pretrained)
         print("The  model is load from torchvision with version less then 0.13. \n"
               "The preprocess for the loaded model should be re-designed if it is loaded with pretrained weights, or \n "
               "The preprocess can be loaded from the pre-stored preprocess module while training the model "
