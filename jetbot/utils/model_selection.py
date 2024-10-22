@@ -51,6 +51,40 @@ class tv_classifier_preprocess(torch.nn.Module):
         return img
 
 
+def load_pth_model(pth_model_name, weights_cls, pretrained):
+    if weights_cls:
+        try:
+            weights = getattr(pth_models, weights_cls).DEFAULT
+            preprocess = weights.transforms()
+            classifier_preprocess = tv_classifier_preprocess(crop_size=preprocess.crop_size,
+                                                             resize_size=preprocess.resize_size,
+                                                             mean=preprocess.mean,
+                                                             std=preprocess.std,
+                                                             interpolation=preprocess.interpolation,
+                                                             antialias=preprocess.antialias,
+                                                             tv_version=torchvision.__version__,
+                                                             tv_weights=weights_cls
+                                                             )
+        except AttributeError as err:
+            print("Attribute Error - %s \n" % err, ', Check weights class ( %s ) is correct or not!' % weights_cls)
+
+        if pretrained:
+            model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
+        else:
+            model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
+
+    else:
+        model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+        preprocess = None
+        classifier_preprocess = None
+        print("The  model is load from torchvision with version less then 0.13. \n"
+              "The preprocess for the loaded model should be re-designed if it is loaded with pretrained weights, or \n "
+              "The preprocess can be loaded from the pre-stored preprocess module while training the model "
+              "with torchvision version >= 0.13 (it is recommended!)")
+
+    return model, [preprocess, classifier_preprocess]
+
+
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     """
     if pretrained:
@@ -59,10 +93,9 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
     """
     preprocess = None
-    classifier_preprocess = None
     model_type = None
     model = None
-    weights = None
+    weights_cls = None
 
     tv = int(torchvision.__version__.split(".")[1])  # torchvision version
     # ----- modify the last layer for classification, and the model used in notebook should be modified too.
@@ -71,14 +104,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("resnet", "ResNet") + "_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                print("torchvision version: %d" % tv)
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features,
                                    2)  # for resnet model must add block expansion factor 4
 
@@ -86,21 +113,14 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model_type = "MobileNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
-            weights_cls = None
             if "small" in pth_model_name:
                 weights_cls = "MobileNet_V3_Small_Weights"
             elif "large" in pth_model_name:
                 weights_cls = "MobileNet_V3_Large_Weights"
             else:
                 assert weights_cls is not None, "Check the use of the name of the torch model!"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
                                               2)  # for mobilenet_v3 model. must add block expansion factor 4
 
@@ -109,14 +129,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = "MobileNet_V2_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                print("torchvision version: %d" % tv)
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features,
                                               2)  # for mobilenet_v2 model. must add block expansion factor 4
 
@@ -125,14 +139,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = "VGG11_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features,
                                               2)  # for VGG model. must add block expansion factor 4
 
@@ -141,14 +149,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("efficientnet_b", "EfficientNet_B") + "_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                print("torchvision version: %d" % tv)
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
         # model.classifier[0].dropout = torch.nn.Dropout(p=dropout)
 
@@ -157,14 +159,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = "Inception_V3_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         # model.dropout = torch.nn.Dropout(p=dropout)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         if model.aux_logits:
@@ -175,14 +171,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = "GoogLeNet_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         # model.dropout = torch.nn.Dropout(p=dropout)
         if model.aux_logits:
@@ -196,14 +186,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("densenet", "DenseNet") + "_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
 
     elif "shufflenet_v2" in pth_model_name:  # shufflenet_v2_x1_0 or shufflenet_v2_x0_5
@@ -211,14 +195,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("shufflenet_v2_x", "ShuffleNet_V2_X") + "_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
 
     elif "mnasnet" in pth_model_name:  # mnasnet1_0 or mnasnet0_5
@@ -226,37 +204,15 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("mnasnet", "MNASNet") + "_Weights"
-            weights = getattr(pth_models, weights_cls).DEFAULT
-            if pretrained:
-                model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
-            else:
-                model = getattr(pth_models, pth_model_name)(weights=None)  # for inferencing
-        else:
-            print("torchvision version: %d" % tv)
-            model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
+
+        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)
 
     else:
         assert (
                 model is not None and model_type is not None), "Check if the model name set is compatible with torchvision."
 
-    if tv >= 13:
-        preprocess = weights.transforms()
-        classifier_preprocess = tv_classifier_preprocess(crop_size=preprocess.crop_size,
-                                                         resize_size=preprocess.resize_size,
-                                                         mean=preprocess.mean,
-                                                         std=preprocess.std,
-                                                         interpolation=preprocess.interpolation,
-                                                         antialias=preprocess.antialias,
-                                                         tv_version=torchvision.__version__,
-                                                         tv_weights=weights_cls
-                                                         )
-    else:
-        print("The  model is load from torchvision with version less then 0.13. \n"
-              "The preprocess of the loaded model should be re-designed if it is loaded with pretrained weights, or \n "
-              "The preprocess can be loaded from the pre-stored preprocess module while training the model with torchvision version >= 0.13 (it is recommended!)")
-
-    return model, model_type, [preprocess, classifier_preprocess]
+    return model, model_type, preprocess
 
 
 class model_selection(HasTraits):
