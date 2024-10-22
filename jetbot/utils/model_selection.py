@@ -108,7 +108,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model_type = "MobileNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
-            weights = getattr(pth_models, "MobileNet_V2_Weights").DEFAULT
+            weights_cls = "MobileNet_V2_Weights"
+            weights = getattr(pth_models, weights_cls).DEFAULT
             if pretrained:
                 model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
             else:
@@ -123,7 +124,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model_type = "VggNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
-            weights = getattr(pth_models, "VGG11_Weights").DEFAULT
+            weights_cls = "VGG11_Weights"
+            weights = getattr(pth_models, weights_cls).DEFAULT
             if pretrained:
                 model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
             else:
@@ -154,7 +156,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model_type = "InceptionNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
-            weights = getattr(pth_models, "Inception_V3_Weights").DEFAULT
+            weights_cls = "Inception_V3_Weights"
+            weights = getattr(pth_models, weights_cls).DEFAULT
             if pretrained:
                 model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
             else:
@@ -171,7 +174,8 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         model_type = "GoogleNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
-            weights = getattr(pth_models, "GoogLeNet_Weights").DEFAULT
+            weights_cls = "GoogLeNet_Weights"
+            weights = getattr(pth_models, weights_cls).DEFAULT
             if pretrained:
                 model = getattr(pth_models, pth_model_name)(weights=weights)  # for fine-tuning
             else:
