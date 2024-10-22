@@ -52,7 +52,7 @@ class tv_classifier_preprocess(torch.nn.Module):
 
 
 def load_pth_model(pth_model_name, weights_cls, pretrained):
-    wrap_preprocess = None
+    preprocess_wrap = None
     if weights_cls:
         try:
             weights = getattr(pth_models, weights_cls).DEFAULT
@@ -66,7 +66,7 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
                                                              tv_version=torchvision.__version__,
                                                              tv_weights=weights_cls
                                                              )
-            wrap_preprocess = [preprocess, classifier_preprocess]
+            preprocess_wrap = [preprocess, classifier_preprocess]
         except AttributeError as err:
             print("Attribute Error - %s \n" % err, ', Check weights class ( %s ) is correct or not!' % weights_cls)
 
@@ -82,7 +82,7 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
               "The preprocess can be loaded from the pre-stored preprocess module while training the model "
               "with torchvision version >= 0.13 (it is recommended!)")
 
-    return model, wrap_preprocess
+    return model, preprocess_wrap
 
 
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
@@ -92,7 +92,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
     else:
         model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
     """
-    preprocess = None
+    preprocess_wrap = None
     model_type = None
     model = None
     weights_cls = None
@@ -105,7 +105,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("resnet", "ResNet") + "_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features,
                                    2)  # for resnet model must add block expansion factor 4
 
@@ -120,7 +120,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             else:
                 assert weights_cls is not None, "Check the use of the name of the torch model!"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
                                               2)  # for mobilenet_v3 model. must add block expansion factor 4
 
@@ -130,7 +130,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = "MobileNet_V2_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features,
                                               2)  # for mobilenet_v2 model. must add block expansion factor 4
 
@@ -140,7 +140,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = "VGG11_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features,
                                               2)  # for VGG model. must add block expansion factor 4
 
@@ -150,7 +150,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("efficientnet_b", "EfficientNet_B") + "_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
         # model.classifier[0].dropout = torch.nn.Dropout(p=dropout)
 
@@ -160,7 +160,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = "Inception_V3_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         # model.dropout = torch.nn.Dropout(p=dropout)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         if model.aux_logits:
@@ -172,7 +172,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = "GoogLeNet_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
         # model.dropout = torch.nn.Dropout(p=dropout)
         if model.aux_logits:
@@ -187,7 +187,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("densenet", "DenseNet") + "_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
 
     elif "shufflenet_v2" in pth_model_name:  # shufflenet_v2_x1_0 or shufflenet_v2_x0_5
@@ -196,7 +196,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("shufflenet_v2_x", "ShuffleNet_V2_X") + "_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.fc = torch.nn.Linear(model.fc.in_features, 2)
 
     elif "mnasnet" in pth_model_name:  # mnasnet1_0 or mnasnet0_5
@@ -205,14 +205,14 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
             print("torchvision version: %d" % tv)
             weights_cls = pth_model_name.replace("mnasnet", "MNASNet") + "_Weights"
 
-        model, preprocess = load_pth_model(pth_model_name, weights_cls, pretrained)
+        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
         model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)
 
     else:
         assert (
                 model is not None and model_type is not None), "Check if the model name set is compatible with torchvision."
 
-    return model, model_type, preprocess
+    return model, model_type, preprocess_wrap
 
 
 class model_selection(HasTraits):
