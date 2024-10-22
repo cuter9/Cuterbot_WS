@@ -52,6 +52,7 @@ class tv_classifier_preprocess(torch.nn.Module):
 
 
 def load_pth_model(pth_model_name, weights_cls, pretrained):
+    wrap_preprocess = None
     if weights_cls:
         try:
             weights = getattr(pth_models, weights_cls).DEFAULT
@@ -65,6 +66,7 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
                                                              tv_version=torchvision.__version__,
                                                              tv_weights=weights_cls
                                                              )
+            wrap_preprocess = [preprocess, classifier_preprocess]
         except AttributeError as err:
             print("Attribute Error - %s \n" % err, ', Check weights class ( %s ) is correct or not!' % weights_cls)
 
@@ -75,14 +77,12 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
 
     else:
         model = getattr(pth_models, pth_model_name)(pretrained=pretrained)
-        preprocess = None
-        classifier_preprocess = None
         print("The  model is load from torchvision with version less then 0.13. \n"
               "The preprocess for the loaded model should be re-designed if it is loaded with pretrained weights, or \n "
               "The preprocess can be loaded from the pre-stored preprocess module while training the model "
               "with torchvision version >= 0.13 (it is recommended!)")
 
-    return model, [preprocess, classifier_preprocess]
+    return model, wrap_preprocess
 
 
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
