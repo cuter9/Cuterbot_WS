@@ -26,5 +26,5 @@ sudo umount /mnt
 sudo umount ./tmp_system
 
 echo "Flassh comlplete. \
-Plug the flashed sd card, mouse and display to jetson nano, and restart the device.\
+Plug the flashed sd card, mouse and display to jetson nano, and restart the the jetson nano.\
 follow the instruction to finish the nano initilization."
