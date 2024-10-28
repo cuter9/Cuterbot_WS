@@ -10,3 +10,4 @@ cp ./tegra210-p3448-0002-p3449-0000-b00.dts ./kernel/dtb/
 cd ../
 sudo apply_binaries.sh
 sudo BOOTDEV=mmcblk1p1 ./flash.sh --external_device jetson-nano-emmc mmcblk1p1
+sudo parted /dev/sdb mklabel gpt
