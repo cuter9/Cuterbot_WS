@@ -11,7 +11,7 @@ cp ./tegra210-p3448-0002-p3449-0000-b00.dts ./kernel/dtb/
 cd ../
 sudo apply_binaries.sh
 
-echo "Set the jetson nano in recovery mode, and connect it to the host PC."
+# Set the jetson nano in recovery mode, and connect it to the host PC.
 sudo BOOTDEV=mmcblk1p1 ./flash.sh --external_device jetson-nano-emmc mmcblk1p1
 
 sudo parted /dev/sdb mklabel gpt
@@ -19,9 +19,11 @@ sudo parted /dev/sdb mkpart APP 0GB 64GB
 sudo mkfs.ext4 /dev/sdb1
 sudo mount /dev/sdb1 /mnt
 
+# plug sd caed to the Host PC, and start to flush it.
 sudo mkdir tmp_system
 sudo mount bootloader/system.img.raw ./tmp_system
 sudo rsync -axHAWX --numeric-ids --info=progress2 --exclude=/proc ./tmp_system/ /mnt
+sudo umount /mnt
+sudo umount ./tmp_system
 
-
-echo "plug the flashed sd card to jetson nano device, and restart the device."
+echo "Flassh comlplete. Plug the flashed sd card to jetson nano device, and restart the device."
