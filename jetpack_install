@@ -25,4 +25,6 @@ sudo rsync -axHAWX --numeric-ids --info=progress2 --exclude=/proc ./tmp_system/ 
 sudo umount /mnt
 sudo umount ./tmp_system
 
-echo "Flassh comlplete. Plug the flashed sd card to jetson nano device, and restart the device."
+echo "Flassh comlplete. \
+Plug the flashed sd card, mouse and display to jetson nano, and restart the device.\
+follow the instruction to finish the nano initilization."
