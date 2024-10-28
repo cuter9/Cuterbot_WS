@@ -8,7 +8,7 @@ cd ./Linux_for_Tegra/rootfs
 sudo tar -jxpf ./tegra_linux_sample-root-filesystem_r32.7.5_aarch64.tbz2
 cp ./tegra210-p3448-0002-p3449-0000-b00.dts ./kernel/dtb/
 cd ../
-sudo apply_binaries.sh
+sudo ./apply_binaries.sh
 
 # Set the jetson nano in recovery mode, and connect it to the host PC.
 sudo BOOTDEV=mmcblk1p1 ./flash.sh --external_device jetson-nano-emmc mmcblk1p1
