@@ -9,5 +9,4 @@ sudo tar -jxpf ./tegra_linux_sample-root-filesystem_r32.7.5_aarch64.tbz2
 cp .dtb ./kernel/dtb/
 cd ../
 sudo install_binary.sh
-
-
+sudo BOOTDEV=mmcblk1p1 ./flash.sh --external_device jetson-nano-emmc mmcblk1p1
