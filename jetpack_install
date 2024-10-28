@@ -1,3 +1,4 @@
+
 #! /bin/bash
 sudo apt install wget
 cd ~/Downloads
@@ -9,6 +10,8 @@ sudo tar -jxpf ./tegra_linux_sample-root-filesystem_r32.7.5_aarch64.tbz2
 cp ./tegra210-p3448-0002-p3449-0000-b00.dts ./kernel/dtb/
 cd ../
 sudo apply_binaries.sh
+
+echo "Set the jetson nano in recovery mode, and connect it to the host PC."
 sudo BOOTDEV=mmcblk1p1 ./flash.sh --external_device jetson-nano-emmc mmcblk1p1
 
 sudo parted /dev/sdb mklabel gpt
@@ -19,3 +22,6 @@ sudo mount /dev/sdb1 /mnt
 sudo mkdir tmp_system
 sudo mount bootloader/system.img.raw ./tmp_system
 sudo rsync -axHAWX --numeric-ids --info=progress2 --exclude=/proc ./tmp_system/ /mnt
+
+
+echo "plug the flashed sd card to jetson nano device, and restart the device."
