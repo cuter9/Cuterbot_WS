@@ -78,8 +78,8 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
             model = getattr(pth_models, pth_model_name)(weights=None, aux_logits=True) \
                 if pth_model_name in ['googlenet', 'inception_v3'] \
                 else getattr(pth_models, pth_model_name)(weights=None) # for fine-tuning
-# for inferencing
 
+    # for inferencing
     else:
         model = getattr(pth_models, pth_model_name)(pretrained=pretrained, aux_logits=True) \
             if pth_model_name in ['googlenet', 'inception_v3'] \
