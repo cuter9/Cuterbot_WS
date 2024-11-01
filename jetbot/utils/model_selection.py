@@ -95,12 +95,7 @@ def load_pth_model(pth_model_name, weights_cls, pretrained):
 
 
 def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
-    """
-    if pretrained:
-        model = getattr(pth_models, pth_model_name)()  # for fine-tuning
-    else:
-        model = getattr(pth_models, pth_model_name)(pretrained=False)  # for inferencing
-    """
+
     preprocess_wrap = None
     model_type = None
     model = None
