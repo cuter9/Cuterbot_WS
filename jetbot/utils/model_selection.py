@@ -108,7 +108,7 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     tv = int(torchvision.__version__.split(".")[1])  # torchvision version
     # ----- modify the last layer for classification, and the model used in notebook should be modified too.
-    if 'resnet' in pth_model_name:  # ResNet
+    if 'resnet' in pth_model_name:  # resnet18, resnet34, resnet50, resnet101, ...
         model_type = "ResNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
@@ -120,62 +120,25 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif 'mobilenet_v3' in pth_model_name:  # 'mobilenet_v3_large' or  'mobilenet_v3_small'
         model_type = "MobileNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            if "small" in pth_model_name:
-                weights_cls = "MobileNet_V3_Small_Weights"
-            elif "large" in pth_model_name:
-                weights_cls = "MobileNet_V3_Large_Weights"
-            else:
-                assert weights_cls is not None, "Check the use of the name of the torch model!"
+        # enter the code to convert pytorch 'mobilenet_v3' model so that can be used in Jetbot application.
 
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features,
-                                              2)  # for mobilenet_v3 model. must add block expansion factor 4
-
-    elif pth_model_name == 'mobilenet_v2':
+    elif pth_model_name == 'mobilenet_v2':      # mobilenet_v2
         model_type = "MobileNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = "MobileNet_V2_Weights"
-
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features,
-                                              2)  # for mobilenet_v2 model. must add block expansion factor 4
+        # enter the code to convert pytorch 'mobilenet_v2' model so that can be used in Jetbot application.
 
     elif pth_model_name == 'vgg11':  # VGGNet
         model_type = "VggNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = "VGG11_Weights"
+        # enter the code to convert pytorch 'vgg11' model so that can be used in Jetbot application.
 
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier[6] = torch.nn.Linear(model.classifier[6].in_features,
-                                              2)  # for VGG model. must add block expansion factor 4
-
-    elif 'efficientnet' in pth_model_name:  # ResNet
+    elif 'efficientnet' in pth_model_name:  # efficientnet_b0, efficientnet_b1, efficientnet_b2, efficientnet_b3, ....
         model_type = "EfficientNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = pth_model_name.replace("efficientnet_b", "EfficientNet_B") + "_Weights"
-
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)  # for efficientnet model
-        # model.classifier[0].dropout = torch.nn.Dropout(p=dropout)
+        # enter the code to convert pytorch 'efficientnet' model so that can be used in Jetbot application.
 
     elif pth_model_name == 'inception_v3':  # Inception_v3
         model_type = "InceptionNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = "Inception_V3_Weights"
+        # enter the code to convert pytorch 'inception_v3' model so that can be used in Jetbot application.
 
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        # model.dropout = torch.nn.Dropout(p=dropout)
-        model.fc = torch.nn.Linear(model.fc.in_features, 2)
-        if model.aux_logits:
-            model.AuxLogits.fc = torch.nn.Linear(model.AuxLogits.fc.in_features, 2)
-
-    elif pth_model_name == 'googlenet':  # Inception_v3
+    elif pth_model_name == 'googlenet':  # Inception
         model_type = "GoogleNet"
         if tv >= 13:  # use weights parameter for torchvision with version > 13
             print("torchvision version: %d" % tv)
@@ -192,30 +155,15 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
 
     elif "densenet" in pth_model_name:  # densenet121, densenet161, densenet169, densenet201
         model_type = "DenseNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = pth_model_name.replace("densenet", "DenseNet") + "_Weights"
-
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier = torch.nn.Linear(model.classifier.in_features, 2)
+        # enter the code to convert pytorch 'densenet' model so that can be used in Jetbot application.
 
     elif "shufflenet_v2" in pth_model_name:  # shufflenet_v2_x1_0 or shufflenet_v2_x0_5
         model_type = "ShuffleNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = pth_model_name.replace("shufflenet_v2_x", "ShuffleNet_V2_X") + "_Weights"
+        # enter the code to convert pytorch 'shufflenet_v2' model so that can be used in Jetbot application.
 
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.fc = torch.nn.Linear(model.fc.in_features, 2)
-
-    elif "mnasnet" in pth_model_name:  # mnasnet1_0 or mnasnet0_5
+    elif "mnasnet" in pth_model_name:  #  mnasnet2_0,  mnasnet1_5, mnasnet1_0, or mnasnet0_5
         model_type = "MnasNet"
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls = pth_model_name.replace("mnasnet", "MNASNet") + "_Weights"
-
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, 2)
+        # enter the code to convert pytorch 'mnasnet' model so that can be used in Jetbot application.
 
     else:
         assert (
