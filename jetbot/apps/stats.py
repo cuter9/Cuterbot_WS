@@ -208,7 +208,7 @@ while True:
 
             # Draw a black filled box to clear the image.
             draw.rectangle((0, 0, width, height), outline=0, fill=0)
-        #			time.sleep(5) # Pause 5 sec
+            # time.sleep(5) # Pause 5 sec
 
         # 48 x 64 display----------------------------------------------------------
         elif 61 in addresses:
