@@ -18,7 +18,7 @@ then
 elif [[ "$L4T_VERSION" == "32.5.0" ]] || [[ "$L4T_VERSION" == "32.5.1" ]]
 then
 	JETBOT_BASE_IMAGE=nvcr.io/nvidia/l4t-pytorch:r32.5.0-pth1.6-py3
-elif [[ "$L4T_VERSION" == "32.7.4" ]] || [[ "$L4T_VERSION" == "32.7.5" ]] || [[ "$L4T_VERSION" == "32.7.1" ]]
+elif [[ "$L4T_VERSION" == "32.7.4" ]] || [[ "$L4T_VERSION" == "32.7.5" ]] || [[ "$L4T_VERSION" == "32.7.6" ]] || [[ "$L4T_VERSION" == "32.7.1" ]]
 then
 	JETBOT_BASE_IMAGE=nvcr.io/nvidia/l4t-pytorch:r32.7.1-pth1.10-py3
 else
