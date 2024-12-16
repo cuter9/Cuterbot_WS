@@ -14,19 +14,10 @@ SudoPass = 'cuterbot'
 def capture_frames(cam):
     while True:
 
-        # if cam.stop_thread.is_set():
-        #    break
-
-        # start = time.process_time()            
-        # nc = 0
         re, image = cam.cap.read()
         if re:
             cam.value = image
-            # print(image)
-            # print("Observed and No of times previous capture nothong : ", nc)
-            # nc = 0
-            # end = time.process_time()
-            # cam.cap_time = end - start
+
         else:
             print("No frame was captured, check the cam capture function works normally, "
                   "and the cam capture thread will be terminated!")
