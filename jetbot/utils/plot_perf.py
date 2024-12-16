@@ -24,9 +24,9 @@ def plot_exec_time(execution_time, model_name, model_str):
         "The execution time statistics of %s  ----- \n     Mean execution time of : %.4f sec.\n     Max execution time : %.4f sec.\n     Min execution time of : %.4f sec. " \
         % (model_name, float(mean_execute_time), float(max_execute_time), float(min_execute_time)))
 
-    # fig = plt.figure()
+    plt.close()
     fig, ax = plt.subplots(figsize=(12, 6))
-    # ax = fig.add_subplot()
+
     nbin = 150
     sbin = (max_execute_time * 1.2 - min_execute_time * 0.8) / nbin
     ax.hist(execute_time, bins=(np.arange(min_execute_time * 0.8, max_execute_time * 1.2, sbin)).tolist())
@@ -40,6 +40,6 @@ def plot_exec_time(execution_time, model_name, model_str):
                   float(min_execute_time), float(max_fps))
     ax.text(0.55, 0.85, text_str, transform=ax.transAxes, fontsize=12, verticalalignment='top', bbox=props)
 
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    # fig.canvas.draw()
+    # fig.canvas.flush_events()
     plt.show(block=False)
