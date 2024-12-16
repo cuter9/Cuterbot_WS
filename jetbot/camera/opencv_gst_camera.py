@@ -32,18 +32,6 @@ def capture_frames(cam):
                   "and the cam capture thread will be terminated!")
             break
 
-        '''
-        else:
-            if nc <= 10:
-                nc += 1
-                # print("No of times capture nothong : ", nc)
-                continue
-            else:
-                print("No frame was captureed for a while, check the cam capture function works normally , \
-                        and the cam capture trhread will be terminated!")
-                break
-        '''
-
 
 class OpenCvGstCamera(CameraBase):
     value = traitlets.Any()
