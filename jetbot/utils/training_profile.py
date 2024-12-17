@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # dir_training_records = os.path.join(dir_depo, 'training records', TRAIN_MODEL)
 # os.makedirs(dir_training_records, exist_ok=True)
-plt.close()
+plt.close('all')
 fig_1, ax_1 = plt.subplots(figsize=(14, 6))
 
 font = {'fontweight': 'normal', 'fontsize': 16}

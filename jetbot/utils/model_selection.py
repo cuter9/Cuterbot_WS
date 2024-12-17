@@ -166,19 +166,11 @@ def load_tune_pth_model(pth_model_name="resnet18", pretrained=True):
         # vit model is not available for jetson nano run in a torch vision version < 0.12
         model_type = "ViTNet"
         # enter the code to convert pytorch 'vit' model so that can be used in Jetbot application.
-        if tv >= 13:  # use weights parameter for torchvision with version > 13
-            print("torchvision version: %d" % tv)
-            weights_cls_lst = list(pth_model_name.replace("vit", "ViT"))
-            weights_cls_lst[4] = weights_cls_lst[4].upper()
-            weights_cls = ''.join(weights_cls_lst) + "_Weights"
-
-        model, preprocess_wrap = load_pth_model(pth_model_name, weights_cls, pretrained)
-        # model.fc = torch.nn.Linear(model.fc.in_features, 2)
-        model.heads[-1] = torch.nn.Linear(model.heads[-1].in_features, 2)
 
     else:
         assert (
-                model is not None and model_type is not None), "Check if the model name set is compatible with torchvision."
+                model is not None and model_type is not None), "Check if the model name set is compatible with torchvision, \
+                and the parameters of the model is set correctly."
 
     return model, model_type, preprocess_wrap
 

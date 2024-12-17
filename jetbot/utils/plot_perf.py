@@ -24,7 +24,7 @@ def plot_exec_time(execution_time, model_name, model_str):
         "The execution time statistics of %s  ----- \n     Mean execution time of : %.4f sec.\n     Max execution time : %.4f sec.\n     Min execution time of : %.4f sec. " \
         % (model_name, float(mean_execute_time), float(max_execute_time), float(min_execute_time)))
 
-    plt.close()
+    plt.close('all')
     fig, ax = plt.subplots(figsize=(12, 6))
 
     nbin = 150
