@@ -156,7 +156,7 @@ RUN cd ${QWIIC_DIR}/qwiic/drivers && rm -rf qwiic_as6212 qwiic_kx13x && \
 # ==============
 # INSTALL JETBOT
 # ==============
-RUN python3 -m pip install pyserial pandas jetson-stats
+RUN python3 -m pip install pyserial pandas
 RUN python3 -m pip install pillow --force-reinstall
 ENV JETBOT_REPO_DIR=/opt/jetbot
 COPY . ${JETBOT_REPO_DIR}
