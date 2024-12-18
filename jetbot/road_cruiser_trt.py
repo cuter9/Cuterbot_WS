@@ -103,7 +103,7 @@ class RoadCruiserTRT(HasTraits):
         image = change['new']
         xy = self.trt_model_rc(self.preprocess_rc(image)).detach().float().cpu().numpy().flatten()
         x = xy[0]
-        # y = (0.5 - xy[1]) / 2.0
+        # y = (0.5 - xy[1]) / 2.0   # This is suitable for the image window without referring to central line
         y = (1 + xy[1])         # This is suitable for the y data around 0, i.e. the central line is the image window
 
         self.x_slider = x.item()
