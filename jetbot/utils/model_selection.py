@@ -11,7 +11,8 @@ import torchvision.models as pth_models
 from torchvision.transforms import functional as F, InterpolationMode
 
 HEAD_LIST = ['model_function', 'model_type', 'model_path', 'preprocess_path']
-MODEL_REPO_DIR = os.path.join(os.environ["HOME"], "model_repo")
+# MODEL_REPO_DIR = os.path.join(os.environ["HOME"], "model_repo")
+MODEL_REPO_DIR = os.path.join("/home/cuterbot", "model_repo")
 MODEL_REPO_DIR_DOCKER = os.path.join("/workspace", "model_repo")
 os.environ['MODEL_REPO_DIR_DOCKER'] = MODEL_REPO_DIR_DOCKER
 os.environ['MODEL_REPO_DIR'] = MODEL_REPO_DIR
