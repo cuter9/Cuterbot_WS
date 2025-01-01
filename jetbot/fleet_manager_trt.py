@@ -184,9 +184,9 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
                 self.no_detect -= 1  # observe for a duration for the miss of object detection
             # self.robot.forward(float(self.speed))
 
-        # otherwise steer towards target
+        # otherwise, steer towards target
         else:
-            # move robot forward and steer proportional target's x-distance from center
+            # move the robot forward and steer proportional target's x-distance from center
             center = object_center_detection(cls_obj)
             self.robot.set_motors(
                 float(self.speed_fm + self.turn_gain_fm * center[0] + self.steering_bias_fm),
