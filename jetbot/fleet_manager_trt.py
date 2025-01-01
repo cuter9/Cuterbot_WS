@@ -153,7 +153,7 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
                           (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (255, 0, 0), 2)
 
         # select detections that match selected class label
-        # get detection closest to the center of field of view and draw it
+        # get detection closest to the center of view field and draw it
         cls_obj = self.closest_object
         if cls_obj is not None:
             self.is_detected = True
