@@ -115,7 +115,7 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
 
     def execute_fm(self, change):
 
-        # do object following
+        # do the object following
         start_time = time.time()
         self.execute(change)
         end_time = time.time()
