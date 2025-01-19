@@ -78,7 +78,7 @@ def lt_plot(lt_epoch, lt_sample, overall_time, dir_training_records, train_model
 
     fig_2, axh = plt.subplots(1, 2, figsize=(14, 6))
     fig_2.suptitle("Training Time Statistics ({:s} with {:s}) -- {:s} \n Overall training time : {:s} ({:.2f} sec.)".
-                   format(processor, train_method, train_model,
+                   format(train_method, processor, train_model,
                           time.strftime("%H:%M:%S", time.gmtime(ceil(overall_time))), overall_time),
                    fontsize=20, fontweight='medium')
     axh[0].set_ylabel('no. of epochs', fontdict=font)
