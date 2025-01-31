@@ -162,7 +162,7 @@ class FleeterTRT(ObjectFollower, RoadCruiserTRT):
             cv2.rectangle(self.current_image, (int(self.img_width * bbox[0]), int(self.img_height * bbox[1])),
                           (int(self.img_width * bbox[2]), int(self.img_height * bbox[3])), (0, 255, 0), 5)
 
-            self.mean_view = 0.4 * (bbox[2] - bbox[0]) + 0.6 * self.mean_view_prev
+            self.mean_view = 0.4 * (bbox[3] - bbox[1]) + 0.6 * self.mean_view_prev
             self.e_view = self.target_view - self.mean_view
             if np.abs(self.e_view / self.target_view) > 0.1:
                 self.speed_fm = self.speed_fm + self.speed_gain_fm * self.e_view + self.speed_dev_fm * (
